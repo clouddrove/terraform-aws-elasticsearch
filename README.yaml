@@ -1,0 +1,60 @@
+---
+#
+# This is the canonical configuration for the `README.md`
+# Run `make readme` to rebuild the `README.md`
+#
+
+# Name of this project
+name : Terraform AWS Elasticsearch
+
+# License of this project
+license: "MIT"
+
+# Canonical GitHub repo
+github_repo: clouddrove/terraform-aws-elasticsearch
+
+# Badges to display
+badges:
+  - name: "Terraform"
+    image: "https://img.shields.io/badge/Terraform-v0.12-green"
+    url: "https://www.terraform.io"
+  - name: "Licence"
+    image: "https://img.shields.io/badge/License-MIT-blue.svg"
+    url: "LICENSE.md"
+
+#  description of this project
+description: |-
+  Terraform module to create an Elasticsearch resource on AWS.
+
+# extra content
+include:
+  - "terraform.md"
+
+# How to use this project
+usage : |-
+  ### Simple Example
+  Here is an example of how you can use this module in your inventory structure:
+  ```hcl
+      module "elasticsearch" {
+        source                  = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.12.0"
+        name                    = "es"
+        application             = "clouddrove"
+        environment             = "test"
+        label_order             = ["environment", "name", "application"]
+        domain_name             = "clouddrove"
+        enable_iam_service_linked_role = true
+        security_group_ids      = ["sg-xxxxxxxxxxx"]
+        subnet_ids              = ["subnet-xxxxxxxxxxx"]
+        zone_awareness_enabled  = true
+        elasticsearch_version   = "6.5"
+        instance_type           = "t2.small.elasticsearch"
+        instance_count          = 4
+        iam_actions             = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
+        volume_size             = 10
+        volume_type             = "gp2"
+        advanced_options        = {
+                                    "rest.action.multi.allow_explicit_index" = "true"
+                                  }
+      }
+  ```
+  Note: There are some type of instances which not support encryption and EBS option, Please read about this (here)[https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-supported-instance-types.html]
