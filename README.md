@@ -68,32 +68,56 @@ This module has a few dependencies:
 **IMPORTANT:** Since the `master` branch used in `source` varies based on new modifications, we suggest that you use the release versions [here](https://github.com/clouddrove/terraform-aws-elasticsearch/releases).
 
 
-### Simple Example
-Here is an example of how you can use this module in your inventory structure:
+Here are examples of how you can use this module in your inventory structure:
+### Single Node
 ```hcl
     module "elasticsearch" {
-      source                  = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.12.0"
-      name                    = "es"
-      application             = "clouddrove"
-      environment             = "test"
-      label_order             = ["environment", "name", "application"]
-      domain_name             = "clouddrove"
+      source                         = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.12.0"
+      name                           = "es"
+      application                    = "clouddrove"
+      environment                    = "test"
+      label_order                    = ["environment", "name", "application"]
+      domain_name                    = "clouddrove"
       enable_iam_service_linked_role = true
-      security_group_ids      = ["sg-xxxxxxxxxxx"]
-      subnet_ids              = ["subnet-xxxxxxxxxxx"]
-      zone_awareness_enabled  = true
-      elasticsearch_version   = "6.5"
-      instance_type           = "t2.small.elasticsearch"
-      instance_count          = 4
-      iam_actions             = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
-      volume_size             = 10
-      volume_type             = "gp2"
-      advanced_options        = {
-                                  "rest.action.multi.allow_explicit_index" = "true"
-                                }
+      security_group_ids             = ["sg-xxxxxxxxxxxx"]
+      subnet_ids                     = ["subnet-xxxxxxxxxxxx"]
+      elasticsearch_version          = "7.1"
+      instance_type                  = "t2.small.elasticsearch"
+      instance_count                 = 1
+      iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
+      volume_size                    = 30
+      volume_type                    = "gp2"
+      advanced_options = {
+        "rest.action.multi.allow_explicit_index" = "true"
+      }
     }
 ```
-Note: There are some type of instances which not support encryption and EBS option, Please read about this (here)[https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-supported-instance-types.html]
+### Multi Node
+```hcl
+    module "elasticsearch" {
+      source                         = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.12.0"
+      name                           = "es"
+      application                    = "clouddrove"
+      environment                    = "test"
+      label_order                    = ["environment", "name", "application"]
+      domain_name                    = "clouddrove"
+      enable_iam_service_linked_role = true
+      security_group_ids             = ["sg-xxxxxxxxxxxx"]
+      subnet_ids                     = ["subnet-xxxxxxxxxxxx"]
+      zone_awareness_enabled         = true
+      availability_zone_count        = 2
+      elasticsearch_version          = "7.1"
+      instance_type                  = "t2.small.elasticsearch"
+      instance_count                 = 1
+      iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
+      volume_size                    = 30
+      volume_type                    = "gp2"
+      advanced_options = {
+        "rest.action.multi.allow_explicit_index" = "true"
+      }
+    }
+```
+Note: There are some type of instances which not support encryption and EBS option, Please read about this (here)[https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-supported-instance-types.html]. Also, there are some limitation for instance type, Please read (here)[https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-limits.html]
 
 
 
@@ -140,7 +164,7 @@ Note: There are some type of instances which not support encryption and EBS opti
 | tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | map | `<map>` | no |
 | volume_size | EBS volumes for data storage in GB. | number | `0` | no |
 | volume_type | Storage type of EBS volumes. | string | `gp2` | no |
-| zone_awareness_enabled | Enable zone awareness for Elasticsearch cluster. | bool | `true` | no |
+| zone_awareness_enabled | Enable zone awareness for Elasticsearch cluster. | bool | `false` | no |
 
 ## Outputs
 

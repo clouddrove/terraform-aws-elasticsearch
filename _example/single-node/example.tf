@@ -21,7 +21,7 @@ module "public_subnets" {
   environment = "test"
   label_order = ["environment", "name", "application"]
 
-  availability_zones = ["eu-west-1b", "eu-west-1c"]
+  availability_zones = ["eu-west-1c"]
   vpc_id             = module.vpc.vpc_id
   cidr_block         = module.vpc.vpc_cidr_block
   type               = "public"
@@ -51,12 +51,11 @@ module "elasticsearch" {
   enable_iam_service_linked_role = true
   security_group_ids             = [module.security_group.security_group_ids]
   subnet_ids                     = tolist(module.public_subnets.public_subnet_id)
-  zone_awareness_enabled         = true
-  elasticsearch_version          = "6.5"
+  elasticsearch_version          = "7.1"
   instance_type                  = "t2.small.elasticsearch"
-  instance_count                 = 4
+  instance_count                 = 1
   iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
-  volume_size                    = 10
+  volume_size                    = 30
   volume_type                    = "gp2"
   advanced_options = {
     "rest.action.multi.allow_explicit_index" = "true"
