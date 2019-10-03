@@ -17,7 +17,7 @@ module "labels" {
 #Description : Terraform module to create Iam Service Linked Role resource on AWS.
 resource "aws_iam_service_linked_role" "default" {
   count            = var.enabled && var.enable_iam_service_linked_role ? 1 : 0
-  aws_service_name = "es.amazonaws.com"
+  aws_service_name = format("%s.amazonaws.com",module.labels.id)
   description      = "AWSServiceRoleForAmazonElasticsearchService Service-Linked Role"
 }
 
