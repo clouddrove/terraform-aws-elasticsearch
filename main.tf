@@ -25,7 +25,7 @@ resource "aws_iam_service_linked_role" "default" {
 #Description : Terraform module to create Iam Role resource on AWS.
 resource "aws_iam_role" "default" {
   count              = var.enabled ? 1 : 0
-  name               = "elasticsearch-role"
+  name               = format("%s-role",module.labels.id)
   assume_role_policy = join("", data.aws_iam_policy_document.assume_role.*.json)
   description        = "IAM Role to assume to access the Elasticsearch cluster"
   tags               = module.labels.tags
