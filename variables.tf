@@ -221,3 +221,14 @@ variable "domain_name" {
   default     = ""
   description = "Domain name."
 }
+variable "enable_logs" {
+  type        = bool
+  default     = true
+  description = "enable logs"
+}
+
+variable "dns_zone_id" {
+  type        = string
+  default     = ""
+  description = "Route53 DNS Zone ID to add hostname records for Elasticsearch domain and Kibana"
+}

@@ -42,12 +42,11 @@ module "security_group" {
 }
 
 module "elasticsearch" {
-  source                         = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.12.0"
+  source                         = "./../../"
   name                           = "es"
   application                    = "clouddrove"
   environment                    = "test"
   label_order                    = ["environment", "name", "application"]
-  domain_name                    = "clouddrove"
   enable_iam_service_linked_role = true
   security_group_ids             = [module.security_group.security_group_ids]
   subnet_ids                     = tolist(module.public_subnets.public_subnet_id)
@@ -57,6 +56,9 @@ module "elasticsearch" {
   iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
   volume_size                    = 30
   volume_type                    = "gp2"
+  log_publishing_application_enabled = true
+  log_publishing_search_cloudwatch_log_group_arn = true
+  log_publishing_index_cloudwatch_log_group_arn  = true
   advanced_options = {
     "rest.action.multi.allow_explicit_index" = "true"
   }

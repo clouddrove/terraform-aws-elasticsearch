@@ -13,11 +13,24 @@ module "labels" {
   label_order = var.label_order
 }
 
+resource "aws_cloudwatch_log_group" "cloudwatch" {
+  count = var.enabled && var.enable_logs ? 1 : 0
+  name = module.labels.id
+  tags = module.labels.tags
+}
+
+resource "aws_cloudwatch_log_resource_policy" "cloudwatch_policy" {
+  count           = var.enabled && var.enable_logs ? 1 : 0
+  policy_name     = module.labels.id
+  policy_document = data.aws_iam_policy_document.elasticsearch-log-publishing-policy.json
+}
+
 #Module      : Iam Service Linked Role
 #Description : Terraform module to create Iam Service Linked Role resource on AWS.
+
 resource "aws_iam_service_linked_role" "default" {
   count            = var.enabled && var.enable_iam_service_linked_role ? 1 : 0
-  aws_service_name = format("%s.amazonaws.com",module.labels.id)
+  aws_service_name = "es.amazonaws.com"
   description      = "AWSServiceRoleForAmazonElasticsearchService Service-Linked Role"
 }
 
@@ -25,7 +38,7 @@ resource "aws_iam_service_linked_role" "default" {
 #Description : Terraform module to create Iam Role resource on AWS.
 resource "aws_iam_role" "default" {
   count              = var.enabled ? 1 : 0
-  name               = format("%s-role",module.labels.id)
+  name               = format("%s-role", module.labels.id)
   assume_role_policy = join("", data.aws_iam_policy_document.assume_role.*.json)
   description        = "IAM Role to assume to access the Elasticsearch cluster"
   tags               = module.labels.tags
@@ -40,18 +53,29 @@ data "aws_iam_policy_document" "assume_role" {
     actions = [
       "sts:AssumeRole"
     ]
-
     principals {
       type        = "Service"
       identifiers = ["ec2.amazonaws.com"]
     }
-
     principals {
       type        = "AWS"
       identifiers = ["*"]
     }
-
     effect = "Allow"
+  }
+}
+data "aws_iam_policy_document" "elasticsearch-log-publishing-policy" {
+  statement {
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:PutLogEventsBatch",
+    ]
+    resources = ["arn:aws:logs:*"]
+    principals {
+      identifiers = ["es.amazonaws.com"]
+      type        = "Service"
+    }
   }
 }
 
@@ -59,7 +83,7 @@ data "aws_iam_policy_document" "assume_role" {
 #Description : Terraform module to create Elasticsearch resource on AWS.
 resource "aws_elasticsearch_domain" "default" {
   count                 = var.enabled && var.zone_awareness_enabled ? 1 : 0
-  domain_name           = var.domain_name
+  domain_name           = var.domain_name != "" ? var.domain_name : module.labels.id
   elasticsearch_version = var.elasticsearch_version
 
   advanced_options = var.advanced_options
@@ -105,19 +129,19 @@ resource "aws_elasticsearch_domain" "default" {
   log_publishing_options {
     enabled                  = var.log_publishing_index_enabled
     log_type                 = "INDEX_SLOW_LOGS"
-    cloudwatch_log_group_arn = var.log_publishing_index_cloudwatch_log_group_arn
+    cloudwatch_log_group_arn = join("", aws_cloudwatch_log_group.cloudwatch.*.arn)
   }
 
   log_publishing_options {
     enabled                  = var.log_publishing_search_enabled
     log_type                 = "SEARCH_SLOW_LOGS"
-    cloudwatch_log_group_arn = var.log_publishing_search_cloudwatch_log_group_arn
+    cloudwatch_log_group_arn = join("", aws_cloudwatch_log_group.cloudwatch.*.arn)
   }
 
   log_publishing_options {
     enabled                  = var.log_publishing_application_enabled
     log_type                 = "ES_APPLICATION_LOGS"
-    cloudwatch_log_group_arn = var.log_publishing_application_cloudwatch_log_group_arn
+    cloudwatch_log_group_arn = join("", aws_cloudwatch_log_group.cloudwatch.*.arn)
   }
 
   tags = module.labels.tags
@@ -129,7 +153,7 @@ resource "aws_elasticsearch_domain" "default" {
 #Description : Terraform module to create Elasticsearch resource on AWS.
 resource "aws_elasticsearch_domain" "single" {
   count                 = var.enabled && var.zone_awareness_enabled == false ? 1 : 0
-  domain_name           = var.domain_name
+  domain_name           = var.domain_name != "" ? var.domain_name : module.labels.id
   elasticsearch_version = var.elasticsearch_version
 
   advanced_options = var.advanced_options
@@ -170,19 +194,19 @@ resource "aws_elasticsearch_domain" "single" {
   log_publishing_options {
     enabled                  = var.log_publishing_index_enabled
     log_type                 = "INDEX_SLOW_LOGS"
-    cloudwatch_log_group_arn = var.log_publishing_index_cloudwatch_log_group_arn
+    cloudwatch_log_group_arn = join("", aws_cloudwatch_log_group.cloudwatch.*.arn)
   }
 
   log_publishing_options {
     enabled                  = var.log_publishing_search_enabled
     log_type                 = "SEARCH_SLOW_LOGS"
-    cloudwatch_log_group_arn = var.log_publishing_search_cloudwatch_log_group_arn
+    cloudwatch_log_group_arn = join("", aws_cloudwatch_log_group.cloudwatch.*.arn)
   }
 
   log_publishing_options {
     enabled                  = var.log_publishing_application_enabled
     log_type                 = "ES_APPLICATION_LOGS"
-    cloudwatch_log_group_arn = var.log_publishing_application_cloudwatch_log_group_arn
+    cloudwatch_log_group_arn = join("", aws_cloudwatch_log_group.cloudwatch.*.arn)
   }
 
   tags = module.labels.tags
@@ -214,6 +238,26 @@ data "aws_iam_policy_document" "default" {
 #Description : Terraform module to create Elasticsearch policy resource on AWS.
 resource "aws_elasticsearch_domain_policy" "default" {
   count           = var.enabled ? 1 : 0
-  domain_name     = var.domain_name
+  domain_name     = var.domain_name != "" ? var.domain_name : module.labels.id
   access_policies = join("", data.aws_iam_policy_document.default.*.json)
+}
+
+module "es_dns_point" {
+  source = "git::https://github.com/clouddrove/terraform-aws-route-table.git?ref=tags/0.12.0"
+  record_enabled = var.enabled && var.dns_zone_id != "" ? true : false
+  zone_id = var.dns_zone_id
+  names = [var.es_hostname]
+  types = ["A"]
+  ttls = ["3600"]
+  values = [join("", aws_elasticsearch_domain.default.*.endpoint)]
+}
+
+module "kibana_dns_point" {
+  source = "git::https://github.com/clouddrove/terraform-aws-route-table.git?ref=tags/0.12.0"
+  record_enabled = var.enabled && var.dns_zone_id != "" ? true : false
+  zone_id = var.dns_zone_id
+  names = [var.kibana_hostname]
+  types = ["A"]
+  ttls = ["3600"]
+  records = [join("", aws_elasticsearch_domain.default.*.kibana_endpoint)]
 }
