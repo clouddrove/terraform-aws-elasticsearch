@@ -7,7 +7,7 @@
     Terraform AWS Elasticsearch
 </h1>
 
-<p align="center" style="font-size: 1.2rem;">
+<p align="center" style="font-size: 1.2rem;"> 
     Terraform module to create an Elasticsearch resource on AWS.
      </p>
 
@@ -38,7 +38,7 @@
 <hr>
 
 
-We eat, drink, sleep and most importantly love **DevOps**. We are working towards stratergies for standardizing architecture while ensuring security for the infrastructure. We are strong believer of the philosophy <b>Bigger problems are always solved by breaking them into smaller manageable problems</b>. Resonating with microservices architecture, it is considered best-practice to run database, cluster, storage in smaller <b>connected yet manageable pieces</b> within the infrastructure.
+We eat, drink, sleep and most importantly love **DevOps**. We are working towards stratergies for standardizing architecture while ensuring security for the infrastructure. We are strong believer of the philosophy <b>Bigger problems are always solved by breaking them into smaller manageable problems</b>. Resonating with microservices architecture, it is considered best-practice to run database, cluster, storage in smaller <b>connected yet manageable pieces</b> within the infrastructure. 
 
 This module is basically combination of [Terraform open source](https://www.terraform.io/) and includes automatation tests and examples. It also helps to create and improve your infrastructure with minimalistic code instead of maintaining the whole infrastructure code yourself.
 
@@ -49,7 +49,7 @@ We have [*fifty plus terraform modules*][terraform_modules]. A few of them are c
 
 ## Prerequisites
 
-This module has a few dependencies:
+This module has a few dependencies: 
 
 - [Terraform 0.12](https://learn.hashicorp.com/terraform/getting-started/install.html)
 - [Go](https://golang.org/doc/install)
@@ -124,60 +124,11 @@ Note: There are some type of instances which not support encryption and EBS opti
 
 
 
-## Inputs
-
-| Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| advanced_options | Key-value string pairs to specify advanced configuration options. | map(string) | `<map>` | no |
-| application | Application (e.g. `cd` or `clouddrove`). | string | `` | no |
-| attributes | Additional attributes (e.g. `1`). | list | `<list>` | no |
-| automated_snapshot_start_hour | Hour at which automated snapshots are taken, in UTC. | number | `0` | no |
-| availability_zone_count | Number of Availability Zones for the domain to use. | number | `2` | no |
-| dedicated_master_count | Number of dedicated master nodes in the cluster. | number | `0` | no |
-| dedicated_master_enabled | Indicates whether dedicated master nodes are enabled for the cluster. | bool | `false` | no |
-| dedicated_master_type | Instance type of the dedicated master nodes in the cluster. | string | `t2.small.elasticsearch` | no |
-| delimiter | Delimiter to be used between `organization`, `environment`, `name` and `attributes`. | string | `-` | no |
-| domain_name | Domain name. | string | `` | no |
-| elasticsearch_version | Version of Elasticsearch to deploy. | string | `6.5` | no |
-| enable_iam_service_linked_role | Whether to enabled service linked with role. | bool | `false` | no |
-| enabled | Set to false to prevent the module from creating any resources. | bool | `true` | no |
-| encrypt_at_rest_enabled | Whether to enable encryption at rest. | bool | `true` | no |
-| encryption_enabled | Whether to enable node-to-node encryption. | bool | `false` | no |
-| environment | Environment (e.g. `prod`, `dev`, `staging`). | string | `` | no |
-| iam_actions | List of actions to allow for the IAM roles, _e.g._ `es:ESHttpGet`, `es:ESHttpPut`, `es:ESHttpPost`. | list(string) | `<list>` | no |
-| iam_authorizing_role_arns | List of IAM role ARNs to permit to assume the Elasticsearch user role. | list(string) | `<list>` | no |
-| iam_role_arns | List of IAM role ARNs to permit access to the Elasticsearch domain. | list(string) | `<list>` | no |
-| instance_count | Number of data nodes in the cluster. | number | `4` | no |
-| instance_type | Elasticsearch instance type for data nodes in the cluster. | string | `t2.small.elasticsearch` | no |
-| iops | The baseline input/output (I/O) performance of EBS volumes attached to data nodes. Applicable only for the Provisioned IOPS EBS volume type. | number | `0` | no |
-| kms_key_id | The KMS key ID to encrypt the Elasticsearch domain with. If not specified, then it defaults to using the AWS/Elasticsearch service KMS key. | string | `` | no |
-| label_order | Label order, e.g. `name`,`application`. | list | `<list>` | no |
-| log_publishing_application_cloudwatch_log_group_arn | ARN of the CloudWatch log group to which log for ES_APPLICATION_LOGS needs to be published. | string | `` | no |
-| log_publishing_application_enabled | Specifies whether log publishing option for ES_APPLICATION_LOGS is enabled or not. | bool | `false` | no |
-| log_publishing_index_cloudwatch_log_group_arn | ARN of the CloudWatch log group to which log for INDEX_SLOW_LOGS needs to be published. | string | `` | no |
-| log_publishing_index_enabled | Specifies whether log publishing option for INDEX_SLOW_LOGS is enabled or not. | bool | `false` | no |
-| log_publishing_search_cloudwatch_log_group_arn | ARN of the CloudWatch log group to which log for SEARCH_SLOW_LOGS needs to be published. | string | `` | no |
-| log_publishing_search_enabled | Specifies whether log publishing option for SEARCH_SLOW_LOGS is enabled or not. | bool | `false` | no |
-| name | Name  (e.g. `app` or `cluster`). | string | `` | no |
-| security_group_ids | Security Group IDs. | list(string) | - | yes |
-| subnet_ids | Subnet IDs. | list(string) | - | yes |
-| tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | map | `<map>` | no |
-| volume_size | EBS volumes for data storage in GB. | number | `0` | no |
-| volume_type | Storage type of EBS volumes. | string | `gp2` | no |
-| zone_awareness_enabled | Enable zone awareness for Elasticsearch cluster. | bool | `false` | no |
-
-## Outputs
-
-| Name | Description |
-|------|-------------|
-| domain_arn | ARN of the Elasticsearch domain. |
-| tags | A mapping of tags to assign to the resource. |
-
 
 
 
 ## Testing
-In this module testing is performed with [terratest](https://github.com/gruntwork-io/terratest) and it creates a small piece of infrastructure, matches the output like ARN, ID and Tags name etc and destroy infrastructure in your AWS account. This testing is written in GO, so you need a [GO environment](https://golang.org/doc/install) in your system.
+In this module testing is performed with [terratest](https://github.com/gruntwork-io/terratest) and it creates a small piece of infrastructure, matches the output like ARN, ID and Tags name etc and destroy infrastructure in your AWS account. This testing is written in GO, so you need a [GO environment](https://golang.org/doc/install) in your system. 
 
 You need to run the following command in the testing folder:
 ```hcl
@@ -186,7 +137,7 @@ You need to run the following command in the testing folder:
 
 
 
-## Feedback
+## Feedback 
 If you come accross a bug or have any feedback, please log it in our [issue tracker](https://github.com/clouddrove/terraform-aws-elasticsearch/issues), or feel free to drop us an email at [hello@clouddrove.com](mailto:hello@clouddrove.com).
 
 If you have found it worth your time, go ahead and give us a ★ on [our GitHub](https://github.com/clouddrove/terraform-aws-elasticsearch)!
