@@ -3,12 +3,12 @@ provider "aws" {
 }
 
 module "vpc" {
-  source = "git::https://github.com/clouddrove/terraform-aws-vpc.git?ref=tags/0.12.1"
+  source = "git::https://github.com/clouddrove/terraform-aws-vpc.git?ref=tags/0.12.3"
 
   name        = "vpc"
   application = "clouddrove"
   environment = "test"
-  label_order = ["environment", "name", "application"]
+  label_order = ["environment", "application", "name"]
 
   cidr_block = "172.16.0.0/16"
 }
@@ -19,7 +19,7 @@ module "public_subnets" {
   name        = "public-subnet"
   application = "clouddrove"
   environment = "test"
-  label_order = ["environment", "name", "application"]
+  label_order = ["environment", "application", "name"]
 
   availability_zones = ["eu-west-1c"]
   vpc_id             = module.vpc.vpc_id
@@ -29,12 +29,12 @@ module "public_subnets" {
 }
 
 module "security_group" {
-  source = "git::https://github.com/clouddrove/terraform-aws-security-group.git?ref=tags/0.12.1"
+  source = "git::https://github.com/clouddrove/terraform-aws-security-group.git?ref=tags/0.12.2"
 
   name        = "ingress_security_groups"
   application = "clouddrove"
   environment = "test"
-  label_order = ["environment", "name", "application"]
+  label_order = ["environment", "application", "name"]
 
   vpc_id        = module.vpc.vpc_id
   allowed_ip    = ["0.0.0.0/0"]
@@ -42,11 +42,11 @@ module "security_group" {
 }
 
 module "elasticsearch" {
-  source                         = "./../../"
+  source                         = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.12.2"
   name                           = "es"
   application                    = "clouddrove"
   environment                    = "test"
-  label_order                    = ["environment", "name", "application"]
+  label_order                    = ["environment", "application", "name"]
   enable_iam_service_linked_role = true
   security_group_ids             = [module.security_group.security_group_ids]
   subnet_ids                     = tolist(module.public_subnets.public_subnet_id)
@@ -59,6 +59,12 @@ module "elasticsearch" {
   log_publishing_application_enabled = true
   log_publishing_search_cloudwatch_log_group_arn = true
   log_publishing_index_cloudwatch_log_group_arn  = true
+
+  dns_enabled                   = true
+  es_hostname                   = "es"
+  kibana_hostname               = "kibana"
+  dns_zone_id                   = "Z1XJD7SSBKXLC1"
+
   advanced_options = {
     "rest.action.multi.allow_explicit_index" = "true"
   }

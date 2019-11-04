@@ -42,7 +42,7 @@ module "security_group" {
 }
 
 module "elasticsearch" {
-  source                         = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.12.0"
+  source                         = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.12.2"
   name                           = "es"
   application                    = "clouddrove"
   environment                    = "test"
@@ -55,10 +55,16 @@ module "elasticsearch" {
   availability_zone_count        = 2
   elasticsearch_version          = "7.1"
   instance_type                  = "t2.small.elasticsearch"
-  instance_count                 = 1
+  instance_count                 = 2
   iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
   volume_size                    = 30
   volume_type                    = "gp2"
+
+  dns_enabled                   = true
+  es_hostname                   = "es"
+  kibana_hostname               = "kibana"
+  dns_zone_id                   = "Z1XJD7SSBKXLC1"
+
   advanced_options = {
     "rest.action.multi.allow_explicit_index" = "true"
   }

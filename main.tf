@@ -3,7 +3,9 @@
 # Copyright @ CloudDrove. All Right Reserved.
 
 #Module      : Label
-#Description : This terraform module is designed to generate consistent label names and #              tags for resources. You can use terraform-labels to implement a strict #              naming convention.
+#Description : This terraform module is designed to generate consistent label names and
+#              tags for resources. You can use terraform-labels to implement a strict
+#              naming convention.
 module "labels" {
   source = "git::https://github.com/clouddrove/terraform-labels.git?ref=tags/0.12.0"
 
@@ -242,22 +244,25 @@ resource "aws_elasticsearch_domain_policy" "default" {
   access_policies = join("", data.aws_iam_policy_document.default.*.json)
 }
 
-module "es_dns_point" {
-  source = "git::https://github.com/clouddrove/terraform-aws-route-table.git?ref=tags/0.12.0"
-  record_enabled = var.enabled && var.dns_zone_id != "" ? true : false
+#Module      : ROUTE53
+#Description : Provides a Route53 record resource.
+resource "aws_route53_record" "es" {
+  count   = var.dns_enabled ? 1 : 0
   zone_id = var.dns_zone_id
-  names = [var.es_hostname]
-  types = ["A"]
-  ttls = ["3600"]
-  values = [join("", aws_elasticsearch_domain.default.*.endpoint)]
+  name    = var.es_hostname
+  type    = var.type
+  ttl     = var.ttl
+  records = [var.zone_awareness_enabled ? join("", aws_elasticsearch_domain.default.*.endpoint) : join("", aws_elasticsearch_domain.single.*.endpoint)]
+
 }
 
-module "kibana_dns_point" {
-  source = "git::https://github.com/clouddrove/terraform-aws-route-table.git?ref=tags/0.12.0"
-  record_enabled = var.enabled && var.dns_zone_id != "" ? true : false
+#Module      : ROUTE53
+#Description : Provides a Route53 record resource.
+resource "aws_route53_record" "kibana" {
+  count   = var.dns_enabled ? 1 : 0
   zone_id = var.dns_zone_id
-  names = [var.kibana_hostname]
-  types = ["A"]
-  ttls = ["3600"]
-  records = [join("", aws_elasticsearch_domain.default.*.kibana_endpoint)]
+  name    = var.kibana_hostname
+  type    = var.type
+  ttl     = var.ttl
+  records = [var.zone_awareness_enabled ? join("", aws_elasticsearch_domain.default.*.kibana_endpoint) : join("", aws_elasticsearch_domain.single.*.kibana_endpoint)]
 }
