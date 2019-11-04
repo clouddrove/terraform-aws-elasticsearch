@@ -17,8 +17,8 @@ module "labels" {
 
 resource "aws_cloudwatch_log_group" "cloudwatch" {
   count = var.enabled && var.enable_logs ? 1 : 0
-  name = module.labels.id
-  tags = module.labels.tags
+  name  = module.labels.id
+  tags  = module.labels.tags
 }
 
 resource "aws_cloudwatch_log_resource_policy" "cloudwatch_policy" {

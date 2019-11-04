@@ -60,10 +60,10 @@ module "elasticsearch" {
   volume_size                    = 30
   volume_type                    = "gp2"
 
-  dns_enabled                   = true
-  es_hostname                   = "es"
-  kibana_hostname               = "kibana"
-  dns_zone_id                   = "Z1XJD7SSBKXLC1"
+  dns_enabled     = true
+  es_hostname     = "es"
+  kibana_hostname = "kibana"
+  dns_zone_id     = "Z1XJD7SSBKXLC1"
 
   advanced_options = {
     "rest.action.multi.allow_explicit_index" = "true"
