@@ -221,3 +221,45 @@ variable "domain_name" {
   default     = ""
   description = "Domain name."
 }
+variable "enable_logs" {
+  type        = bool
+  default     = true
+  description = "enable logs"
+}
+
+variable "dns_enabled" {
+  type        = bool
+  default     = false
+  description = "Flag to control the dns_enable."
+}
+
+variable "dns_zone_id" {
+  type        = string
+  default     = ""
+  description = "Route53 DNS Zone ID to add hostname records for Elasticsearch domain and Kibana."
+}
+
+variable "es_hostname" {
+  type        = string
+  default     = ""
+  description = "The Host name of elasticserch."
+}
+
+variable "kibana_hostname" {
+  type        = string
+  default     = ""
+  description = "The Host name of kibana."
+}
+
+variable "type" {
+  type        = string
+  default     = "CNAME"
+  description = "Type of DNS records to create."
+}
+
+variable "ttl" {
+  type        = string
+  default     = "300"
+  description = "The TTL of the record to add to the DNS zone to complete certificate validation."
+}
+

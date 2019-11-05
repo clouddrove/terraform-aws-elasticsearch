@@ -72,50 +72,62 @@ Here are examples of how you can use this module in your inventory structure:
 ### Single Node
 ```hcl
     module "elasticsearch" {
-      source                         = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.12.0"
-      name                           = "es"
-      application                    = "clouddrove"
-      environment                    = "test"
-      label_order                    = ["environment", "name", "application"]
-      domain_name                    = "clouddrove"
-      enable_iam_service_linked_role = true
-      security_group_ids             = ["sg-xxxxxxxxxxxx"]
-      subnet_ids                     = ["subnet-xxxxxxxxxxxx"]
-      elasticsearch_version          = "7.1"
-      instance_type                  = "t2.small.elasticsearch"
-      instance_count                 = 1
-      iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
-      volume_size                    = 30
-      volume_type                    = "gp2"
-      advanced_options = {
-        "rest.action.multi.allow_explicit_index" = "true"
-      }
+    source                                         = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.12.2"
+    name                                           = "es"
+    application                                    = "clouddrove"
+    environment                                    = "test"
+    label_order                                    = ["environment", "application", "name"]
+    enable_iam_service_linked_role                 = true
+    security_group_ids                             = [module.security_group.security_group_ids]
+    subnet_ids                                     = tolist(module.public_subnets.public_subnet_id)
+    elasticsearch_version                          = "7.1"
+    instance_type                                  = "t2.small.elasticsearch"
+    instance_count                                 = 1
+    iam_actions                                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
+    volume_size                                    = 30
+    volume_type                                    = "gp2"
+    log_publishing_application_enabled             = true
+    log_publishing_search_cloudwatch_log_group_arn = true
+    log_publishing_index_cloudwatch_log_group_arn  = true
+
+    dns_enabled     = true
+    es_hostname     = "es"
+    kibana_hostname = "kibana"
+    dns_zone_id     = "Z1XJD7SSBKXLC1"
+
+    advanced_options = {
+    "rest.action.multi.allow_explicit_index" = "true"
     }
+  }
 ```
 ### Multi Node
 ```hcl
     module "elasticsearch" {
-      source                         = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.12.0"
-      name                           = "es"
-      application                    = "clouddrove"
-      environment                    = "test"
-      label_order                    = ["environment", "name", "application"]
-      domain_name                    = "clouddrove"
-      enable_iam_service_linked_role = true
-      security_group_ids             = ["sg-xxxxxxxxxxxx"]
-      subnet_ids                     = ["subnet-xxxxxxxxxxxx"]
-      zone_awareness_enabled         = true
-      availability_zone_count        = 2
-      elasticsearch_version          = "7.1"
-      instance_type                  = "t2.small.elasticsearch"
-      instance_count                 = 1
-      iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
-      volume_size                    = 30
-      volume_type                    = "gp2"
-      advanced_options = {
-        "rest.action.multi.allow_explicit_index" = "true"
-      }
+    source                         = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.12.2"
+    name                           = "es"
+    application                    = "clouddrove"
+    environment                    = "test"
+    label_order                    = ["environment", "name", "application"]
+    domain_name                    = "clouddrove"
+    enable_iam_service_linked_role = true
+    security_group_ids             = [module.security_group.security_group_ids]
+    subnet_ids                     = tolist(module.public_subnets.public_subnet_id)
+    zone_awareness_enabled         = true
+    availability_zone_count        = 2
+    elasticsearch_version          = "7.1"
+    instance_type                  = "t2.small.elasticsearch"
+    instance_count                 = 2
+    iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
+    volume_size                    = 30
+    volume_type                    = "gp2"
+    dns_enabled     = true
+    es_hostname     = "es"
+    kibana_hostname = "kibana"
+    dns_zone_id     = "Z1XJD7SSBKXLC1"
+    advanced_options = {
+    "rest.action.multi.allow_explicit_index" = "true"
     }
+  }
 ```
 Note: There are some type of instances which not support encryption and EBS option, Please read about this (here)[https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-supported-instance-types.html]. Also, there are some limitation for instance type, Please read (here)[https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-limits.html]
 
@@ -137,19 +149,24 @@ Note: There are some type of instances which not support encryption and EBS opti
 | dedicated_master_enabled | Indicates whether dedicated master nodes are enabled for the cluster. | bool | `false` | no |
 | dedicated_master_type | Instance type of the dedicated master nodes in the cluster. | string | `t2.small.elasticsearch` | no |
 | delimiter | Delimiter to be used between `organization`, `environment`, `name` and `attributes`. | string | `-` | no |
+| dns_enabled | Flag to control the dns_enable. | bool | `false` | no |
+| dns_zone_id | Route53 DNS Zone ID to add hostname records for Elasticsearch domain and Kibana. | string | `` | no |
 | domain_name | Domain name. | string | `` | no |
 | elasticsearch_version | Version of Elasticsearch to deploy. | string | `6.5` | no |
 | enable_iam_service_linked_role | Whether to enabled service linked with role. | bool | `false` | no |
+| enable_logs | enable logs | bool | `true` | no |
 | enabled | Set to false to prevent the module from creating any resources. | bool | `true` | no |
 | encrypt_at_rest_enabled | Whether to enable encryption at rest. | bool | `true` | no |
 | encryption_enabled | Whether to enable node-to-node encryption. | bool | `false` | no |
 | environment | Environment (e.g. `prod`, `dev`, `staging`). | string | `` | no |
+| es_hostname | The Host name of elasticserch. | string | `` | no |
 | iam_actions | List of actions to allow for the IAM roles, _e.g._ `es:ESHttpGet`, `es:ESHttpPut`, `es:ESHttpPost`. | list(string) | `<list>` | no |
 | iam_authorizing_role_arns | List of IAM role ARNs to permit to assume the Elasticsearch user role. | list(string) | `<list>` | no |
 | iam_role_arns | List of IAM role ARNs to permit access to the Elasticsearch domain. | list(string) | `<list>` | no |
 | instance_count | Number of data nodes in the cluster. | number | `4` | no |
 | instance_type | Elasticsearch instance type for data nodes in the cluster. | string | `t2.small.elasticsearch` | no |
 | iops | The baseline input/output (I/O) performance of EBS volumes attached to data nodes. Applicable only for the Provisioned IOPS EBS volume type. | number | `0` | no |
+| kibana_hostname | The Host name of kibana. | string | `` | no |
 | kms_key_id | The KMS key ID to encrypt the Elasticsearch domain with. If not specified, then it defaults to using the AWS/Elasticsearch service KMS key. | string | `` | no |
 | label_order | Label order, e.g. `name`,`application`. | list | `<list>` | no |
 | log_publishing_application_cloudwatch_log_group_arn | ARN of the CloudWatch log group to which log for ES_APPLICATION_LOGS needs to be published. | string | `` | no |
@@ -162,6 +179,8 @@ Note: There are some type of instances which not support encryption and EBS opti
 | security_group_ids | Security Group IDs. | list(string) | - | yes |
 | subnet_ids | Subnet IDs. | list(string) | - | yes |
 | tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | map | `<map>` | no |
+| ttl | The TTL of the record to add to the DNS zone to complete certificate validation. | string | `300` | no |
+| type | Type of DNS records to create. | string | `CNAME` | no |
 | volume_size | EBS volumes for data storage in GB. | number | `0` | no |
 | volume_type | Storage type of EBS volumes. | string | `gp2` | no |
 | zone_awareness_enabled | Enable zone awareness for Elasticsearch cluster. | bool | `false` | no |
