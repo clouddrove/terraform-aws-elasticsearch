@@ -246,23 +246,23 @@ resource "aws_elasticsearch_domain_policy" "default" {
 
 #Module      : ROUTE53
 #Description : Provides a Route53 record resource.
-resource "aws_route53_record" "es" {
-  count   = var.dns_enabled ? 1 : 0
-  zone_id = var.dns_zone_id
-  name    = var.es_hostname
-  type    = var.type
-  ttl     = var.ttl
-  records = [var.zone_awareness_enabled ? join("", aws_elasticsearch_domain.default.*.endpoint) : join("", aws_elasticsearch_domain.single.*.endpoint)]
-
+module "es_dns" {
+  source         = "git::https://github.com/clouddrove/terraform-aws-route53-record.git?ref=tags/0.12.1"
+  record_enabled = var.dns_enabled
+  zone_id        = var.dns_zone_id
+  name           = var.es_hostname
+  type           = var.type
+  ttl            = var.ttl
+  values         = var.zone_awareness_enabled ? join("", aws_elasticsearch_domain.default.*.endpoint) : join("", aws_elasticsearch_domain.single.*.endpoint)
 }
-
 #Module      : ROUTE53
 #Description : Provides a Route53 record resource.
-resource "aws_route53_record" "kibana" {
-  count   = var.dns_enabled ? 1 : 0
-  zone_id = var.dns_zone_id
-  name    = var.kibana_hostname
-  type    = var.type
-  ttl     = var.ttl
-  records = [var.zone_awareness_enabled ? join("", aws_elasticsearch_domain.default.*.kibana_endpoint) : join("", aws_elasticsearch_domain.single.*.kibana_endpoint)]
+module "kibana_dns" {
+  source         = "git::https://github.com/clouddrove/terraform-aws-route53-record.git?ref=tags/0.12.1"
+  record_enabled = var.dns_enabled
+  zone_id        = var.dns_zone_id
+  name           = var.kibana_hostname
+  type           = var.type
+  ttl            = var.ttl
+  values         = var.zone_awareness_enabled ? join("", aws_elasticsearch_domain.default.*.kibana_endpoint) : join("", aws_elasticsearch_domain.single.*.kibana_endpoint)
 }
