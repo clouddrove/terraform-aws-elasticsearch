@@ -42,7 +42,7 @@ module "security_group" {
 }
 
 module "elasticsearch" {
-  source                         = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.12.2"
+  source                         = "../../"
   name                           = "es"
   application                    = "clouddrove"
   environment                    = "test"
