@@ -36,7 +36,7 @@ usage : |-
   ### Single Node
   ```hcl
       module "elasticsearch" {
-      source                                         = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.12.2"
+      source                                         = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.12.3"
       name                                           = "es"
       application                                    = "clouddrove"
       environment                                    = "test"
@@ -67,7 +67,7 @@ usage : |-
   ### Multi Node
   ```hcl
       module "elasticsearch" {
-      source                         = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.12.2"
+      source                         = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.12.3"
       name                           = "es"
       application                    = "clouddrove"
       environment                    = "test"
@@ -93,4 +93,4 @@ usage : |-
       }
     }
   ```
-  Note: There are some type of instances which not support encryption and EBS option, Please read about this (here)[https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-supported-instance-types.html]. Also, there are some limitation for instance type, Please read (here)[https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-limits.html]
+  Note: There are some type of instances which not support encryption and EBS option, Please read about this [here](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-supported-instance-types.html). Also, there are some limitation for instance type, Please read [here](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-limits.html)
