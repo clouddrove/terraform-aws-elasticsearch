@@ -60,7 +60,7 @@ module "elasticsearch" {
   log_publishing_search_cloudwatch_log_group_arn = true
   log_publishing_index_cloudwatch_log_group_arn  = true
 
-  dns_enabled     = true
+  dns_enabled     = false
   es_hostname     = "es"
   kibana_hostname = "kibana"
   dns_zone_id     = "Z1XJD7SSBKXLC1"
