@@ -5,7 +5,7 @@
 #
 
 # Name of this project
-name : Terraform AWS Elasticsearch
+name: Terraform AWS Elasticsearch
 
 # License of this project
 license: "MIT"
@@ -31,7 +31,8 @@ include:
   - "terraform.md"
 
 # How to use this project
-usage : |-
+# yamllint disable rule:line-length
+usage: |-
   Here are examples of how you can use this module in your inventory structure:
   ### Single Node
   ```hcl
