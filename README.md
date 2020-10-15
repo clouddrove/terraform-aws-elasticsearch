@@ -7,7 +7,7 @@
     Terraform AWS Elasticsearch
 </h1>
 
-<p align="center" style="font-size: 1.2rem;">
+<p align="center" style="font-size: 1.2rem;"> 
     Terraform module to create an Elasticsearch resource on AWS.
      </p>
 
@@ -38,7 +38,7 @@
 <hr>
 
 
-We eat, drink, sleep and most importantly love **DevOps**. We are working towards strategies for standardizing architecture while ensuring security for the infrastructure. We are strong believer of the philosophy <b>Bigger problems are always solved by breaking them into smaller manageable problems</b>. Resonating with microservices architecture, it is considered best-practice to run database, cluster, storage in smaller <b>connected yet manageable pieces</b> within the infrastructure.
+We eat, drink, sleep and most importantly love **DevOps**. We are working towards strategies for standardizing architecture while ensuring security for the infrastructure. We are strong believer of the philosophy <b>Bigger problems are always solved by breaking them into smaller manageable problems</b>. Resonating with microservices architecture, it is considered best-practice to run database, cluster, storage in smaller <b>connected yet manageable pieces</b> within the infrastructure. 
 
 This module is basically combination of [Terraform open source](https://www.terraform.io/) and includes automatation tests and examples. It also helps to create and improve your infrastructure with minimalistic code instead of maintaining the whole infrastructure code yourself.
 
@@ -49,9 +49,9 @@ We have [*fifty plus terraform modules*][terraform_modules]. A few of them are c
 
 ## Prerequisites
 
-This module has a few dependencies:
+This module has a few dependencies: 
 
-- [Terraform 0.12](https://learn.hashicorp.com/terraform/getting-started/install.html)
+- [Terraform 0.13](https://learn.hashicorp.com/terraform/getting-started/install.html)
 - [Go](https://golang.org/doc/install)
 - [github.com/stretchr/testify/assert](https://github.com/stretchr/testify)
 - [github.com/gruntwork-io/terratest/modules/terraform](https://github.com/gruntwork-io/terratest)
@@ -139,52 +139,54 @@ Note: There are some type of instances which not support encryption and EBS opti
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|:----:|:-----:|:-----:|
-| advanced\_options | Key-value string pairs to specify advanced configuration options. | map(string) | `<map>` | no |
-| application | Application \(e.g. `cd` or `clouddrove`\). | string | `""` | no |
-| attributes | Additional attributes \(e.g. `1`\). | list | `<list>` | no |
-| automated\_snapshot\_start\_hour | Hour at which automated snapshots are taken, in UTC. | number | `"0"` | no |
-| availability\_zone\_count | Number of Availability Zones for the domain to use. | number | `"2"` | no |
-| dedicated\_master\_count | Number of dedicated master nodes in the cluster. | number | `"0"` | no |
-| dedicated\_master\_enabled | Indicates whether dedicated master nodes are enabled for the cluster. | bool | `"false"` | no |
-| dedicated\_master\_type | Instance type of the dedicated master nodes in the cluster. | string | `"t2.small.elasticsearch"` | no |
-| delimiter | Delimiter to be used between `organization`, `environment`, `name` and `attributes`. | string | `"-"` | no |
-| dns\_enabled | Flag to control the dns\_enable. | bool | `"false"` | no |
-| dns\_zone\_id | Route53 DNS Zone ID to add hostname records for Elasticsearch domain and Kibana. | string | `""` | no |
-| domain\_name | Domain name. | string | `""` | no |
-| elasticsearch\_version | Version of Elasticsearch to deploy. | string | `"6.5"` | no |
-| enable\_iam\_service\_linked\_role | Whether to enabled service linked with role. | bool | `"false"` | no |
-| enable\_logs | enable logs | bool | `"true"` | no |
-| enabled | Set to false to prevent the module from creating any resources. | bool | `"true"` | no |
-| encrypt\_at\_rest\_enabled | Whether to enable encryption at rest. | bool | `"true"` | no |
-| encryption\_enabled | Whether to enable node-to-node encryption. | bool | `"false"` | no |
-| environment | Environment \(e.g. `prod`, `dev`, `staging`\). | string | `""` | no |
-| es\_hostname | The Host name of elasticserch. | string | `""` | no |
-| iam\_actions | List of actions to allow for the IAM roles, \_e.g.\_ `es:ESHttpGet`, `es:ESHttpPut`, `es:ESHttpPost`. | list(string) | `<list>` | no |
-| iam\_authorizing\_role\_arns | List of IAM role ARNs to permit to assume the Elasticsearch user role. | list(string) | `<list>` | no |
-| iam\_role\_arns | List of IAM role ARNs to permit access to the Elasticsearch domain. | list(string) | `<list>` | no |
-| instance\_count | Number of data nodes in the cluster. | number | `"4"` | no |
-| instance\_type | Elasticsearch instance type for data nodes in the cluster. | string | `"t2.small.elasticsearch"` | no |
-| iops | The baseline input/output \(I/O\) performance of EBS volumes attached to data nodes. Applicable only for the Provisioned IOPS EBS volume type. | number | `"0"` | no |
-| kibana\_hostname | The Host name of kibana. | string | `""` | no |
-| kms\_key\_id | The KMS key ID to encrypt the Elasticsearch domain with. If not specified, then it defaults to using the AWS/Elasticsearch service KMS key. | string | `""` | no |
-| label\_order | Label order, e.g. `name`,`application`. | list | `<list>` | no |
-| log\_publishing\_application\_cloudwatch\_log\_group\_arn | ARN of the CloudWatch log group to which log for ES\_APPLICATION\_LOGS needs to be published. | string | `""` | no |
-| log\_publishing\_application\_enabled | Specifies whether log publishing option for ES\_APPLICATION\_LOGS is enabled or not. | bool | `"false"` | no |
-| log\_publishing\_index\_cloudwatch\_log\_group\_arn | ARN of the CloudWatch log group to which log for INDEX\_SLOW\_LOGS needs to be published. | string | `""` | no |
-| log\_publishing\_index\_enabled | Specifies whether log publishing option for INDEX\_SLOW\_LOGS is enabled or not. | bool | `"false"` | no |
-| log\_publishing\_search\_cloudwatch\_log\_group\_arn | ARN of the CloudWatch log group to which log for SEARCH\_SLOW\_LOGS needs to be published. | string | `""` | no |
-| log\_publishing\_search\_enabled | Specifies whether log publishing option for SEARCH\_SLOW\_LOGS is enabled or not. | bool | `"false"` | no |
-| managedby | ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'. | string | `"anmol@clouddrove.com"` | no |
-| name | Name  \(e.g. `app` or `cluster`\). | string | `""` | no |
-| security\_group\_ids | Security Group IDs. | list(string) | n/a | yes |
-| subnet\_ids | Subnet IDs. | list(string) | n/a | yes |
-| tags | Additional tags \(e.g. map\(`BusinessUnit`,`XYZ`\). | map | `<map>` | no |
-| ttl | The TTL of the record to add to the DNS zone to complete certificate validation. | string | `"300"` | no |
-| type | Type of DNS records to create. | string | `"CNAME"` | no |
-| volume\_size | EBS volumes for data storage in GB. | number | `"0"` | no |
-| volume\_type | Storage type of EBS volumes. | string | `"gp2"` | no |
-| zone\_awareness\_enabled | Enable zone awareness for Elasticsearch cluster. | bool | `"false"` | no |
+|------|-------------|------|---------|:--------:|
+| advanced\_options | Key-value string pairs to specify advanced configuration options. | `map(string)` | `{}` | no |
+| application | Application (e.g. `cd` or `clouddrove`). | `string` | `""` | no |
+| attributes | Additional attributes (e.g. `1`). | `list` | `[]` | no |
+| automated\_snapshot\_start\_hour | Hour at which automated snapshots are taken, in UTC. | `number` | `0` | no |
+| availability\_zone\_count | Number of Availability Zones for the domain to use. | `number` | `2` | no |
+| dedicated\_master\_count | Number of dedicated master nodes in the cluster. | `number` | `0` | no |
+| dedicated\_master\_enabled | Indicates whether dedicated master nodes are enabled for the cluster. | `bool` | `false` | no |
+| dedicated\_master\_type | Instance type of the dedicated master nodes in the cluster. | `string` | `"t2.small.elasticsearch"` | no |
+| delimiter | Delimiter to be used between `organization`, `environment`, `name` and `attributes`. | `string` | `"-"` | no |
+| dns\_enabled | Flag to control the dns\_enable. | `bool` | `false` | no |
+| dns\_zone\_id | Route53 DNS Zone ID to add hostname records for Elasticsearch domain and Kibana. | `string` | `""` | no |
+| domain\_name | Domain name. | `string` | `""` | no |
+| elasticsearch\_version | Version of Elasticsearch to deploy. | `string` | `"6.5"` | no |
+| enable\_iam\_service\_linked\_role | Whether to enabled service linked with role. | `bool` | `false` | no |
+| enable\_logs | enable logs | `bool` | `true` | no |
+| enabled | Set to false to prevent the module from creating any resources. | `bool` | `true` | no |
+| encrypt\_at\_rest\_enabled | Whether to enable encryption at rest. | `bool` | `true` | no |
+| encryption\_enabled | Whether to enable node-to-node encryption. | `bool` | `false` | no |
+| enforce\_https | Whether or not to require HTTPS. | `bool` | `false` | no |
+| environment | Environment (e.g. `prod`, `dev`, `staging`). | `string` | `""` | no |
+| es\_hostname | The Host name of elasticserch. | `string` | `""` | no |
+| iam\_actions | List of actions to allow for the IAM roles, _e.g._ `es:ESHttpGet`, `es:ESHttpPut`, `es:ESHttpPost`. | `list(string)` | `[]` | no |
+| iam\_authorizing\_role\_arns | List of IAM role ARNs to permit to assume the Elasticsearch user role. | `list(string)` | `[]` | no |
+| iam\_role\_arns | List of IAM role ARNs to permit access to the Elasticsearch domain. | `list(string)` | `[]` | no |
+| instance\_count | Number of data nodes in the cluster. | `number` | `4` | no |
+| instance\_type | Elasticsearch instance type for data nodes in the cluster. | `string` | `"t2.small.elasticsearch"` | no |
+| iops | The baseline input/output (I/O) performance of EBS volumes attached to data nodes. Applicable only for the Provisioned IOPS EBS volume type. | `number` | `0` | no |
+| kibana\_hostname | The Host name of kibana. | `string` | `""` | no |
+| kms\_key\_id | The KMS key ID to encrypt the Elasticsearch domain with. If not specified, then it defaults to using the AWS/Elasticsearch service KMS key. | `string` | `""` | no |
+| label\_order | Label order, e.g. `name`,`application`. | `list` | `[]` | no |
+| log\_publishing\_application\_cloudwatch\_log\_group\_arn | ARN of the CloudWatch log group to which log for ES\_APPLICATION\_LOGS needs to be published. | `string` | `""` | no |
+| log\_publishing\_application\_enabled | Specifies whether log publishing option for ES\_APPLICATION\_LOGS is enabled or not. | `bool` | `false` | no |
+| log\_publishing\_index\_cloudwatch\_log\_group\_arn | ARN of the CloudWatch log group to which log for INDEX\_SLOW\_LOGS needs to be published. | `string` | `""` | no |
+| log\_publishing\_index\_enabled | Specifies whether log publishing option for INDEX\_SLOW\_LOGS is enabled or not. | `bool` | `false` | no |
+| log\_publishing\_search\_cloudwatch\_log\_group\_arn | ARN of the CloudWatch log group to which log for SEARCH\_SLOW\_LOGS needs to be published. | `string` | `""` | no |
+| log\_publishing\_search\_enabled | Specifies whether log publishing option for SEARCH\_SLOW\_LOGS is enabled or not. | `bool` | `false` | no |
+| managedby | ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'. | `string` | `"anmol@clouddrove.com"` | no |
+| name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
+| security\_group\_ids | Security Group IDs. | `list(string)` | n/a | yes |
+| subnet\_ids | Subnet IDs. | `list(string)` | n/a | yes |
+| tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | `map` | `{}` | no |
+| tls\_security\_policy | The name of the TLS security policy that needs to be applied to the HTTPS endpoint. | `any` | `null` | no |
+| ttl | The TTL of the record to add to the DNS zone to complete certificate validation. | `string` | `"300"` | no |
+| type | Type of DNS records to create. | `string` | `"CNAME"` | no |
+| volume\_size | EBS volumes for data storage in GB. | `number` | `0` | no |
+| volume\_type | Storage type of EBS volumes. | `string` | `"gp2"` | no |
+| zone\_awareness\_enabled | Enable zone awareness for Elasticsearch cluster. | `bool` | `false` | no |
 
 ## Outputs
 
@@ -197,7 +199,7 @@ Note: There are some type of instances which not support encryption and EBS opti
 
 
 ## Testing
-In this module testing is performed with [terratest](https://github.com/gruntwork-io/terratest) and it creates a small piece of infrastructure, matches the output like ARN, ID and Tags name etc and destroy infrastructure in your AWS account. This testing is written in GO, so you need a [GO environment](https://golang.org/doc/install) in your system.
+In this module testing is performed with [terratest](https://github.com/gruntwork-io/terratest) and it creates a small piece of infrastructure, matches the output like ARN, ID and Tags name etc and destroy infrastructure in your AWS account. This testing is written in GO, so you need a [GO environment](https://golang.org/doc/install) in your system. 
 
 You need to run the following command in the testing folder:
 ```hcl
@@ -206,7 +208,7 @@ You need to run the following command in the testing folder:
 
 
 
-## Feedback
+## Feedback 
 If you come accross a bug or have any feedback, please log it in our [issue tracker](https://github.com/clouddrove/terraform-aws-elasticsearch/issues), or feel free to drop us an email at [hello@clouddrove.com](mailto:hello@clouddrove.com).
 
 If you have found it worth your time, go ahead and give us a ★ on [our GitHub](https://github.com/clouddrove/terraform-aws-elasticsearch)!
