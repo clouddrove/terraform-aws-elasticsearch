@@ -147,6 +147,11 @@ resource "aws_elasticsearch_domain" "default" {
     cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
   }
 
+  domain_endpoint_options {
+    enforce_https = var.enforce_https
+    tls_security_policy = var.tls_security_policy
+  }
+
   tags = module.labels.tags
 
   depends_on = [aws_iam_service_linked_role.default]
@@ -210,6 +215,11 @@ resource "aws_elasticsearch_domain" "single" {
     enabled                  = var.log_publishing_application_enabled
     log_type                 = "ES_APPLICATION_LOGS"
     cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
+  }
+
+  domain_endpoint_options {
+    enforce_https = var.enforce_https
+    tls_security_policy = var.tls_security_policy
   }
 
   tags = module.labels.tags

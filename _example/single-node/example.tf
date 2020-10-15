@@ -60,10 +60,12 @@ module "elasticsearch" {
   log_publishing_search_cloudwatch_log_group_arn = true
   log_publishing_index_cloudwatch_log_group_arn  = true
 
-  dns_enabled     = true
-  es_hostname     = "es"
-  kibana_hostname = "kibana"
-  dns_zone_id     = "Z1XJD7SSBKXLC1"
+  enforce_https       = true
+  tls_security_policy = "Policy-Min-TLS-1-0-2019-07"
+  dns_enabled         = true
+  es_hostname         = "es"
+  kibana_hostname     = "kibana"
+  dns_zone_id         = "Z1XJD7SSBKXLC1"
 
   advanced_options = {
     "rest.action.multi.allow_explicit_index" = "true"

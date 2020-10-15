@@ -269,3 +269,13 @@ variable "ttl" {
   description = "The TTL of the record to add to the DNS zone to complete certificate validation."
 }
 
+variable "enforce_https" {
+  type        = bool
+  default     = false
+  description = "Whether or not to require HTTPS."
+}
+
+variable "tls_security_policy" {
+  default     = null
+  description = "The name of the TLS security policy that needs to be applied to the HTTPS endpoint."
+}
