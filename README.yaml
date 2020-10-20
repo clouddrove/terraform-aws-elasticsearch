@@ -37,7 +37,8 @@ usage: |-
   ### Single Node
   ```hcl
       module "elasticsearch" {
-      source                                         = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.13.0"
+      source                                         = "clouddrove/elasticsearch/aws"
+      version                                        = "0.13.0"
       name                                           = "es"
       application                                    = "clouddrove"
       environment                                    = "test"
@@ -68,7 +69,8 @@ usage: |-
   ### Multi Node
   ```hcl
       module "elasticsearch" {
-      source                         = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.13.0"
+       source                        = "clouddrove/elasticsearch/aws"
+      version                        = "0.13.0"
       name                           = "es"
       application                    = "clouddrove"
       environment                    = "test"

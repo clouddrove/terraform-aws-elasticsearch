@@ -3,7 +3,8 @@ provider "aws" {
 }
 
 module "vpc" {
-  source = "git::https://github.com/clouddrove/terraform-aws-vpc.git?ref=tags/0.13.0"
+  source  = "clouddrove/elasticsearch/aws"
+  version = "0.13.0"
 
   name        = "vpc"
   application = "clouddrove"
@@ -14,7 +15,8 @@ module "vpc" {
 }
 
 module "public_subnets" {
-  source = "git::https://github.com/clouddrove/terraform-aws-subnet.git"
+  source  = "clouddrove/subnet/aws"
+  version = "0.13.0"
 
   name        = "public-subnet"
   application = "clouddrove"
@@ -30,7 +32,8 @@ module "public_subnets" {
 }
 
 module "security_group" {
-  source = "git::https://github.com/clouddrove/terraform-aws-security-group.git"
+  source  = "clouddrove/security-group/aws"
+  version = "0.13.0"
 
   name        = "ingress_security_groups"
   application = "clouddrove"
