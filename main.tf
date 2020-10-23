@@ -148,7 +148,7 @@ resource "aws_elasticsearch_domain" "default" {
   }
 
   domain_endpoint_options {
-    enforce_https = var.enforce_https
+    enforce_https       = var.enforce_https
     tls_security_policy = var.tls_security_policy
   }
 
@@ -218,7 +218,7 @@ resource "aws_elasticsearch_domain" "single" {
   }
 
   domain_endpoint_options {
-    enforce_https = var.enforce_https
+    enforce_https       = var.enforce_https
     tls_security_policy = var.tls_security_policy
   }
 
