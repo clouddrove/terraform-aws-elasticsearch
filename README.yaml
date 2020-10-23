@@ -5,7 +5,7 @@
 #
 
 # Name of this project
-name : Terraform AWS Elasticsearch
+name: Terraform AWS Elasticsearch
 
 # License of this project
 license: "MIT"
@@ -16,7 +16,7 @@ github_repo: clouddrove/terraform-aws-elasticsearch
 # Badges to display
 badges:
   - name: "Terraform"
-    image: "https://img.shields.io/badge/Terraform-v0.12-green"
+    image: "https://img.shields.io/badge/terraform-v0.13-green"
     url: "https://www.terraform.io"
   - name: "Licence"
     image: "https://img.shields.io/badge/License-MIT-blue.svg"
@@ -31,12 +31,14 @@ include:
   - "terraform.md"
 
 # How to use this project
-usage : |-
+# yamllint disable rule:line-length
+usage: |-
   Here are examples of how you can use this module in your inventory structure:
   ### Single Node
   ```hcl
       module "elasticsearch" {
-      source                                         = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.12.3"
+      source                                         = "clouddrove/elasticsearch/aws"
+      version                                        = "0.13.0"
       name                                           = "es"
       application                                    = "clouddrove"
       environment                                    = "test"
@@ -67,7 +69,8 @@ usage : |-
   ### Multi Node
   ```hcl
       module "elasticsearch" {
-      source                         = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.12.3"
+       source                        = "clouddrove/elasticsearch/aws"
+      version                        = "0.13.0"
       name                           = "es"
       application                    = "clouddrove"
       environment                    = "test"

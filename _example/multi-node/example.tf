@@ -3,7 +3,8 @@ provider "aws" {
 }
 
 module "vpc" {
-  source = "git::https://github.com/clouddrove/terraform-aws-vpc.git?ref=tags/0.12.1"
+  source  = "clouddrove/vpc/aws"
+  version = "0.13.0"
 
   name        = "vpc"
   application = "clouddrove"
@@ -14,7 +15,8 @@ module "vpc" {
 }
 
 module "public_subnets" {
-  source = "git::https://github.com/clouddrove/terraform-aws-subnet.git?ref=tags/0.12.1"
+  source  = "clouddrove/subnet/aws"
+  version = "0.13.0"
 
   name        = "public-subnet"
   application = "clouddrove"
@@ -24,12 +26,14 @@ module "public_subnets" {
   availability_zones = ["eu-west-1b", "eu-west-1c"]
   vpc_id             = module.vpc.vpc_id
   cidr_block         = module.vpc.vpc_cidr_block
+  ipv6_cidr_block    = module.vpc.ipv6_cidr_block
   type               = "public"
   igw_id             = module.vpc.igw_id
 }
 
 module "security_group" {
-  source = "git::https://github.com/clouddrove/terraform-aws-security-group.git?ref=tags/0.12.1"
+  source  = "clouddrove/security-group/aws"
+  version = "0.13.0"
 
   name        = "ingress_security_groups"
   application = "clouddrove"
@@ -60,10 +64,10 @@ module "elasticsearch" {
   volume_size                    = 30
   volume_type                    = "gp2"
 
-  dns_enabled     = true
+  dns_enabled     = false
   es_hostname     = "es"
   kibana_hostname = "kibana"
-  dns_zone_id     = "Z1XJD7SSBKXLC1"
+  dns_zone_id     = false
 
   advanced_options = {
     "rest.action.multi.allow_explicit_index" = "true"
