@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 module "vpc" {
-  source  = "clouddrove/elasticsearch/aws"
+  source  = "clouddrove/vpc/aws"
   version = "0.13.0"
 
 
@@ -68,7 +68,7 @@ module "elasticsearch" {
   dns_enabled     = false
   es_hostname     = "es"
   kibana_hostname = "kibana"
-  dns_zone_id     = "Z1XJD7SSBKXLC1"
+  dns_zone_id     = false
 
   advanced_options = {
     "rest.action.multi.allow_explicit_index" = "true"
