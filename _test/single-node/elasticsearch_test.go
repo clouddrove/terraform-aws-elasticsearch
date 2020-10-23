@@ -29,6 +29,6 @@ func Test(t *testing.T) {
 	Arn := terraform.Output(t, terraformOptions, "arn")
 
 	// Check that we get back the outputs that we expect
-	assert.Equal(t, "clouddrove", Tags["Name"])
+	assert.Equal(t, "test-clouddrove-es", Tags["Name"])
 	assert.Contains(t, Arn, "arn:aws:es")
 }
