@@ -14,7 +14,7 @@
 <p align="center">
 
 <a href="https://www.terraform.io">
-  <img src="https://img.shields.io/badge/Terraform-v0.12-green" alt="Terraform">
+  <img src="https://img.shields.io/badge/terraform-v0.13-green" alt="Terraform">
 </a>
 <a href="LICENSE.md">
   <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="Licence">
@@ -72,7 +72,8 @@ Here are examples of how you can use this module in your inventory structure:
 ### Single Node
 ```hcl
     module "elasticsearch" {
-    source                                         = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.12.3"
+    source                                         = "clouddrove/elasticsearch/aws"
+    version                                        = "0.13.0"
     name                                           = "es"
     application                                    = "clouddrove"
     environment                                    = "test"
@@ -103,7 +104,8 @@ Here are examples of how you can use this module in your inventory structure:
 ### Multi Node
 ```hcl
     module "elasticsearch" {
-    source                         = "git::https://github.com/clouddrove/terraform-aws-elasticsearch.git?ref=tags/0.12.3"
+     source                        = "clouddrove/elasticsearch/aws"
+    version                        = "0.13.0"
     name                           = "es"
     application                    = "clouddrove"
     environment                    = "test"
@@ -178,8 +180,9 @@ Note: There are some type of instances which not support encryption and EBS opti
 | log\_publishing\_search\_enabled | Specifies whether log publishing option for SEARCH\_SLOW\_LOGS is enabled or not. | `bool` | `false` | no |
 | managedby | ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'. | `string` | `"anmol@clouddrove.com"` | no |
 | name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
-| security\_group\_ids | Security Group IDs. | `list(string)` | n/a | yes |
-| subnet\_ids | Subnet IDs. | `list(string)` | n/a | yes |
+| public\_enabled | Enable Elasticsearch cluster is public or not. | `bool` | `false` | no |
+| security\_group\_ids | Security Group IDs. | `list(string)` | `[]` | no |
+| subnet\_ids | Subnet IDs. | `list(string)` | `[]` | no |
 | tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | `map` | `{}` | no |
 | tls\_security\_policy | The name of the TLS security policy that needs to be applied to the HTTPS endpoint. | `any` | `null` | no |
 | ttl | The TTL of the record to add to the DNS zone to complete certificate validation. | `string` | `"300"` | no |

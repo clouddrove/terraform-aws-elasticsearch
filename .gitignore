@@ -5,4 +5,4 @@
 .idea
 *.iml
 .terraform.tfstate.lock.info
-
+go.sum
