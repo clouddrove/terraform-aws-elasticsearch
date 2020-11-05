@@ -104,6 +104,12 @@ variable "zone_awareness_enabled" {
   description = "Enable zone awareness for Elasticsearch cluster."
 }
 
+variable "public_enabled" {
+  type        = bool
+  default     = false
+  description = "Enable Elasticsearch cluster is public or not."
+}
+
 variable "availability_zone_count" {
   type        = number
   default     = 2
@@ -214,11 +220,13 @@ variable "encryption_enabled" {
 
 variable "subnet_ids" {
   type        = list(string)
+  default     = []
   description = "Subnet IDs."
 }
 
 variable "security_group_ids" {
   type        = list(string)
+  default     = []
   description = "Security Group IDs."
 }
 

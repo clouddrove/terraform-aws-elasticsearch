@@ -63,6 +63,7 @@ module "elasticsearch" {
   enforce_https       = true
   tls_security_policy = "Policy-Min-TLS-1-0-2019-07"
   dns_enabled         = true
+  public_enabled      = false
   es_hostname         = "es"
   kibana_hostname     = "kibana"
   dns_zone_id         = "Z1XJD7SSBKXLC1"

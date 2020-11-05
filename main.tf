@@ -85,7 +85,7 @@ data "aws_iam_policy_document" "elasticsearch-log-publishing-policy" {
 #Module      : Elasticsearch
 #Description : Terraform module to create Elasticsearch resource on AWS.
 resource "aws_elasticsearch_domain" "default" {
-  count                 = var.enabled && var.zone_awareness_enabled ? 1 : 0
+  count                 = var.enabled && var.zone_awareness_enabled && var.public_enabled == false ? 1 : 0
   domain_name           = var.domain_name != "" ? var.domain_name : module.labels.id
   elasticsearch_version = var.elasticsearch_version
 
@@ -157,10 +157,78 @@ resource "aws_elasticsearch_domain" "default" {
   depends_on = [aws_iam_service_linked_role.default]
 }
 
+resource "aws_elasticsearch_domain" "default-public" {
+  count                 = var.enabled && var.zone_awareness_enabled && var.public_enabled ? 1 : 0
+  domain_name           = var.domain_name != "" ? var.domain_name : module.labels.id
+  elasticsearch_version = var.elasticsearch_version
+
+  advanced_options = var.advanced_options
+
+  ebs_options {
+    ebs_enabled = var.volume_size > 0 ? true : false
+    volume_size = var.volume_size
+    volume_type = var.volume_type
+    iops        = var.iops
+  }
+
+  encrypt_at_rest {
+    enabled    = false
+    kms_key_id = var.kms_key_id
+  }
+
+  cluster_config {
+    instance_count           = var.instance_count
+    instance_type            = var.instance_type
+    dedicated_master_enabled = var.dedicated_master_enabled
+    dedicated_master_count   = var.dedicated_master_count
+    dedicated_master_type    = var.dedicated_master_type
+    zone_awareness_enabled   = var.zone_awareness_enabled
+
+    zone_awareness_config {
+      availability_zone_count = var.availability_zone_count
+    }
+  }
+
+  node_to_node_encryption {
+    enabled = var.encryption_enabled
+  }
+
+  snapshot_options {
+    automated_snapshot_start_hour = var.automated_snapshot_start_hour
+  }
+
+  log_publishing_options {
+    enabled                  = var.log_publishing_index_enabled
+    log_type                 = "INDEX_SLOW_LOGS"
+    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
+  }
+
+  log_publishing_options {
+    enabled                  = var.log_publishing_search_enabled
+    log_type                 = "SEARCH_SLOW_LOGS"
+    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
+  }
+
+  log_publishing_options {
+    enabled                  = var.log_publishing_application_enabled
+    log_type                 = "ES_APPLICATION_LOGS"
+    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
+  }
+
+  domain_endpoint_options {
+    enforce_https = var.enforce_https
+    tls_security_policy = var.tls_security_policy
+  }
+
+  tags = module.labels.tags
+
+  depends_on = [aws_iam_service_linked_role.default]
+}
+
 #Module      : Elasticsearch
 #Description : Terraform module to create Elasticsearch resource on AWS.
 resource "aws_elasticsearch_domain" "single" {
-  count                 = var.enabled && var.zone_awareness_enabled == false ? 1 : 0
+  count                 = var.enabled && var.zone_awareness_enabled == false && var.public_enabled == false ? 1 : 0
   domain_name           = var.domain_name != "" ? var.domain_name : module.labels.id
   elasticsearch_version = var.elasticsearch_version
 
@@ -227,6 +295,69 @@ resource "aws_elasticsearch_domain" "single" {
   depends_on = [aws_iam_service_linked_role.default]
 }
 
+resource "aws_elasticsearch_domain" "single-public" {
+  count                 = var.enabled && var.zone_awareness_enabled == false && var.public_enabled ? 1 : 0
+  domain_name           = var.domain_name != "" ? var.domain_name : module.labels.id
+  elasticsearch_version = var.elasticsearch_version
+
+  advanced_options = var.advanced_options
+
+  ebs_options {
+    ebs_enabled = var.volume_size > 0 ? true : false
+    volume_size = var.volume_size
+    volume_type = var.volume_type
+    iops        = var.iops
+  }
+
+  encrypt_at_rest {
+    enabled    = false
+    kms_key_id = var.kms_key_id
+  }
+
+  cluster_config {
+    instance_count           = var.instance_count
+    instance_type            = var.instance_type
+    dedicated_master_enabled = var.dedicated_master_enabled
+    dedicated_master_count   = var.dedicated_master_count
+    dedicated_master_type    = var.dedicated_master_type
+  }
+
+  node_to_node_encryption {
+    enabled = var.encryption_enabled
+  }
+
+  snapshot_options {
+    automated_snapshot_start_hour = var.automated_snapshot_start_hour
+  }
+
+  log_publishing_options {
+    enabled                  = var.log_publishing_index_enabled
+    log_type                 = "INDEX_SLOW_LOGS"
+    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
+  }
+
+  log_publishing_options {
+    enabled                  = var.log_publishing_search_enabled
+    log_type                 = "SEARCH_SLOW_LOGS"
+    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
+  }
+
+  log_publishing_options {
+    enabled                  = var.log_publishing_application_enabled
+    log_type                 = "ES_APPLICATION_LOGS"
+    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
+  }
+
+  domain_endpoint_options {
+    enforce_https = var.enforce_https
+    tls_security_policy = var.tls_security_policy
+  }
+
+  tags = module.labels.tags
+
+  depends_on = [aws_iam_service_linked_role.default]
+}
+
 #Module      : Elasticsearch Role Policy
 #Description : Terraform module to create Elasticsearch resource on AWS.
 data "aws_iam_policy_document" "default" {
@@ -236,8 +367,8 @@ data "aws_iam_policy_document" "default" {
     actions = distinct(compact(var.iam_actions))
 
     resources = [
-      var.zone_awareness_enabled ? join("", aws_elasticsearch_domain.default.*.arn) : join("", aws_elasticsearch_domain.single.*.arn),
-      var.zone_awareness_enabled ? format("%s/*", join("", aws_elasticsearch_domain.default.*.arn)) : format("%s/*", join("", aws_elasticsearch_domain.single.*.arn))
+      var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.arn) : join("", aws_elasticsearch_domain.default.*.arn)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.arn) : join("", aws_elasticsearch_domain.single.*.arn)),
+      var.zone_awareness_enabled ? (var.public_enabled ? format("%s/*", join("", aws_elasticsearch_domain.default-public.*.arn)) : format("%s/*", join("", aws_elasticsearch_domain.default.*.arn))) : (var.public_enabled ? format("%s/*", join("", aws_elasticsearch_domain.single-public.*.arn)) : format("%s/*", join("", aws_elasticsearch_domain.single.*.arn)))
     ]
 
     principals {
@@ -264,7 +395,7 @@ module "es_dns" {
   name           = var.es_hostname
   type           = var.type
   ttl            = var.ttl
-  values         = var.zone_awareness_enabled ? join("", aws_elasticsearch_domain.default.*.endpoint) : join("", aws_elasticsearch_domain.single.*.endpoint)
+  values         = var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.endpoint) : join("", aws_elasticsearch_domain.default.*.endpoint)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.endpoint) : join("", aws_elasticsearch_domain.single.*.endpoint))
 }
 #Module      : ROUTE53
 #Description : Provides a Route53 record resource.
@@ -275,5 +406,5 @@ module "kibana_dns" {
   name           = var.kibana_hostname
   type           = var.type
   ttl            = var.ttl
-  values         = var.zone_awareness_enabled ? join("", aws_elasticsearch_domain.default.*.kibana_endpoint) : join("", aws_elasticsearch_domain.single.*.kibana_endpoint)
+  values         = var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.endpoint) : join("", aws_elasticsearch_domain.default.*.endpoint)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.endpoint) : join("", aws_elasticsearch_domain.single.*.endpoint))
 }
