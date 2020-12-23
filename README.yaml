@@ -16,7 +16,7 @@ github_repo: clouddrove/terraform-aws-elasticsearch
 # Badges to display
 badges:
   - name: "Terraform"
-    image: "https://img.shields.io/badge/terraform-v0.13-green"
+    image: "https://img.shields.io/badge/terraform-v0.14-green"
     url: "https://www.terraform.io"
   - name: "Licence"
     image: "https://img.shields.io/badge/License-MIT-blue.svg"
@@ -40,9 +40,9 @@ usage: |-
       source                                         = "clouddrove/elasticsearch/aws"
       version                                        = "0.13.0"
       name                                           = "es"
-      application                                    = "clouddrove"
+      repository                                     = "https://registry.terraform.io/modules/clouddrove/elasticsearch/aws/0.14.0"
       environment                                    = "test"
-      label_order                                    = ["environment", "application", "name"]
+      label_order                                    = ["name", "environment"]
       enable_iam_service_linked_role                 = true
       security_group_ids                             = [module.security_group.security_group_ids]
       subnet_ids                                     = tolist(module.public_subnets.public_subnet_id)
@@ -72,9 +72,9 @@ usage: |-
        source                        = "clouddrove/elasticsearch/aws"
       version                        = "0.13.0"
       name                           = "es"
-      application                    = "clouddrove"
+      repository                     = "https://registry.terraform.io/modules/clouddrove/elasticsearch/aws/0.14.0"
       environment                    = "test"
-      label_order                    = ["environment", "name", "application"]
+      label_order                    = ["name", "environment"]
       domain_name                    = "clouddrove"
       enable_iam_service_linked_role = true
       security_group_ids             = [module.security_group.security_group_ids]

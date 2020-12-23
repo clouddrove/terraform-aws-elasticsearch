@@ -6,10 +6,16 @@ variable "name" {
   description = "Name  (e.g. `app` or `cluster`)."
 }
 
-variable "application" {
+variable "repository" {
   type        = string
   default     = ""
-  description = "Application (e.g. `cd` or `clouddrove`)."
+  description = "Terraform current module repo"
+
+  validation {
+    # regex(...) fails if it cannot find a match
+    condition     = can(regex("^https://", var.repository))
+    error_message = "The module-repo value must be a valid Git repo link."
+  }
 }
 
 variable "environment" {
@@ -44,8 +50,8 @@ variable "tags" {
 
 variable "managedby" {
   type        = string
-  default     = "anmol@clouddrove.com"
-  description = "ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'."
+  default     = "hello@clouddrove.com"
+  description = "ManagedBy, eg 'CloudDrove'."
 }
 
 # Module      : Elasticsearch Module
@@ -60,12 +66,14 @@ variable "iam_role_arns" {
   type        = list(string)
   default     = []
   description = "List of IAM role ARNs to permit access to the Elasticsearch domain."
+  sensitive   = true
 }
 
 variable "iam_authorizing_role_arns" {
   type        = list(string)
   default     = []
   description = "List of IAM role ARNs to permit to assume the Elasticsearch user role."
+  sensitive   = true
 }
 
 variable "iam_actions" {
@@ -138,6 +146,7 @@ variable "kms_key_id" {
   type        = string
   default     = ""
   description = "The KMS key ID to encrypt the Elasticsearch domain with. If not specified, then it defaults to using the AWS/Elasticsearch service KMS key."
+  sensitive   = true
 }
 
 variable "log_publishing_index_enabled" {
@@ -162,18 +171,21 @@ variable "log_publishing_index_cloudwatch_log_group_arn" {
   type        = string
   default     = ""
   description = "ARN of the CloudWatch log group to which log for INDEX_SLOW_LOGS needs to be published."
+  sensitive   = true
 }
 
 variable "log_publishing_search_cloudwatch_log_group_arn" {
   type        = string
   default     = ""
   description = "ARN of the CloudWatch log group to which log for SEARCH_SLOW_LOGS needs to be published."
+  sensitive   = true
 }
 
 variable "log_publishing_application_cloudwatch_log_group_arn" {
   type        = string
   default     = ""
   description = "ARN of the CloudWatch log group to which log for ES_APPLICATION_LOGS needs to be published."
+  sensitive   = true
 }
 
 variable "automated_snapshot_start_hour" {
@@ -215,11 +227,13 @@ variable "encryption_enabled" {
 variable "subnet_ids" {
   type        = list(string)
   description = "Subnet IDs."
+  sensitive   = true
 }
 
 variable "security_group_ids" {
   type        = list(string)
   description = "Security Group IDs."
+  sensitive   = true
 }
 
 variable "domain_name" {
@@ -243,18 +257,21 @@ variable "dns_zone_id" {
   type        = string
   default     = ""
   description = "Route53 DNS Zone ID to add hostname records for Elasticsearch domain and Kibana."
+  sensitive   = true
 }
 
 variable "es_hostname" {
   type        = string
   default     = ""
   description = "The Host name of elasticserch."
+  sensitive   = true
 }
 
 variable "kibana_hostname" {
   type        = string
   default     = ""
   description = "The Host name of kibana."
+  sensitive   = true
 }
 
 variable "type" {
