@@ -132,23 +132,23 @@ resource "aws_elasticsearch_domain" "default" {
   log_publishing_options {
     enabled                  = var.log_publishing_index_enabled
     log_type                 = "INDEX_SLOW_LOGS"
-    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
+    cloudwatch_log_group_arn = join("", aws_cloudwatch_log_group.cloudwatch.*.arn)
   }
 
   log_publishing_options {
     enabled                  = var.log_publishing_search_enabled
     log_type                 = "SEARCH_SLOW_LOGS"
-    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
+    cloudwatch_log_group_arn = join("", aws_cloudwatch_log_group.cloudwatch.*.arn)
   }
 
   log_publishing_options {
     enabled                  = var.log_publishing_application_enabled
     log_type                 = "ES_APPLICATION_LOGS"
-    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
+    cloudwatch_log_group_arn = join("", aws_cloudwatch_log_group.cloudwatch.*.arn)
   }
 
   domain_endpoint_options {
-    enforce_https = var.enforce_https
+    enforce_https       = var.enforce_https
     tls_security_policy = var.tls_security_policy
   }
 
@@ -218,7 +218,7 @@ resource "aws_elasticsearch_domain" "single" {
   }
 
   domain_endpoint_options {
-    enforce_https = var.enforce_https
+    enforce_https       = var.enforce_https
     tls_security_policy = var.tls_security_policy
   }
 
