@@ -14,7 +14,7 @@
 <p align="center">
 
 <a href="https://www.terraform.io">
-  <img src="https://img.shields.io/badge/terraform-v0.13-green" alt="Terraform">
+  <img src="https://img.shields.io/badge/terraform-v0.14-green" alt="Terraform">
 </a>
 <a href="LICENSE.md">
   <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="Licence">
@@ -73,11 +73,11 @@ Here are examples of how you can use this module in your inventory structure:
 ```hcl
     module "elasticsearch" {
     source                                         = "clouddrove/elasticsearch/aws"
-    version                                        = "0.13.0"
+    version                                        = "0.14.0"
     name                                           = "es"
-    application                                    = "clouddrove"
+    repository                                     = "https://registry.terraform.io/modules/clouddrove/elasticsearch/aws/0.14.0"
     environment                                    = "test"
-    label_order                                    = ["environment", "application", "name"]
+    label_order                                    = ["name", "environment"]
     enable_iam_service_linked_role                 = true
     security_group_ids                             = [module.security_group.security_group_ids]
     subnet_ids                                     = tolist(module.public_subnets.public_subnet_id)
@@ -105,11 +105,11 @@ Here are examples of how you can use this module in your inventory structure:
 ```hcl
     module "elasticsearch" {
      source                        = "clouddrove/elasticsearch/aws"
-    version                        = "0.13.0"
+    version                        = "0.14.0"
     name                           = "es"
-    application                    = "clouddrove"
+    repository                     = "https://registry.terraform.io/modules/clouddrove/elasticsearch/aws/0.14.0"
     environment                    = "test"
-    label_order                    = ["environment", "name", "application"]
+    label_order                    = ["name", "environment"]
     domain_name                    = "clouddrove"
     enable_iam_service_linked_role = true
     security_group_ids             = [module.security_group.security_group_ids]
@@ -143,8 +143,7 @@ Note: There are some type of instances which not support encryption and EBS opti
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | advanced\_options | Key-value string pairs to specify advanced configuration options. | `map(string)` | `{}` | no |
-| application | Application (e.g. `cd` or `clouddrove`). | `string` | `""` | no |
-| attributes | Additional attributes (e.g. `1`). | `list` | `[]` | no |
+| attributes | Additional attributes (e.g. `1`). | `list(any)` | `[]` | no |
 | automated\_snapshot\_start\_hour | Hour at which automated snapshots are taken, in UTC. | `number` | `0` | no |
 | availability\_zone\_count | Number of Availability Zones for the domain to use. | `number` | `2` | no |
 | dedicated\_master\_count | Number of dedicated master nodes in the cluster. | `number` | `0` | no |
@@ -158,7 +157,7 @@ Note: There are some type of instances which not support encryption and EBS opti
 | enable\_iam\_service\_linked\_role | Whether to enabled service linked with role. | `bool` | `false` | no |
 | enable\_logs | enable logs | `bool` | `true` | no |
 | enabled | Set to false to prevent the module from creating any resources. | `bool` | `true` | no |
-| encrypt\_at\_rest\_enabled | Whether to enable encryption at rest. | `bool` | `true` | no |
+| encrypt\_at\_rest\_enabled | Whether to enable encryption at rest. | `bool` | `false` | no |
 | encryption\_enabled | Whether to enable node-to-node encryption. | `bool` | `false` | no |
 | enforce\_https | Whether or not to require HTTPS. | `bool` | `false` | no |
 | environment | Environment (e.g. `prod`, `dev`, `staging`). | `string` | `""` | no |
@@ -171,20 +170,21 @@ Note: There are some type of instances which not support encryption and EBS opti
 | iops | The baseline input/output (I/O) performance of EBS volumes attached to data nodes. Applicable only for the Provisioned IOPS EBS volume type. | `number` | `0` | no |
 | kibana\_hostname | The Host name of kibana. | `string` | `""` | no |
 | kms\_key\_id | The KMS key ID to encrypt the Elasticsearch domain with. If not specified, then it defaults to using the AWS/Elasticsearch service KMS key. | `string` | `""` | no |
-| label\_order | Label order, e.g. `name`,`application`. | `list` | `[]` | no |
+| label\_order | Label order, e.g. `name`,`application`. | `list(any)` | `[]` | no |
 | log\_publishing\_application\_cloudwatch\_log\_group\_arn | ARN of the CloudWatch log group to which log for ES\_APPLICATION\_LOGS needs to be published. | `string` | `""` | no |
 | log\_publishing\_application\_enabled | Specifies whether log publishing option for ES\_APPLICATION\_LOGS is enabled or not. | `bool` | `false` | no |
 | log\_publishing\_index\_cloudwatch\_log\_group\_arn | ARN of the CloudWatch log group to which log for INDEX\_SLOW\_LOGS needs to be published. | `string` | `""` | no |
 | log\_publishing\_index\_enabled | Specifies whether log publishing option for INDEX\_SLOW\_LOGS is enabled or not. | `bool` | `false` | no |
 | log\_publishing\_search\_cloudwatch\_log\_group\_arn | ARN of the CloudWatch log group to which log for SEARCH\_SLOW\_LOGS needs to be published. | `string` | `""` | no |
 | log\_publishing\_search\_enabled | Specifies whether log publishing option for SEARCH\_SLOW\_LOGS is enabled or not. | `bool` | `false` | no |
-| managedby | ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'. | `string` | `"anmol@clouddrove.com"` | no |
+| managedby | ManagedBy, eg 'CloudDrove'. | `string` | `"hello@clouddrove.com"` | no |
 | name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
 | public\_enabled | Enable Elasticsearch cluster is public or not. | `bool` | `false` | no |
+| repository | Terraform current module repo | `string` | `"https://registry.terraform.io/modules/clouddrove/elasticsearch/aws/0.14.0"` | no |
 | security\_group\_ids | Security Group IDs. | `list(string)` | `[]` | no |
 | subnet\_ids | Subnet IDs. | `list(string)` | `[]` | no |
-| tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | `map` | `{}` | no |
-| tls\_security\_policy | The name of the TLS security policy that needs to be applied to the HTTPS endpoint. | `any` | `null` | no |
+| tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | `map(any)` | `{}` | no |
+| tls\_security\_policy | The name of the TLS security policy that needs to be applied to the HTTPS endpoint. | `string` | `"Policy-Min-TLS-1-0-2019-07"` | no |
 | ttl | The TTL of the record to add to the DNS zone to complete certificate validation. | `string` | `"300"` | no |
 | type | Type of DNS records to create. | `string` | `"CNAME"` | no |
 | volume\_size | EBS volumes for data storage in GB. | `number` | `0` | no |
