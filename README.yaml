@@ -38,7 +38,7 @@ usage: |-
   ```hcl
       module "elasticsearch" {
       source                                         = "clouddrove/elasticsearch/aws"
-      version                                        = "0.13.0"
+      version                                        = "0.14.0"
       name                                           = "es"
       repository                                     = "https://registry.terraform.io/modules/clouddrove/elasticsearch/aws/0.14.0"
       environment                                    = "test"
@@ -70,7 +70,7 @@ usage: |-
   ```hcl
       module "elasticsearch" {
        source                        = "clouddrove/elasticsearch/aws"
-      version                        = "0.13.0"
+      version                        = "0.14.0"
       name                           = "es"
       repository                     = "https://registry.terraform.io/modules/clouddrove/elasticsearch/aws/0.14.0"
       environment                    = "test"

@@ -7,12 +7,14 @@
 #              tags for resources. You can use terraform-labels to implement a strict
 #              naming convention.
 module "labels" {
-  source = "git::https://github.com/clouddrove/terraform-labels.git?ref=0.14"
+  source = "git::https://github.com/clouddrove/terraform-labels.git?ref=tags/0.14.0"
 
+  enabled     = var.enabled
   name        = var.name
   repository  = var.repository
   environment = var.environment
   managedby   = var.managedby
+  attributes  = var.attributes
   label_order = var.label_order
 }
 
@@ -99,7 +101,7 @@ resource "aws_elasticsearch_domain" "default" {
   }
 
   encrypt_at_rest {
-    enabled    = false
+    enabled    = var.encrypt_at_rest_enabled
     kms_key_id = var.kms_key_id
   }
 
@@ -174,7 +176,7 @@ resource "aws_elasticsearch_domain" "single" {
   }
 
   encrypt_at_rest {
-    enabled    = false
+    enabled    = var.encrypt_at_rest_enabled
     kms_key_id = var.kms_key_id
   }
 
@@ -258,7 +260,7 @@ resource "aws_elasticsearch_domain_policy" "default" {
 #Module      : ROUTE53
 #Description : Provides a Route53 record resource.
 module "es_dns" {
-  source         = "git::https://github.com/clouddrove/terraform-aws-route53-record.git?ref=tags/0.12.1"
+  source         = "git::https://github.com/clouddrove/terraform-aws-route53-record.git?ref=tags/0.14.0"
   record_enabled = var.dns_enabled
   zone_id        = var.dns_zone_id
   name           = var.es_hostname
@@ -269,7 +271,7 @@ module "es_dns" {
 #Module      : ROUTE53
 #Description : Provides a Route53 record resource.
 module "kibana_dns" {
-  source         = "git::https://github.com/clouddrove/terraform-aws-route53-record.git?ref=tags/0.12.1"
+  source         = "git::https://github.com/clouddrove/terraform-aws-route53-record.git?ref=tags/0.14.0"
   record_enabled = var.dns_enabled
   zone_id        = var.dns_zone_id
   name           = var.kibana_hostname

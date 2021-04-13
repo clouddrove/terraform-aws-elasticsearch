@@ -8,7 +8,7 @@ variable "name" {
 
 variable "repository" {
   type        = string
-  default     = ""
+  default     = "https://registry.terraform.io/modules/clouddrove/elasticsearch/aws/0.14.0"
   description = "Terraform current module repo"
 
   validation {
@@ -138,7 +138,7 @@ variable "iops" {
 
 variable "encrypt_at_rest_enabled" {
   type        = bool
-  default     = true
+  default     = false
   description = "Whether to enable encryption at rest."
 }
 
@@ -293,6 +293,6 @@ variable "enforce_https" {
 }
 
 variable "tls_security_policy" {
-  default     = null
+  default     = "Policy-Min-TLS-1-0-2019-07"
   description = "The name of the TLS security policy that needs to be applied to the HTTPS endpoint."
 }
