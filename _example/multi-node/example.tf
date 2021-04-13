@@ -4,24 +4,23 @@ provider "aws" {
 
 module "vpc" {
   source  = "clouddrove/vpc/aws"
-  version = "0.13.0"
+  version = "0.14.0"
 
   name        = "vpc"
-  application = "clouddrove"
+  repository  = "https://registry.terraform.io/modules/clouddrove/vpc/aws/0.14.0"
   environment = "test"
-  label_order = ["environment", "name", "application"]
-
-  cidr_block = "172.16.0.0/16"
+  label_order = ["name", "environment"]
+  cidr_block  = "172.16.0.0/16"
 }
 
 module "public_subnets" {
   source  = "clouddrove/subnet/aws"
-  version = "0.13.0"
+  version = "0.14.0"
 
   name        = "public-subnet"
-  application = "clouddrove"
+  repository  = "https://registry.terraform.io/modules/clouddrove/subnet/aws/0.14.0"
   environment = "test"
-  label_order = ["environment", "name", "application"]
+  label_order = ["name", "environment"]
 
   availability_zones = ["eu-west-1b", "eu-west-1c"]
   vpc_id             = module.vpc.vpc_id
@@ -33,12 +32,12 @@ module "public_subnets" {
 
 module "security_group" {
   source  = "clouddrove/security-group/aws"
-  version = "0.13.0"
+  version = "0.14.0"
 
   name        = "ingress_security_groups"
-  application = "clouddrove"
+  repository  = "https://registry.terraform.io/modules/clouddrove/security-group/aws/0.14.0"
   environment = "test"
-  label_order = ["environment", "name", "application"]
+  label_order = ["name", "environment"]
 
   vpc_id        = module.vpc.vpc_id
   allowed_ip    = ["0.0.0.0/0"]
@@ -48,9 +47,9 @@ module "security_group" {
 module "elasticsearch" {
   source                         = "../../"
   name                           = "es"
-  application                    = "clouddrove"
+  repository                     = "https://registry.terraform.io/modules/clouddrove/elasticsearch/aws/0.14.0"
   environment                    = "test"
-  label_order                    = ["environment", "name", "application"]
+  label_order                    = ["name", "environment"]
   domain_name                    = "clouddrove"
   enable_iam_service_linked_role = true
   security_group_ids             = [module.security_group.security_group_ids]

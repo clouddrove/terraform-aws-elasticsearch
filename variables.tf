@@ -6,10 +6,16 @@ variable "name" {
   description = "Name  (e.g. `app` or `cluster`)."
 }
 
-variable "application" {
+variable "repository" {
   type        = string
-  default     = ""
-  description = "Application (e.g. `cd` or `clouddrove`)."
+  default     = "https://registry.terraform.io/modules/clouddrove/elasticsearch/aws/0.14.0"
+  description = "Terraform current module repo"
+
+  validation {
+    # regex(...) fails if it cannot find a match
+    condition     = can(regex("^https://", var.repository))
+    error_message = "The module-repo value must be a valid Git repo link."
+  }
 }
 
 variable "environment" {
@@ -19,13 +25,13 @@ variable "environment" {
 }
 
 variable "label_order" {
-  type        = list
+  type        = list(any)
   default     = []
   description = "Label order, e.g. `name`,`application`."
 }
 
 variable "attributes" {
-  type        = list
+  type        = list(any)
   default     = []
   description = "Additional attributes (e.g. `1`)."
 }
@@ -37,15 +43,15 @@ variable "delimiter" {
 }
 
 variable "tags" {
-  type        = map
+  type        = map(any)
   default     = {}
   description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)."
 }
 
 variable "managedby" {
   type        = string
-  default     = "anmol@clouddrove.com"
-  description = "ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'."
+  default     = "hello@clouddrove.com"
+  description = "ManagedBy, eg 'CloudDrove'."
 }
 
 # Module      : Elasticsearch Module
@@ -60,12 +66,14 @@ variable "iam_role_arns" {
   type        = list(string)
   default     = []
   description = "List of IAM role ARNs to permit access to the Elasticsearch domain."
+  sensitive   = true
 }
 
 variable "iam_authorizing_role_arns" {
   type        = list(string)
   default     = []
   description = "List of IAM role ARNs to permit to assume the Elasticsearch user role."
+  sensitive   = true
 }
 
 variable "iam_actions" {
@@ -136,7 +144,7 @@ variable "iops" {
 
 variable "encrypt_at_rest_enabled" {
   type        = bool
-  default     = true
+  default     = false
   description = "Whether to enable encryption at rest."
 }
 
@@ -144,6 +152,7 @@ variable "kms_key_id" {
   type        = string
   default     = ""
   description = "The KMS key ID to encrypt the Elasticsearch domain with. If not specified, then it defaults to using the AWS/Elasticsearch service KMS key."
+  sensitive   = true
 }
 
 variable "log_publishing_index_enabled" {
@@ -168,18 +177,21 @@ variable "log_publishing_index_cloudwatch_log_group_arn" {
   type        = string
   default     = ""
   description = "ARN of the CloudWatch log group to which log for INDEX_SLOW_LOGS needs to be published."
+  sensitive   = true
 }
 
 variable "log_publishing_search_cloudwatch_log_group_arn" {
   type        = string
   default     = ""
   description = "ARN of the CloudWatch log group to which log for SEARCH_SLOW_LOGS needs to be published."
+  sensitive   = true
 }
 
 variable "log_publishing_application_cloudwatch_log_group_arn" {
   type        = string
   default     = ""
   description = "ARN of the CloudWatch log group to which log for ES_APPLICATION_LOGS needs to be published."
+  sensitive   = true
 }
 
 variable "automated_snapshot_start_hour" {
@@ -222,12 +234,14 @@ variable "subnet_ids" {
   type        = list(string)
   default     = []
   description = "Subnet IDs."
+  sensitive   = true
 }
 
 variable "security_group_ids" {
   type        = list(string)
   default     = []
   description = "Security Group IDs."
+  sensitive   = true
 }
 
 variable "domain_name" {
@@ -251,18 +265,21 @@ variable "dns_zone_id" {
   type        = string
   default     = ""
   description = "Route53 DNS Zone ID to add hostname records for Elasticsearch domain and Kibana."
+  sensitive   = true
 }
 
 variable "es_hostname" {
   type        = string
   default     = ""
   description = "The Host name of elasticserch."
+  sensitive   = true
 }
 
 variable "kibana_hostname" {
   type        = string
   default     = ""
   description = "The Host name of kibana."
+  sensitive   = true
 }
 
 variable "type" {
@@ -284,6 +301,6 @@ variable "enforce_https" {
 }
 
 variable "tls_security_policy" {
-  default     = null
+  default     = "Policy-Min-TLS-1-0-2019-07"
   description = "The name of the TLS security policy that needs to be applied to the HTTPS endpoint."
 }
