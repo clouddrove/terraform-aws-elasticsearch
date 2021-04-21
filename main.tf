@@ -84,6 +84,55 @@ data "aws_iam_policy_document" "elasticsearch-log-publishing-policy" {
   }
 }
 
+data "aws_iam_policy_document" "cognito_es_policy" {
+  version = "2012-10-17"
+  statement {
+    effect = "Allow"
+    actions = [
+      "cognito-idp:DescribeUserPool",
+      "cognito-idp:CreateUserPoolClient",
+      "cognito-idp:DeleteUserPoolClient",
+      "cognito-idp:DescribeUserPoolClient",
+      "cognito-idp:AdminInitiateAuth",
+      "cognito-idp:AdminUserGlobalSignOut",
+      "cognito-idp:ListUserPoolClients",
+      "cognito-identity:DescribeIdentityPool",
+      "cognito-identity:UpdateIdentityPool",
+      "cognito-identity:SetIdentityPoolRoles",
+      "cognito-identity:GetIdentityPoolRoles"
+    ]
+    resources = [
+      "*",
+    ]
+  }
+}
+
+data "aws_iam_policy_document" "es_assume_policy" {
+  version = "2012-10-17"
+  statement {
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["es.amazonaws.com"]
+    }
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+module "cognito-role" {
+  source = "git::https://github.com/clouddrove/terraform-aws-iam-role.git?ref=tags/0.14.0"
+
+  name        = format("%s-cognito-role",module.labels.id)
+  environment = var.environment
+  label_order = ["name"]
+  enabled     = var.cognito_enabled
+
+  assume_role_policy = data.aws_iam_policy_document.es_assume_policy.json
+
+  policy_enabled = true
+  policy         = data.aws_iam_policy_document.cognito_es_policy.json
+}
+
 #Module      : Elasticsearch
 #Description : Terraform module to create Elasticsearch resource on AWS.
 resource "aws_elasticsearch_domain" "default" {
@@ -178,6 +227,13 @@ resource "aws_elasticsearch_domain" "default-public" {
     kms_key_id = var.kms_key_id
   }
 
+  cognito_options {
+    enabled = var.cognito_enabled
+    user_pool_id = var.user_pool_id
+    identity_pool_id = var.identity_pool_id
+    role_arn = module.cognito-role.arn
+  }
+
   cluster_config {
     instance_count           = var.instance_count
     instance_type            = var.instance_type
@@ -248,6 +304,13 @@ resource "aws_elasticsearch_domain" "single" {
     kms_key_id = var.kms_key_id
   }
 
+  cognito_options {
+    enabled = var.cognito_enabled
+    user_pool_id = var.user_pool_id
+    identity_pool_id = var.identity_pool_id
+    role_arn = module.cognito-role.arn
+  }
+
   cluster_config {
     instance_count           = var.instance_count
     instance_type            = var.instance_type
@@ -316,6 +379,13 @@ resource "aws_elasticsearch_domain" "single-public" {
     kms_key_id = var.kms_key_id
   }
 
+  cognito_options {
+    enabled = var.cognito_enabled
+    user_pool_id = var.user_pool_id
+    identity_pool_id = var.identity_pool_id
+    role_arn = module.cognito-role.arn
+  }
+
   cluster_config {
     instance_count           = var.instance_count
     instance_type            = var.instance_type
@@ -367,6 +437,7 @@ data "aws_iam_policy_document" "default" {
 
   statement {
     actions = distinct(compact(var.iam_actions))
+    effect = "Allow"
 
     resources = [
       var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.arn) : join("", aws_elasticsearch_domain.default.*.arn)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.arn) : join("", aws_elasticsearch_domain.single.*.arn)),
@@ -376,6 +447,14 @@ data "aws_iam_policy_document" "default" {
     principals {
       type        = "AWS"
       identifiers = ["*"]
+    }
+    condition {
+      test     = "IpAddress"
+      variable = "aws:SourceIp"
+
+      values = [
+        "*"
+      ]
     }
   }
 }

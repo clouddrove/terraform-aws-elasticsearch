@@ -88,6 +88,12 @@ variable "enabled" {
   description = "Set to false to prevent the module from creating any resources."
 }
 
+variable "cognito_enabled" {
+  type        = bool
+  default     = true
+  description = "Set to false to prevent enable cognito."
+}
+
 variable "elasticsearch_version" {
   type        = string
   default     = "6.5"
@@ -98,6 +104,18 @@ variable "instance_type" {
   type        = string
   default     = "t2.small.elasticsearch"
   description = "Elasticsearch instance type for data nodes in the cluster."
+}
+
+variable "user_pool_id" {
+  type        = string
+  default     = ""
+  description = "ID of the Cognito User Pool to use."
+}
+
+variable "identity_pool_id" {
+  type        = string
+  default     = ""
+  description = "ID of the Cognito Identity Pool to use."
 }
 
 variable "instance_count" {
