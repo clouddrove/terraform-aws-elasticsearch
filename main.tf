@@ -23,6 +23,7 @@ resource "aws_cloudwatch_log_group" "cloudwatch" {
   name              = module.labels.id
   tags              = module.labels.tags
   retention_in_days = var.retention_in_days
+  kms_key_id        = var.cloudwatch_kms_key_id
 
 }
 
@@ -225,7 +226,7 @@ resource "aws_elasticsearch_domain" "default-public" {
   }
 
   encrypt_at_rest {
-    enabled    = false
+    enabled    = var.encrypt_at_rest_enabled
     kms_key_id = var.kms_key_id
   }
 

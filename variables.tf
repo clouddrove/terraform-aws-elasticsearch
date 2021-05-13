@@ -172,6 +172,12 @@ variable "kms_key_id" {
   description = "The KMS key ID to encrypt the Elasticsearch domain with. If not specified, then it defaults to using the AWS/Elasticsearch service KMS key."
   sensitive   = true
 }
+variable "cloudwatch_kms_key_id" {
+  type        = string
+  default     = ""
+  description = "The KMS key ID to encrypt the Cloudwatch logs."
+  sensitive   = true
+}
 
 variable "log_publishing_index_enabled" {
   type        = bool
