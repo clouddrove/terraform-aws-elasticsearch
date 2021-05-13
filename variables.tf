@@ -162,7 +162,7 @@ variable "iops" {
 
 variable "encrypt_at_rest_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "Whether to enable encryption at rest."
 }
 
@@ -217,6 +217,13 @@ variable "automated_snapshot_start_hour" {
   default     = 0
   description = "Hour at which automated snapshots are taken, in UTC."
 }
+
+variable "retention_in_days" {
+  type        = number
+  default     = 90
+  description = "Days of retention of cloudwatch."
+}
+
 
 variable "dedicated_master_enabled" {
   type        = bool

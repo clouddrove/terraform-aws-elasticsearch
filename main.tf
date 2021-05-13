@@ -19,9 +19,11 @@ module "labels" {
 }
 
 resource "aws_cloudwatch_log_group" "cloudwatch" {
-  count = var.enabled && var.enable_logs ? 1 : 0
-  name  = module.labels.id
-  tags  = module.labels.tags
+  count             = var.enabled && var.enable_logs ? 1 : 0
+  name              = module.labels.id
+  tags              = module.labels.tags
+  retention_in_days = var.retention_in_days
+
 }
 
 resource "aws_cloudwatch_log_resource_policy" "cloudwatch_policy" {
