@@ -378,7 +378,7 @@ resource "aws_elasticsearch_domain" "single-public" {
   }
 
   encrypt_at_rest {
-    enabled    = false
+    enabled    = var.encrypt_at_rest_enabled
     kms_key_id = var.kms_key_id
   }
 
