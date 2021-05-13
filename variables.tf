@@ -314,7 +314,7 @@ variable "ttl" {
 
 variable "enforce_https" {
   type        = bool
-  default     = false
+  default     = true
   description = "Whether or not to require HTTPS."
 }
 

@@ -122,7 +122,7 @@ data "aws_iam_policy_document" "es_assume_policy" {
 module "cognito-role" {
   source = "git::https://github.com/clouddrove/terraform-aws-iam-role.git?ref=tags/0.14.0"
 
-  name        = format("%s-cognito-role",module.labels.id)
+  name        = format("%s-cognito-role", module.labels.id)
   environment = var.environment
   label_order = ["name"]
   enabled     = var.cognito_enabled
@@ -228,10 +228,10 @@ resource "aws_elasticsearch_domain" "default-public" {
   }
 
   cognito_options {
-    enabled = var.cognito_enabled
-    user_pool_id = var.user_pool_id
+    enabled          = var.cognito_enabled
+    user_pool_id     = var.user_pool_id
     identity_pool_id = var.identity_pool_id
-    role_arn = module.cognito-role.arn
+    role_arn         = module.cognito-role.arn
   }
 
   cluster_config {
@@ -305,10 +305,10 @@ resource "aws_elasticsearch_domain" "single" {
   }
 
   cognito_options {
-    enabled = var.cognito_enabled
-    user_pool_id = var.user_pool_id
+    enabled          = var.cognito_enabled
+    user_pool_id     = var.user_pool_id
     identity_pool_id = var.identity_pool_id
-    role_arn = module.cognito-role.arn
+    role_arn         = module.cognito-role.arn
   }
 
   cluster_config {
@@ -380,10 +380,10 @@ resource "aws_elasticsearch_domain" "single-public" {
   }
 
   cognito_options {
-    enabled = var.cognito_enabled
-    user_pool_id = var.user_pool_id
+    enabled          = var.cognito_enabled
+    user_pool_id     = var.user_pool_id
     identity_pool_id = var.identity_pool_id
-    role_arn = module.cognito-role.arn
+    role_arn         = module.cognito-role.arn
   }
 
   cluster_config {
@@ -437,7 +437,7 @@ data "aws_iam_policy_document" "default" {
 
   statement {
     actions = distinct(compact(var.iam_actions))
-    effect = "Allow"
+    effect  = "Allow"
 
     resources = [
       var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.arn) : join("", aws_elasticsearch_domain.default.*.arn)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.arn) : join("", aws_elasticsearch_domain.single.*.arn)),
