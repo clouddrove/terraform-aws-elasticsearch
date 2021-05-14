@@ -55,6 +55,7 @@ module "elasticsearch" {
   security_group_ids             = [module.security_group.security_group_ids]
   subnet_ids                     = tolist(module.public_subnets.public_subnet_id)
   zone_awareness_enabled         = true
+  encrypt_at_rest_enabled        = false
   availability_zone_count        = 2
   elasticsearch_version          = "7.1"
   instance_type                  = "t2.small.elasticsearch"

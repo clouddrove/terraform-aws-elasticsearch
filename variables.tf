@@ -162,7 +162,7 @@ variable "iops" {
 
 variable "encrypt_at_rest_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "Whether to enable encryption at rest."
 }
 
@@ -170,6 +170,12 @@ variable "kms_key_id" {
   type        = string
   default     = ""
   description = "The KMS key ID to encrypt the Elasticsearch domain with. If not specified, then it defaults to using the AWS/Elasticsearch service KMS key."
+  sensitive   = true
+}
+variable "cloudwatch_kms_key_id" {
+  type        = string
+  default     = ""
+  description = "The KMS key ID to encrypt the Cloudwatch logs."
   sensitive   = true
 }
 
@@ -217,6 +223,13 @@ variable "automated_snapshot_start_hour" {
   default     = 0
   description = "Hour at which automated snapshots are taken, in UTC."
 }
+
+variable "retention_in_days" {
+  type        = number
+  default     = 90
+  description = "Days of retention of cloudwatch."
+}
+
 
 variable "dedicated_master_enabled" {
   type        = bool
@@ -314,7 +327,7 @@ variable "ttl" {
 
 variable "enforce_https" {
   type        = bool
-  default     = false
+  default     = true
   description = "Whether or not to require HTTPS."
 }
 
