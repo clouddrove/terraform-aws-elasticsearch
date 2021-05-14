@@ -146,6 +146,7 @@ Note: There are some type of instances which not support encryption and EBS opti
 | attributes | Additional attributes (e.g. `1`). | `list(any)` | `[]` | no |
 | automated\_snapshot\_start\_hour | Hour at which automated snapshots are taken, in UTC. | `number` | `0` | no |
 | availability\_zone\_count | Number of Availability Zones for the domain to use. | `number` | `2` | no |
+| cloudwatch\_kms\_key\_id | The KMS key ID to encrypt the Cloudwatch logs. | `string` | `""` | no |
 | cognito\_enabled | Set to false to prevent enable cognito. | `bool` | `true` | no |
 | dedicated\_master\_count | Number of dedicated master nodes in the cluster. | `number` | `0` | no |
 | dedicated\_master\_enabled | Indicates whether dedicated master nodes are enabled for the cluster. | `bool` | `false` | no |
@@ -158,9 +159,9 @@ Note: There are some type of instances which not support encryption and EBS opti
 | enable\_iam\_service\_linked\_role | Whether to enabled service linked with role. | `bool` | `false` | no |
 | enable\_logs | enable logs | `bool` | `true` | no |
 | enabled | Set to false to prevent the module from creating any resources. | `bool` | `true` | no |
-| encrypt\_at\_rest\_enabled | Whether to enable encryption at rest. | `bool` | `false` | no |
+| encrypt\_at\_rest\_enabled | Whether to enable encryption at rest. | `bool` | `true` | no |
 | encryption\_enabled | Whether to enable node-to-node encryption. | `bool` | `false` | no |
-| enforce\_https | Whether or not to require HTTPS. | `bool` | `false` | no |
+| enforce\_https | Whether or not to require HTTPS. | `bool` | `true` | no |
 | environment | Environment (e.g. `prod`, `dev`, `staging`). | `string` | `""` | no |
 | es\_hostname | The Host name of elasticserch. | `string` | `""` | no |
 | iam\_actions | List of actions to allow for the IAM roles, _e.g._ `es:ESHttpGet`, `es:ESHttpPut`, `es:ESHttpPost`. | `list(string)` | `[]` | no |
@@ -183,6 +184,7 @@ Note: There are some type of instances which not support encryption and EBS opti
 | name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
 | public\_enabled | Enable Elasticsearch cluster is public or not. | `bool` | `false` | no |
 | repository | Terraform current module repo | `string` | `"https://registry.terraform.io/modules/clouddrove/elasticsearch/aws/0.14.0"` | no |
+| retention\_in\_days | Days of retention of cloudwatch. | `number` | `90` | no |
 | security\_group\_ids | Security Group IDs. | `list(string)` | `[]` | no |
 | subnet\_ids | Subnet IDs. | `list(string)` | `[]` | no |
 | tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | `map(any)` | `{}` | no |
