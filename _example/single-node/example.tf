@@ -65,7 +65,6 @@ module "elasticsearch" {
   log_publishing_search_cloudwatch_log_group_arn = true
   log_publishing_index_cloudwatch_log_group_arn  = true
 
-  encrypt_at_rest_enabled = false
   enforce_https           = true
   tls_security_policy     = "Policy-Min-TLS-1-0-2019-07"
   public_enabled          = false
