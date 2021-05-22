@@ -160,12 +160,6 @@ variable "iops" {
   description = "The baseline input/output (I/O) performance of EBS volumes attached to data nodes. Applicable only for the Provisioned IOPS EBS volume type."
 }
 
-variable "encrypt_at_rest_enabled" {
-  type        = bool
-  default     = true
-  description = "Whether to enable encryption at rest."
-}
-
 variable "kms_key_id" {
   type        = string
   default     = ""

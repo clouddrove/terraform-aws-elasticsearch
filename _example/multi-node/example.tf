@@ -55,7 +55,6 @@ module "elasticsearch" {
   security_group_ids             = [module.security_group.security_group_ids]
   subnet_ids                     = tolist(module.public_subnets.public_subnet_id)
   zone_awareness_enabled         = true
-  encrypt_at_rest_enabled        = false
   availability_zone_count        = 2
   elasticsearch_version          = "7.1"
   instance_type                  = "t2.small.elasticsearch"
@@ -63,11 +62,10 @@ module "elasticsearch" {
   iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
   volume_size                    = 30
   volume_type                    = "gp2"
-
-  dns_enabled     = false
-  es_hostname     = "es"
-  kibana_hostname = "kibana"
-  dns_zone_id     = false
+  dns_enabled                    = false
+  es_hostname                    = "es"
+  kibana_hostname                = "kibana"
+  dns_zone_id                    = false
 
   advanced_options = {
     "rest.action.multi.allow_explicit_index" = "true"
