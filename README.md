@@ -159,7 +159,6 @@ Note: There are some type of instances which not support encryption and EBS opti
 | enable\_iam\_service\_linked\_role | Whether to enabled service linked with role. | `bool` | `false` | no |
 | enable\_logs | enable logs | `bool` | `true` | no |
 | enabled | Set to false to prevent the module from creating any resources. | `bool` | `true` | no |
-| encrypt\_at\_rest\_enabled | Whether to enable encryption at rest. | `bool` | `true` | no |
 | encryption\_enabled | Whether to enable node-to-node encryption. | `bool` | `false` | no |
 | enforce\_https | Whether or not to require HTTPS. | `bool` | `true` | no |
 | environment | Environment (e.g. `prod`, `dev`, `staging`). | `string` | `""` | no |
