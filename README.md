@@ -200,8 +200,11 @@ Note: There are some type of instances which not support encryption and EBS opti
 | Name | Description |
 |------|-------------|
 | domain\_arn | ARN of the Elasticsearch domain. |
+| domain\_id | Unique identifier for the Elasticsearch domain. |
+| domain\_name | Name of the Elasticsearch domain. |
+| endpoint | Domain-specific endpoint used to submit index, search, and data upload requests. |
+| kibana\_endpoint | Domain-specific endpoint for kibana without https scheme. |
 | tags | A mapping of tags to assign to the resource. |
-
 
 
 
