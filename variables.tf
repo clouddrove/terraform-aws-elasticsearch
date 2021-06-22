@@ -162,7 +162,7 @@ variable "iops" {
 
 variable "encrypt_at_rest_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "Whether to enable encryption at rest."
 }
 
