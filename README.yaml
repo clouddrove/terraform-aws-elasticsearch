@@ -38,9 +38,8 @@ usage: |-
   ```hcl
       module "elasticsearch" {
       source                                         = "clouddrove/elasticsearch/aws"
-      version                                        = "0.14.0"
+      version                                        = "0.15.0"
       name                                           = "es"
-      repository                                     = "https://registry.terraform.io/modules/clouddrove/elasticsearch/aws/0.14.0"
       environment                                    = "test"
       label_order                                    = ["name", "environment"]
       enable_iam_service_linked_role                 = true
@@ -70,9 +69,8 @@ usage: |-
   ```hcl
       module "elasticsearch" {
        source                        = "clouddrove/elasticsearch/aws"
-      version                        = "0.14.0"
+      version                        = "0.15.0"
       name                           = "es"
-      repository                     = "https://registry.terraform.io/modules/clouddrove/elasticsearch/aws/0.14.0"
       environment                    = "test"
       label_order                    = ["name", "environment"]
       domain_name                    = "clouddrove"

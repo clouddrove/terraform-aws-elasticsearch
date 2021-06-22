@@ -4,10 +4,9 @@ provider "aws" {
 
 module "vpc" {
   source  = "clouddrove/vpc/aws"
-  version = "0.14.0"
+  version = "0.15.0"
 
   name        = "vpc"
-  repository  = "https://registry.terraform.io/modules/clouddrove/vpc/aws/0.14.0"
   environment = "test"
   label_order = ["name", "environment"]
   cidr_block  = "172.16.0.0/16"
@@ -15,10 +14,9 @@ module "vpc" {
 
 module "public_subnets" {
   source  = "clouddrove/subnet/aws"
-  version = "0.14.0"
+  version = "0.15.0"
 
   name        = "public-subnet"
-  repository  = "https://registry.terraform.io/modules/clouddrove/subnet/aws/0.14.0"
   environment = "test"
   label_order = ["name", "environment"]
 
@@ -32,10 +30,9 @@ module "public_subnets" {
 
 module "security_group" {
   source  = "clouddrove/security-group/aws"
-  version = "0.14.0"
+  version = "0.15.0"
 
   name        = "ingress_security_groups"
-  repository  = "https://registry.terraform.io/modules/clouddrove/security-group/aws/0.14.0"
   environment = "test"
   label_order = ["name", "environment"]
 
@@ -47,8 +44,7 @@ module "security_group" {
 module "elasticsearch" {
   source                         = "../../"
   name                           = "es"
-  repository                     = "https://registry.terraform.io/modules/clouddrove/elasticsearch/aws/0.14.0"
-  environment                    = "test"
+  environment                    = "test1"
   label_order                    = ["name", "environment"]
   domain_name                    = "clouddrove"
   enable_iam_service_linked_role = true
@@ -56,7 +52,7 @@ module "elasticsearch" {
   subnet_ids                     = tolist(module.public_subnets.public_subnet_id)
   zone_awareness_enabled         = true
   availability_zone_count        = 2
-  elasticsearch_version          = "7.1"
+  elasticsearch_version          = "7.8"
   instance_type                  = "t2.small.elasticsearch"
   instance_count                 = 2
   iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]

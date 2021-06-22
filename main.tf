@@ -7,7 +7,8 @@
 #              tags for resources. You can use terraform-labels to implement a strict
 #              naming convention.
 module "labels" {
-  source = "git::https://github.com/clouddrove/terraform-labels.git?ref=tags/0.14.0"
+  source  = "clouddrove/labels/aws"
+  version = "0.15.0"
 
   enabled     = var.enabled
   name        = var.name
@@ -120,7 +121,8 @@ data "aws_iam_policy_document" "es_assume_policy" {
 }
 
 module "cognito-role" {
-  source = "git::https://github.com/clouddrove/terraform-aws-iam-role.git?ref=tags/0.14.0"
+  source  = "clouddrove/iam-role/aws"
+  version = "0.15.0"
 
   name        = format("%s-cognito-role",module.labels.id)
   environment = var.environment
@@ -147,6 +149,13 @@ resource "aws_elasticsearch_domain" "default" {
     volume_size = var.volume_size
     volume_type = var.volume_type
     iops        = var.iops
+  }
+
+  cognito_options {
+    enabled = var.cognito_enabled
+    user_pool_id = var.user_pool_id
+    identity_pool_id = var.identity_pool_id
+    role_arn = module.cognito-role.arn
   }
 
   encrypt_at_rest {
@@ -441,7 +450,7 @@ data "aws_iam_policy_document" "default" {
 
     resources = [
       var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.arn) : join("", aws_elasticsearch_domain.default.*.arn)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.arn) : join("", aws_elasticsearch_domain.single.*.arn)),
-      var.zone_awareness_enabled ? (var.public_enabled ? format("%s/*", join("", aws_elasticsearch_domain.default-public.*.arn)) : format("%s/*", join("", aws_elasticsearch_domain.default.*.arn))) : (var.public_enabled ? format("%s/*", join("", aws_elasticsearch_domain.single-public.*.arn)) : format("%s/*", join("", aws_elasticsearch_domain.single.*.arn)))
+      format("%s/*",(var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.arn) : join("", aws_elasticsearch_domain.default.*.arn)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.arn) : join("", aws_elasticsearch_domain.single.*.arn))))
     ]
 
     principals {
@@ -459,18 +468,38 @@ data "aws_iam_policy_document" "default" {
   }
 }
 
+data "aws_iam_policy_document" "vpc" {
+  count = var.enabled ? 1 : 0
+
+  statement {
+    actions = distinct(compact(var.iam_actions))
+    effect = "Allow"
+
+    resources = [
+      var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.arn) : join("", aws_elasticsearch_domain.default.*.arn)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.arn) : join("", aws_elasticsearch_domain.single.*.arn)),
+      format("%s/*",(var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.arn) : join("", aws_elasticsearch_domain.default.*.arn)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.arn) : join("", aws_elasticsearch_domain.single.*.arn))))
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+  }
+}
+
 #Module      : Elasticsearch Policy
 #Description : Terraform module to create Elasticsearch policy resource on AWS.
 resource "aws_elasticsearch_domain_policy" "default" {
   count           = var.enabled ? 1 : 0
   domain_name     = var.domain_name != "" ? var.domain_name : module.labels.id
-  access_policies = join("", data.aws_iam_policy_document.default.*.json)
+  access_policies = var.public_enabled ? join("", data.aws_iam_policy_document.default.*.json) : join("", data.aws_iam_policy_document.vpc.*.json)
 }
 
 #Module      : ROUTE53
 #Description : Provides a Route53 record resource.
 module "es_dns" {
-  source         = "git::https://github.com/clouddrove/terraform-aws-route53-record.git?ref=tags/0.14.0"
+  source  = "clouddrove/route53-record/aws"
+  version = "0.15.0"
   record_enabled = var.dns_enabled
   zone_id        = var.dns_zone_id
   name           = var.es_hostname
@@ -481,7 +510,8 @@ module "es_dns" {
 #Module      : ROUTE53
 #Description : Provides a Route53 record resource.
 module "kibana_dns" {
-  source         = "git::https://github.com/clouddrove/terraform-aws-route53-record.git?ref=tags/0.14.0"
+  source  = "clouddrove/route53-record/aws"
+  version = "0.15.0"
   record_enabled = var.dns_enabled
   zone_id        = var.dns_zone_id
   name           = var.kibana_hostname
