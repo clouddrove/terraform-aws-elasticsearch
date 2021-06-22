@@ -155,10 +155,10 @@ resource "aws_elasticsearch_domain" "default" {
   }
 
   cognito_options {
-    enabled = var.cognito_enabled
-    user_pool_id = var.user_pool_id
+    enabled          = var.cognito_enabled
+    user_pool_id     = var.user_pool_id
     identity_pool_id = var.identity_pool_id
-    role_arn = module.cognito-role.arn
+    role_arn         = module.cognito-role.arn
   }
 
   encrypt_at_rest {
@@ -453,7 +453,7 @@ data "aws_iam_policy_document" "default" {
 
     resources = [
       var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.arn) : join("", aws_elasticsearch_domain.default.*.arn)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.arn) : join("", aws_elasticsearch_domain.single.*.arn)),
-      format("%s/*",(var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.arn) : join("", aws_elasticsearch_domain.default.*.arn)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.arn) : join("", aws_elasticsearch_domain.single.*.arn))))
+      format("%s/*", (var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.arn) : join("", aws_elasticsearch_domain.default.*.arn)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.arn) : join("", aws_elasticsearch_domain.single.*.arn))))
     ]
 
     principals {
@@ -476,11 +476,11 @@ data "aws_iam_policy_document" "vpc" {
 
   statement {
     actions = distinct(compact(var.iam_actions))
-    effect = "Allow"
+    effect  = "Allow"
 
     resources = [
       var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.arn) : join("", aws_elasticsearch_domain.default.*.arn)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.arn) : join("", aws_elasticsearch_domain.single.*.arn)),
-      format("%s/*",(var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.arn) : join("", aws_elasticsearch_domain.default.*.arn)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.arn) : join("", aws_elasticsearch_domain.single.*.arn))))
+      format("%s/*", (var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.arn) : join("", aws_elasticsearch_domain.default.*.arn)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.arn) : join("", aws_elasticsearch_domain.single.*.arn))))
     ]
 
     principals {
@@ -501,8 +501,8 @@ resource "aws_elasticsearch_domain_policy" "default" {
 #Module      : ROUTE53
 #Description : Provides a Route53 record resource.
 module "es_dns" {
-  source  = "clouddrove/route53-record/aws"
-  version = "0.15.0"
+  source         = "clouddrove/route53-record/aws"
+  version        = "0.15.0"
   record_enabled = var.dns_enabled
   zone_id        = var.dns_zone_id
   name           = var.es_hostname
@@ -513,8 +513,8 @@ module "es_dns" {
 #Module      : ROUTE53
 #Description : Provides a Route53 record resource.
 module "kibana_dns" {
-  source  = "clouddrove/route53-record/aws"
-  version = "0.15.0"
+  source         = "clouddrove/route53-record/aws"
+  version        = "0.15.0"
   record_enabled = var.dns_enabled
   zone_id        = var.dns_zone_id
   name           = var.kibana_hostname
