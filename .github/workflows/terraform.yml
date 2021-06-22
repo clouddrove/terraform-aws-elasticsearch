@@ -88,8 +88,8 @@ jobs:
     name: 'Pre-Commit'
     needs:
       - fmt
-      - basic_example
-      - secure_example
+      - multi-node
+      - single-node
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout'
