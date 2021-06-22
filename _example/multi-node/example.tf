@@ -58,11 +58,10 @@ module "elasticsearch" {
   iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
   volume_size                    = 30
   volume_type                    = "gp2"
-
-  dns_enabled     = false
-  es_hostname     = "es"
-  kibana_hostname = "kibana"
-  dns_zone_id     = false
+  dns_enabled                    = false
+  es_hostname                    = "es"
+  kibana_hostname                = "kibana"
+  dns_zone_id                    = false
 
   advanced_options = {
     "rest.action.multi.allow_explicit_index" = "true"
