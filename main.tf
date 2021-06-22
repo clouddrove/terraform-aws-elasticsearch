@@ -444,7 +444,7 @@ data "aws_iam_policy_document" "default" {
 
     resources = [
       var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.arn) : join("", aws_elasticsearch_domain.default.*.arn)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.arn) : join("", aws_elasticsearch_domain.single.*.arn)),
-      var.zone_awareness_enabled ? (var.public_enabled ? format("%s/*", join("", aws_elasticsearch_domain.default-public.*.arn)) : format("%s/*", join("", aws_elasticsearch_domain.default.*.arn))) : (var.public_enabled ? format("%s/*", join("", aws_elasticsearch_domain.single-public.*.arn)) : format("%s/*", join("", aws_elasticsearch_domain.single.*.arn)))
+      format("%s/*", (var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.arn) : join("", aws_elasticsearch_domain.default.*.arn)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.arn) : join("", aws_elasticsearch_domain.single.*.arn))))
     ]
 
     principals {
@@ -462,12 +462,31 @@ data "aws_iam_policy_document" "default" {
   }
 }
 
+data "aws_iam_policy_document" "vpc" {
+  count = var.enabled ? 1 : 0
+
+  statement {
+    actions = distinct(compact(var.iam_actions))
+    effect  = "Allow"
+
+    resources = [
+      var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.arn) : join("", aws_elasticsearch_domain.default.*.arn)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.arn) : join("", aws_elasticsearch_domain.single.*.arn)),
+      format("%s/*", (var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.arn) : join("", aws_elasticsearch_domain.default.*.arn)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.arn) : join("", aws_elasticsearch_domain.single.*.arn))))
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+  }
+}
+
 #Module      : Elasticsearch Policy
 #Description : Terraform module to create Elasticsearch policy resource on AWS.
 resource "aws_elasticsearch_domain_policy" "default" {
   count           = var.enabled ? 1 : 0
   domain_name     = var.domain_name != "" ? var.domain_name : module.labels.id
-  access_policies = join("", data.aws_iam_policy_document.default.*.json)
+  access_policies = var.public_enabled ? join("", data.aws_iam_policy_document.default.*.json) : join("", data.aws_iam_policy_document.vpc.*.json)
 }
 
 #Module      : ROUTE53
