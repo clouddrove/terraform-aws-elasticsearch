@@ -8,7 +8,7 @@ variable "name" {
 
 variable "repository" {
   type        = string
-  default     = "https://registry.terraform.io/modules/clouddrove/elasticsearch/aws/0.14.0"
+  default     = "https://github.com/clouddrove/terraform-aws-elasticsearch"
   description = "Terraform current module repo"
 
   validation {
@@ -158,6 +158,12 @@ variable "iops" {
   type        = number
   default     = 0
   description = "The baseline input/output (I/O) performance of EBS volumes attached to data nodes. Applicable only for the Provisioned IOPS EBS volume type."
+}
+
+variable "encrypt_at_rest_enabled" {
+  type        = bool
+  default     = true
+  description = "Whether to enable encryption at rest."
 }
 
 variable "kms_key_id" {
