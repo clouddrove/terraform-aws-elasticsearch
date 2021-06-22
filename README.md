@@ -7,14 +7,14 @@
     Terraform AWS Elasticsearch
 </h1>
 
-<p align="center" style="font-size: 1.2rem;">
+<p align="center" style="font-size: 1.2rem;"> 
     Terraform module to create an Elasticsearch resource on AWS.
      </p>
 
 <p align="center">
 
 <a href="https://www.terraform.io">
-  <img src="https://img.shields.io/badge/terraform-v0.14-green" alt="Terraform">
+  <img src="https://img.shields.io/badge/terraform-v0.15-green" alt="Terraform">
 </a>
 <a href="LICENSE.md">
   <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="Licence">
@@ -38,7 +38,7 @@
 <hr>
 
 
-We eat, drink, sleep and most importantly love **DevOps**. We are working towards strategies for standardizing architecture while ensuring security for the infrastructure. We are strong believer of the philosophy <b>Bigger problems are always solved by breaking them into smaller manageable problems</b>. Resonating with microservices architecture, it is considered best-practice to run database, cluster, storage in smaller <b>connected yet manageable pieces</b> within the infrastructure.
+We eat, drink, sleep and most importantly love **DevOps**. We are working towards strategies for standardizing architecture while ensuring security for the infrastructure. We are strong believer of the philosophy <b>Bigger problems are always solved by breaking them into smaller manageable problems</b>. Resonating with microservices architecture, it is considered best-practice to run database, cluster, storage in smaller <b>connected yet manageable pieces</b> within the infrastructure. 
 
 This module is basically combination of [Terraform open source](https://www.terraform.io/) and includes automatation tests and examples. It also helps to create and improve your infrastructure with minimalistic code instead of maintaining the whole infrastructure code yourself.
 
@@ -49,7 +49,7 @@ We have [*fifty plus terraform modules*][terraform_modules]. A few of them are c
 
 ## Prerequisites
 
-This module has a few dependencies:
+This module has a few dependencies: 
 
 - [Terraform 0.13](https://learn.hashicorp.com/terraform/getting-started/install.html)
 - [Go](https://golang.org/doc/install)
@@ -73,9 +73,8 @@ Here are examples of how you can use this module in your inventory structure:
 ```hcl
     module "elasticsearch" {
     source                                         = "clouddrove/elasticsearch/aws"
-    version                                        = "0.14.0"
+    version                                        = "0.15.0"
     name                                           = "es"
-    repository                                     = "https://registry.terraform.io/modules/clouddrove/elasticsearch/aws/0.14.0"
     environment                                    = "test"
     label_order                                    = ["name", "environment"]
     enable_iam_service_linked_role                 = true
@@ -105,9 +104,8 @@ Here are examples of how you can use this module in your inventory structure:
 ```hcl
     module "elasticsearch" {
      source                        = "clouddrove/elasticsearch/aws"
-    version                        = "0.14.0"
+    version                        = "0.15.0"
     name                           = "es"
-    repository                     = "https://registry.terraform.io/modules/clouddrove/elasticsearch/aws/0.14.0"
     environment                    = "test"
     label_order                    = ["name", "environment"]
     domain_name                    = "clouddrove"
@@ -159,6 +157,7 @@ Note: There are some type of instances which not support encryption and EBS opti
 | enable\_iam\_service\_linked\_role | Whether to enabled service linked with role. | `bool` | `false` | no |
 | enable\_logs | enable logs | `bool` | `true` | no |
 | enabled | Set to false to prevent the module from creating any resources. | `bool` | `true` | no |
+| encrypt\_at\_rest\_enabled | Whether to enable encryption at rest. | `bool` | `true` | no |
 | encryption\_enabled | Whether to enable node-to-node encryption. | `bool` | `false` | no |
 | enforce\_https | Whether or not to require HTTPS. | `bool` | `true` | no |
 | environment | Environment (e.g. `prod`, `dev`, `staging`). | `string` | `""` | no |
@@ -182,7 +181,7 @@ Note: There are some type of instances which not support encryption and EBS opti
 | managedby | ManagedBy, eg 'CloudDrove'. | `string` | `"hello@clouddrove.com"` | no |
 | name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
 | public\_enabled | Enable Elasticsearch cluster is public or not. | `bool` | `false` | no |
-| repository | Terraform current module repo | `string` | `"https://registry.terraform.io/modules/clouddrove/elasticsearch/aws/0.14.0"` | no |
+| repository | Terraform current module repo | `string` | `"https://github.com/clouddrove/terraform-aws-elasticsearch"` | no |
 | retention\_in\_days | Days of retention of cloudwatch. | `number` | `90` | no |
 | security\_group\_ids | Security Group IDs. | `list(string)` | `[]` | no |
 | subnet\_ids | Subnet IDs. | `list(string)` | `[]` | no |
@@ -206,7 +205,7 @@ Note: There are some type of instances which not support encryption and EBS opti
 
 
 ## Testing
-In this module testing is performed with [terratest](https://github.com/gruntwork-io/terratest) and it creates a small piece of infrastructure, matches the output like ARN, ID and Tags name etc and destroy infrastructure in your AWS account. This testing is written in GO, so you need a [GO environment](https://golang.org/doc/install) in your system.
+In this module testing is performed with [terratest](https://github.com/gruntwork-io/terratest) and it creates a small piece of infrastructure, matches the output like ARN, ID and Tags name etc and destroy infrastructure in your AWS account. This testing is written in GO, so you need a [GO environment](https://golang.org/doc/install) in your system. 
 
 You need to run the following command in the testing folder:
 ```hcl
@@ -215,7 +214,7 @@ You need to run the following command in the testing folder:
 
 
 
-## Feedback
+## Feedback 
 If you come accross a bug or have any feedback, please log it in our [issue tracker](https://github.com/clouddrove/terraform-aws-elasticsearch/issues), or feel free to drop us an email at [hello@clouddrove.com](mailto:hello@clouddrove.com).
 
 If you have found it worth your time, go ahead and give us a ★ on [our GitHub](https://github.com/clouddrove/terraform-aws-elasticsearch)!
