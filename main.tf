@@ -141,7 +141,7 @@ module "cognito-role" {
 #Module      : Elasticsearch
 #Description : Terraform module to create Elasticsearch resource on AWS.
 resource "aws_elasticsearch_domain" "default" {
-  count                 = var.enabled && var.zone_awareness_enabled && var.public_enabled == false ? 1 : 0
+  count                 = var.enabled   ? 1 : 0
   domain_name           = var.domain_name != "" ? var.domain_name : module.labels.id
   elasticsearch_version = var.elasticsearch_version
 
@@ -253,30 +253,31 @@ resource "aws_elasticsearch_domain" "default" {
 data "aws_iam_policy_document" "default" {
   count = var.enabled ? 1 : 0
 
-  statement {
-    actions = distinct(compact(var.iam_actions))
-    effect  = "Allow"
+  dynamic "statement" {
+    for_each = length(var.allowed_cidr_blocks) > 0 && ! var.vpc_enabled ? [true] : []
+    content {
+      effect = "Allow"
 
-    resources = [
-      join("", aws_elasticsearch_domain.default.*.arn),
-      format("%s/*", join("", aws_elasticsearch_domain.default.*.arn))
-    ]
+      actions = distinct(compact(var.iam_actions))
 
-    principals {
-      type        = "AWS"
-      identifiers = ["*"]
-    }
-    condition {
-      test     = "IpAddress"
-      variable = "aws:SourceIp"
-
-      values = [
-        "*"
+      resources = [
+        join("", aws_elasticsearch_domain.default.*.arn),
+        "${join("", aws_elasticsearch_domain.default.*.arn)}/*"
       ]
+
+      principals {
+        type        = "AWS"
+        identifiers = ["*"]
+      }
+
+      condition {
+        test     = "IpAddress"
+        values   = var.allowed_cidr_blocks
+        variable = "aws:SourceIp"
+      }
     }
   }
 }
-
 data "aws_iam_policy_document" "vpc" {
   count = var.enabled ? 1 : 0
 
@@ -301,7 +302,7 @@ data "aws_iam_policy_document" "vpc" {
 resource "aws_elasticsearch_domain_policy" "default" {
   count           = var.enabled ? 1 : 0
   domain_name     = var.domain_name != "" ? var.domain_name : module.labels.id
-  access_policies = var.public_enabled ? join("", data.aws_iam_policy_document.default.*.json) : join("", data.aws_iam_policy_document.vpc.*.json)
+  access_policies = var.vpc_enabled  ? join("", data.aws_iam_policy_document.vpc.*.json) : join("", data.aws_iam_policy_document.default.*.json)
 }
 
 #Module      : ROUTE53

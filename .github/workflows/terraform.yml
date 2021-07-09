@@ -13,12 +13,12 @@ jobs:
         uses: actions/checkout@master
 
       - name: 'Terraform Format'
-        uses: 'clouddrove/github-actions@v7.0'
+        uses: 'clouddrove/github-actions@v8.0'
         with:
           actions_subcommand: 'fmt'
 
-  multi-node:
-    name: 'multi-node'
+  multi_node_non_vpc:
+    name: 'multi_node_non_vpc'
     needs: fmt
     runs-on: ubuntu-latest
     steps:
@@ -33,26 +33,26 @@ jobs:
           aws-secret-access-key: ${{ secrets.TEST_AWS_ACCESS_SECRET_KEY }}
           aws-region: us-east-2
 
-      - name: 'Terraform init multi-node'
-        uses: 'clouddrove/github-actions@v7.0'
+      - name: 'Terraform init multi_node_non_vpc'
+        uses: 'clouddrove/github-actions@v8.0'
         with:
           actions_subcommand: 'init'
-          tf_actions_working_dir: ./_example/multi-node
+          tf_actions_working_dir: ./_example/multi_node_non_vpc
 
-      - name: 'Terraform validate multi-node'
-        uses: 'clouddrove/github-actions@v7.0'
+      - name: 'Terraform validate multi_node_non_vpc'
+        uses: 'clouddrove/github-actions@v8.0'
         with:
           actions_subcommand: 'validate'
-          tf_actions_working_dir: ./_example/multi-node
+          tf_actions_working_dir: ./_example/multi_node_non_vpc
 
-      - name: 'Terraform plan multi-node'
-        uses: 'clouddrove/github-actions@v7.0'
+      - name: 'Terraform plan multi_node_non_vpc'
+        uses: 'clouddrove/github-actions@v8.0'
         with:
           actions_subcommand: 'plan'
-          tf_actions_working_dir: ./_example/multi-node
+          tf_actions_working_dir: ./_example/multi_node_non_vpc
 
-  single-node:
-    name: 'single-node'
+  multi_node_vpc:
+    name: 'multi_node_vpc'
     needs: fmt
     runs-on: ubuntu-latest
     steps:
@@ -66,30 +66,99 @@ jobs:
           aws-secret-access-key: ${{ secrets.TEST_AWS_ACCESS_SECRET_KEY }}
           aws-region: us-east-2
 
-      - name: 'Terraform init single-node'
-        uses: 'clouddrove/github-actions@v7.0'
+      - name: 'Terraform init multi_node_vpc'
+        uses: 'clouddrove/github-actions@v8.0'
         with:
           actions_subcommand: 'init'
-          tf_actions_working_dir: ./_example/single-node
+          tf_actions_working_dir: ./_example/multi_node_vpc
 
-      - name: 'Terraform validate single-node'
-        uses: 'clouddrove/github-actions@v7.0'
+      - name: 'Terraform validate multi_node_vpc'
+        uses: 'clouddrove/github-actions@v8.0'
         with:
           actions_subcommand: 'validate'
-          tf_actions_working_dir: ./_example/single-node
+          tf_actions_working_dir: ./_example/multi_node_vpc
 
-      - name: 'Terraform plan single-node'
-        uses: 'clouddrove/github-actions@v7.0'
+      - name: 'Terraform plan multi_node_vpc'
+        uses: 'clouddrove/github-actions@v8.0'
         with:
           actions_subcommand: 'plan'
-          tf_actions_working_dir: ./_example/single-node
+          tf_actions_working_dir: ./_example/multi_node_vpc
+
+  single_node_non_vpc:
+    name: 'single_node_non_vpc'
+    needs: fmt
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@master
+
+      - name: 'Configure AWS Credentials'
+        uses: clouddrove/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.TEST_AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.TEST_AWS_ACCESS_SECRET_KEY }}
+          aws-region: us-east-2
+
+      - name: 'Terraform init for single_node_non_vpc'
+        uses: 'clouddrove/github-actions@v8.0'
+        with:
+          actions_subcommand: 'init'
+          tf_actions_working_dir: ./_example/single_node_non_vpc
+
+      - name: 'Terraform validate for single_node_non_vpc'
+        uses: 'clouddrove/github-actions@v8.0'
+        with:
+          actions_subcommand: 'validate'
+          tf_actions_working_dir: ./_example/single_node_non_vpc
+
+      - name: 'Terraform plan for single_node_non_vpc'
+        uses: 'clouddrove/github-actions@v8.0'
+        with:
+          actions_subcommand: 'plan'
+          tf_actions_working_dir: ./_example/single_node_non_vpc
+
+  single_node_vpc:
+    name: 'single_node_non_vpc'
+    needs: fmt
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@master
+
+      - name: 'Configure AWS Credentials'
+        uses: clouddrove/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.TEST_AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.TEST_AWS_ACCESS_SECRET_KEY }}
+          aws-region: us-east-2
+
+      - name: 'Terraform init for single_node_vpc'
+        uses: 'clouddrove/github-actions@v8.0'
+        with:
+          actions_subcommand: 'init'
+          tf_actions_working_dir: ./_example/single_node_vpc
+
+      - name: 'Terraform validate for single_node_vpc'
+        uses: 'clouddrove/github-actions@v8.0'
+        with:
+          actions_subcommand: 'validate'
+          tf_actions_working_dir: ./_example/single_node_vpc
+
+      - name: 'Terraform plan for single_node_vpc'
+        uses: 'clouddrove/github-actions@v8.0'
+        with:
+          actions_subcommand: 'plan'
+          tf_actions_working_dir: ./_example/single_node_vpc
+
 
   pre-commit:
     name: 'Pre-Commit'
     needs:
       - fmt
-      - multi-node
-      - single-node
+      - multi_node_non_vpc
+      - multi_node_vpc
+      - single_node_non_vpc
+      - single_node_vpc
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout'

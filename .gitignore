@@ -9,4 +9,5 @@ go.sum
 *.terrafrom.lock.hcl
 *.crash
 *.log
-/_example/multi-node/.terraform.lock.hcl
+/_example/multi_node_vpc/.terraform.lock.hcl
+/_example/multi_node_non_vpc/.terraform.lock.hcl

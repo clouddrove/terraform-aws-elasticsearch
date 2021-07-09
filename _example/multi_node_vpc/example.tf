@@ -45,7 +45,7 @@ module "elasticsearch" {
   source = "../../"
 
   name        = "es"
-  environment = "test1"
+  environment = "test"
   label_order = ["name", "environment"]
   domain_name = "clouddrove"
 
