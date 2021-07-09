@@ -3,31 +3,31 @@ provider "aws" {
 }
 
 module "elasticsearch" {
-  source          = "../../"
-  name            = "es"
-  environment     = "test"
-  label_order     = ["name", "environment"]
+  source      = "../../"
+  name        = "es"
+  environment = "test"
+  label_order = ["name", "environment"]
 
   #IAM
 
-  enable_iam_service_linked_role   = false
-  iam_actions                      = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
+  enable_iam_service_linked_role = false
+  iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
 
 
   #Networking
 
-  vpc_enabled          = false
-  allowed_cidr_blocks  = ["51.79.69.69"]
+  vpc_enabled         = false
+  allowed_cidr_blocks = ["51.79.69.69"]
 
 
   #Es
-  elasticsearch_version   = "7.8"
-  instance_type           = "c5.large.elasticsearch"
-  instance_count          = 1
+  elasticsearch_version = "7.8"
+  instance_type         = "c5.large.elasticsearch"
+  instance_count        = 1
 
   #Volume
-  volume_size             = 30
-  volume_type             = "gp2"
+  volume_size = 30
+  volume_type = "gp2"
 
   #Logs
   log_publishing_application_enabled             = true
@@ -42,10 +42,10 @@ module "elasticsearch" {
   identity_pool_id = ""
 
   #DNS
-  kibana_hostname     = "kibana"
-  dns_zone_id         = "Z1XJD7SSBKXLC1"
-  dns_enabled         = false
-  es_hostname         = "es"
+  kibana_hostname = "kibana"
+  dns_zone_id     = "Z1XJD7SSBKXLC1"
+  dns_enabled     = false
+  es_hostname     = "es"
 
 
   advanced_options = {

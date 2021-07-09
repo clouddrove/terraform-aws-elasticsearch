@@ -141,7 +141,7 @@ module "cognito-role" {
 #Module      : Elasticsearch
 #Description : Terraform module to create Elasticsearch resource on AWS.
 resource "aws_elasticsearch_domain" "default" {
-  count                 = var.enabled   ? 1 : 0
+  count                 = var.enabled ? 1 : 0
   domain_name           = var.domain_name != "" ? var.domain_name : module.labels.id
   elasticsearch_version = var.elasticsearch_version
 
@@ -254,7 +254,7 @@ data "aws_iam_policy_document" "default" {
   count = var.enabled ? 1 : 0
 
   dynamic "statement" {
-    for_each = length(var.allowed_cidr_blocks) > 0 && ! var.vpc_enabled ? [true] : []
+    for_each = length(var.allowed_cidr_blocks) > 0 && !var.vpc_enabled ? [true] : []
     content {
       effect = "Allow"
 
@@ -302,7 +302,7 @@ data "aws_iam_policy_document" "vpc" {
 resource "aws_elasticsearch_domain_policy" "default" {
   count           = var.enabled ? 1 : 0
   domain_name     = var.domain_name != "" ? var.domain_name : module.labels.id
-  access_policies = var.vpc_enabled  ? join("", data.aws_iam_policy_document.vpc.*.json) : join("", data.aws_iam_policy_document.default.*.json)
+  access_policies = var.vpc_enabled ? join("", data.aws_iam_policy_document.vpc.*.json) : join("", data.aws_iam_policy_document.default.*.json)
 }
 
 #Module      : ROUTE53
