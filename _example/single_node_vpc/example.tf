@@ -100,6 +100,4 @@ module "elasticsearch" {
   tls_security_policy = "Policy-Min-TLS-1-0-2019-07"
   public_enabled      = false
 
-
-
 }

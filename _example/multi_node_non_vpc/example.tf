@@ -11,7 +11,7 @@ module "elasticsearch" {
   domain_name = "clouddrove"
 
   #IAM
-  enable_iam_service_linked_role = false
+  enable_iam_service_linked_role = true
   iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
 
   #Networking
