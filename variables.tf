@@ -197,6 +197,12 @@ variable "log_publishing_application_enabled" {
   description = "Specifies whether log publishing option for ES_APPLICATION_LOGS is enabled or not."
 }
 
+variable "log_publishing_audit_enabled" {
+  type        = bool
+  default     = false
+  description = "Specifies whether log publishing option for AUDIT_LOGS is enabled or not."
+}
+
 variable "log_publishing_index_cloudwatch_log_group_arn" {
   type        = string
   default     = ""
@@ -334,4 +340,78 @@ variable "enforce_https" {
 variable "tls_security_policy" {
   default     = "Policy-Min-TLS-1-0-2019-07"
   description = "The name of the TLS security policy that needs to be applied to the HTTPS endpoint."
+}
+
+variable "vpc_enabled" {
+  type        = bool
+  default     = true
+  description = "Set to false if ES should be deployed outside of VPC."
+}
+
+variable "advanced_security_options_enabled" {
+  type        = bool
+  default     = false
+  description = "AWS Elasticsearch Kibana enchanced security plugin enabling (forces new resource)"
+}
+
+variable "advanced_security_options_internal_user_database_enabled" {
+  type        = bool
+  default     = false
+  description = "Whether to enable or not internal Kibana user database for ELK OpenDistro security plugin"
+}
+
+variable "advanced_security_options_master_user_arn" {
+  type        = string
+  default     = ""
+  description = "ARN of IAM user who is to be mapped to be Kibana master user (applicable if advanced_security_options_internal_user_database_enabled set to false)"
+}
+
+variable "advanced_security_options_master_user_name" {
+  type        = string
+  default     = ""
+  description = "Master user username (applicable if advanced_security_options_internal_user_database_enabled set to true)"
+}
+
+variable "advanced_security_options_master_user_password" {
+  type        = string
+  default     = ""
+  description = "Master user password (applicable if advanced_security_options_internal_user_database_enabled set to true)"
+}
+
+variable "custom_endpoint_enabled" {
+  type        = bool
+  description = "Whether to enable custom endpoint for the Elasticsearch domain."
+  default     = false
+}
+
+variable "custom_endpoint" {
+  type        = string
+  description = "Fully qualified domain for custom endpoint."
+  default     = ""
+}
+
+variable "custom_endpoint_certificate_arn" {
+  type        = string
+  description = "ACM certificate ARN for custom endpoint."
+  default     = ""
+}
+
+
+
+variable "warm_enabled" {
+  type        = bool
+  default     = false
+  description = "Whether AWS UltraWarm is enabled"
+}
+
+variable "warm_count" {
+  type        = number
+  default     = 2
+  description = "Number of UltraWarm nodes"
+}
+
+variable "warm_type" {
+  type        = string
+  default     = "ultrawarm1.medium.elasticsearch"
+  description = "Type of UltraWarm nodes"
 }

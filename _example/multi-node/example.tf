@@ -42,28 +42,52 @@ module "security_group" {
 }
 
 module "elasticsearch" {
-  source                         = "../../"
-  name                           = "es"
-  environment                    = "test1"
-  label_order                    = ["name", "environment"]
-  domain_name                    = "clouddrove"
-  enable_iam_service_linked_role = true
-  security_group_ids             = [module.security_group.security_group_ids]
-  subnet_ids                     = tolist(module.public_subnets.public_subnet_id)
-  zone_awareness_enabled         = true
-  availability_zone_count        = 2
-  elasticsearch_version          = "7.8"
-  instance_type                  = "t2.small.elasticsearch"
-  instance_count                 = 2
+  source = "../../"
+
+  name        = "es"
+  environment = "test1"
+  label_order = ["name", "environment"]
+  domain_name = "clouddrove"
+
+  #IAM
+  enable_iam_service_linked_role = false
   iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
-  volume_size                    = 30
-  volume_type                    = "gp2"
-  dns_enabled                    = false
-  es_hostname                    = "es"
-  kibana_hostname                = "kibana"
-  dns_zone_id                    = false
+
+  #Networking
+  vpc_enabled             = true
+  security_group_ids      = [module.security_group.security_group_ids]
+  subnet_ids              = tolist(module.public_subnets.public_subnet_id)
+  availability_zone_count = length(module.public_subnets.public_subnet_id)
+  zone_awareness_enabled  = true
+
+
+  #ES
+  elasticsearch_version = "7.8"
+  instance_type         = "c5.large.elasticsearch"
+  instance_count        = 2
+
+  # Volumes
+  volume_size = 30
+  volume_type = "gp2"
+
+  #DNS
+  dns_enabled     = false
+  es_hostname     = "es"
+  kibana_hostname = "kibana"
+  dns_zone_id     = false
 
   advanced_options = {
     "rest.action.multi.allow_explicit_index" = "true"
   }
+
+  #Cognito
+  cognito_enabled  = false
+  user_pool_id     = ""
+  identity_pool_id = ""
+
+  #logs
+  log_publishing_index_enabled       = true
+  log_publishing_search_enabled      = true
+  log_publishing_application_enabled = true
+  log_publishing_audit_enabled       = false
 }
