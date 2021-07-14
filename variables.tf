@@ -62,19 +62,6 @@ variable "enable_iam_service_linked_role" {
   description = "Whether to enabled service linked with role."
 }
 
-variable "iam_role_arns" {
-  type        = list(string)
-  default     = []
-  description = "List of IAM role ARNs to permit access to the Elasticsearch domain."
-  sensitive   = true
-}
-
-variable "iam_authorizing_role_arns" {
-  type        = list(string)
-  default     = []
-  description = "List of IAM role ARNs to permit to assume the Elasticsearch user role."
-  sensitive   = true
-}
 
 variable "iam_actions" {
   type        = list(string)
@@ -128,12 +115,6 @@ variable "zone_awareness_enabled" {
   type        = bool
   default     = false
   description = "Enable zone awareness for Elasticsearch cluster."
-}
-
-variable "public_enabled" {
-  type        = bool
-  default     = false
-  description = "Enable Elasticsearch cluster is public or not."
 }
 
 variable "availability_zone_count" {
@@ -203,26 +184,7 @@ variable "log_publishing_audit_enabled" {
   description = "Specifies whether log publishing option for AUDIT_LOGS is enabled or not."
 }
 
-variable "log_publishing_index_cloudwatch_log_group_arn" {
-  type        = string
-  default     = ""
-  description = "ARN of the CloudWatch log group to which log for INDEX_SLOW_LOGS needs to be published."
-  sensitive   = true
-}
 
-variable "log_publishing_search_cloudwatch_log_group_arn" {
-  type        = string
-  default     = ""
-  description = "ARN of the CloudWatch log group to which log for SEARCH_SLOW_LOGS needs to be published."
-  sensitive   = true
-}
-
-variable "log_publishing_application_cloudwatch_log_group_arn" {
-  type        = string
-  default     = ""
-  description = "ARN of the CloudWatch log group to which log for ES_APPLICATION_LOGS needs to be published."
-  sensitive   = true
-}
 
 variable "automated_snapshot_start_hour" {
   type        = number
