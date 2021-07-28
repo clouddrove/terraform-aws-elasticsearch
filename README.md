@@ -69,66 +69,235 @@ This module has a few dependencies:
 
 
 Here are examples of how you can use this module in your inventory structure:
-### Single Node
+### Multi Node non vpc
 ```hcl
-    module "elasticsearch" {
-    source                                         = "clouddrove/elasticsearch/aws"
-    version                                        = "0.15.0"
-    name                                           = "es"
-    environment                                    = "test"
-    label_order                                    = ["name", "environment"]
-    enable_iam_service_linked_role                 = true
-    security_group_ids                             = [module.security_group.security_group_ids]
-    subnet_ids                                     = tolist(module.public_subnets.public_subnet_id)
-    elasticsearch_version                          = "7.1"
-    instance_type                                  = "t2.small.elasticsearch"
-    instance_count                                 = 1
-    iam_actions                                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
-    volume_size                                    = 30
-    volume_type                                    = "gp2"
-    log_publishing_application_enabled             = true
-    log_publishing_search_cloudwatch_log_group_arn = true
-    log_publishing_index_cloudwatch_log_group_arn  = true
+  module "elasticsearch" {
+  source      = "clouddrove/elasticsearch/aws"
 
-    dns_enabled     = true
-    es_hostname     = "es"
-    kibana_hostname = "kibana"
-    dns_zone_id     = "Z1XJD7SSBKXLC1"
+  name        = "es"
+  environment = "test"
+  label_order = ["name", "environment"]
+  domain_name = "clouddrove"
 
-    advanced_options = {
-    "rest.action.multi.allow_explicit_index" = "true"
+  #IAM
+  enable_iam_service_linked_role = false
+  iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
+
+  #Networking
+  vpc_enabled             = false
+  availability_zone_count = 2
+  zone_awareness_enabled  = true
+  allowed_cidr_blocks     = ["51.79.69.69"]
+
+
+  #ES
+  elasticsearch_version = "7.8"
+  instance_type         = "c5.large.elasticsearch"
+  instance_count        = 2
+
+  # Volumes
+  volume_size = 30
+  volume_type = "gp2"
+
+  #DNS
+  dns_enabled     = false
+  es_hostname     = "es"
+  kibana_hostname = "kibana"
+  dns_zone_id     = false
+
+  advanced_options = {
+  "rest.action.multi.allow_explicit_index" = "true"
+  }
+
+  #Cognito
+  cognito_enabled  = false
+  user_pool_id     = ""
+  identity_pool_id = ""
+
+  #logs
+  log_publishing_index_enabled       = true
+  log_publishing_search_enabled      = true
+  log_publishing_application_enabled = true
+  log_publishing_audit_enabled       = false
     }
   }
+
 ```
-### Multi Node
+### Multi Node  vpc
 ```hcl
     module "elasticsearch" {
-     source                        = "clouddrove/elasticsearch/aws"
-    version                        = "0.15.0"
-    name                           = "es"
-    environment                    = "test"
-    label_order                    = ["name", "environment"]
-    domain_name                    = "clouddrove"
-    enable_iam_service_linked_role = true
-    security_group_ids             = [module.security_group.security_group_ids]
-    subnet_ids                     = tolist(module.public_subnets.public_subnet_id)
-    zone_awareness_enabled         = true
-    availability_zone_count        = 2
-    elasticsearch_version          = "7.1"
-    instance_type                  = "t2.small.elasticsearch"
-    instance_count                 = 2
+    source      = "clouddrove/elasticsearch/aws"
+
+    name        = "es"
+    environment = "test"
+    label_order = ["name", "environment"]
+    domain_name = "clouddrove"
+
+    #IAM
+    enable_iam_service_linked_role = false
     iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
-    volume_size                    = 30
-    volume_type                    = "gp2"
-    dns_enabled     = true
+
+    #Networking
+    vpc_enabled             = true
+    security_group_ids      = [module.security_group.security_group_ids]
+    subnet_ids              = tolist(module.public_subnets.public_subnet_id)
+    availability_zone_count = length(module.public_subnets.public_subnet_id)
+    zone_awareness_enabled  = true
+
+
+    #ES
+    elasticsearch_version = "7.8"
+    instance_type         = "c5.large.elasticsearch"
+    instance_count        = 2
+
+    # Volumes
+    volume_size = 30
+    volume_type = "gp2"
+
+    #DNS
+    dns_enabled     = false
     es_hostname     = "es"
     kibana_hostname = "kibana"
-    dns_zone_id     = "Z1XJD7SSBKXLC1"
+    dns_zone_id     = false
+
     advanced_options = {
     "rest.action.multi.allow_explicit_index" = "true"
     }
+
+    #Cognito
+    cognito_enabled  = false
+    user_pool_id     = ""
+    identity_pool_id = ""
+
+    #logs
+    log_publishing_index_enabled       = true
+    log_publishing_search_enabled      = true
+    log_publishing_application_enabled = true
+    log_publishing_audit_enabled       = false
+   }
+```
+
+### Single  Node Non vpc
+```hcl
+   source            = "clouddrove/elasticsearch/aws"
+
+   name        = "es"
+   environment = "test"
+  label_order = ["name", "environment"]
+
+  #IAM
+
+  enable_iam_service_linked_role = false
+  iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
+
+
+  #Networking
+
+  vpc_enabled         = false
+  allowed_cidr_blocks = ["51.79.69.69"]
+
+
+  #Es
+  elasticsearch_version = "7.8"
+  instance_type         = "c5.large.elasticsearch"
+  instance_count        = 1
+
+  #Volume
+  volume_size = 30
+  volume_type = "gp2"
+
+  #Logs
+  log_publishing_application_enabled             = true
+  log_publishing_search_cloudwatch_log_group_arn = true
+  log_publishing_index_cloudwatch_log_group_arn  = true
+
+
+
+  #Cognito
+  cognito_enabled  = false
+  user_pool_id     = ""
+  identity_pool_id = ""
+
+  #DNS
+  kibana_hostname = "kibana"
+  dns_zone_id     = "Z1XJD7SSBKXLC1"
+  dns_enabled     = false
+  es_hostname     = "es"
+
+
+  advanced_options = {
+  "rest.action.multi.allow_explicit_index" = "true"
+  }
+
+  enforce_https       = true
+  tls_security_policy = "Policy-Min-TLS-1-0-2019-07"
+  public_enabled      = false
+
   }
 ```
+
+### Single  Node  vpc
+
+```hcl
+   module "elasticsearch" {
+  source            = "clouddrove/elasticsearch/aws"
+
+  name        = "es"
+  environment = "test"
+  label_order = ["name", "environment"]
+
+  #IAM
+  enable_iam_service_linked_role = false
+  iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
+
+
+  #Networking
+
+  vpc_enabled        = true
+  security_group_ids = [module.security_group.security_group_ids]
+  subnet_ids         = tolist(module.public_subnets.public_subnet_id)
+
+
+  #Es
+
+  elasticsearch_version = "7.8"
+  instance_type         = "c5.large.elasticsearch"
+  instance_count        = 1
+
+  #Volume
+  volume_size = 30
+  volume_type = "gp2"
+
+  #Logs
+  log_publishing_application_enabled             = true
+  log_publishing_search_cloudwatch_log_group_arn = true
+  log_publishing_index_cloudwatch_log_group_arn  = true
+
+
+
+  #Cognito
+  cognito_enabled  = false
+  user_pool_id     = ""
+  identity_pool_id = ""
+
+  #DNS
+  kibana_hostname = "kibana"
+  dns_zone_id     = "Z1XJD7SSBKXLC1"
+  dns_enabled     = false
+  es_hostname     = "es"
+
+
+  advanced_options = {
+  "rest.action.multi.allow_explicit_index" = "true"
+  }
+
+  enforce_https       = true
+  tls_security_policy = "Policy-Min-TLS-1-0-2019-07"
+  public_enabled      = false
+
+  }
+```
+
 Note: There are some type of instances which not support encryption and EBS option, Please read about this [here](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-supported-instance-types.html). Also, there are some limitation for instance type, Please read [here](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-limits.html)
 
 
@@ -141,11 +310,20 @@ Note: There are some type of instances which not support encryption and EBS opti
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | advanced\_options | Key-value string pairs to specify advanced configuration options. | `map(string)` | `{}` | no |
+| advanced\_security\_options\_enabled | AWS Elasticsearch Kibana enchanced security plugin enabling (forces new resource) | `bool` | `false` | no |
+| advanced\_security\_options\_internal\_user\_database\_enabled | Whether to enable or not internal Kibana user database for ELK OpenDistro security plugin | `bool` | `false` | no |
+| advanced\_security\_options\_master\_user\_arn | ARN of IAM user who is to be mapped to be Kibana master user (applicable if advanced\_security\_options\_internal\_user\_database\_enabled set to false) | `string` | `""` | no |
+| advanced\_security\_options\_master\_user\_name | Master user username (applicable if advanced\_security\_options\_internal\_user\_database\_enabled set to true) | `string` | `""` | no |
+| advanced\_security\_options\_master\_user\_password | Master user password (applicable if advanced\_security\_options\_internal\_user\_database\_enabled set to true) | `string` | `""` | no |
+| allowed\_cidr\_blocks | List of CIDR blocks to be allowed to connect to the cluster | `list(string)` | `[]` | no |
 | attributes | Additional attributes (e.g. `1`). | `list(any)` | `[]` | no |
 | automated\_snapshot\_start\_hour | Hour at which automated snapshots are taken, in UTC. | `number` | `0` | no |
 | availability\_zone\_count | Number of Availability Zones for the domain to use. | `number` | `2` | no |
 | cloudwatch\_kms\_key\_id | The KMS key ID to encrypt the Cloudwatch logs. | `string` | `""` | no |
 | cognito\_enabled | Set to false to prevent enable cognito. | `bool` | `true` | no |
+| custom\_endpoint | Fully qualified domain for custom endpoint. | `string` | `""` | no |
+| custom\_endpoint\_certificate\_arn | ACM certificate ARN for custom endpoint. | `string` | `""` | no |
+| custom\_endpoint\_enabled | Whether to enable custom endpoint for the Elasticsearch domain. | `bool` | `false` | no |
 | dedicated\_master\_count | Number of dedicated master nodes in the cluster. | `number` | `0` | no |
 | dedicated\_master\_enabled | Indicates whether dedicated master nodes are enabled for the cluster. | `bool` | `false` | no |
 | dedicated\_master\_type | Instance type of the dedicated master nodes in the cluster. | `string` | `"t2.small.elasticsearch"` | no |
@@ -158,13 +336,11 @@ Note: There are some type of instances which not support encryption and EBS opti
 | enable\_logs | enable logs | `bool` | `true` | no |
 | enabled | Set to false to prevent the module from creating any resources. | `bool` | `true` | no |
 | encrypt\_at\_rest\_enabled | Whether to enable encryption at rest. | `bool` | `true` | no |
-| encryption\_enabled | Whether to enable node-to-node encryption. | `bool` | `false` | no |
+| encryption\_enabled | Whether to enable node-to-node encryption. | `bool` | `true` | no |
 | enforce\_https | Whether or not to require HTTPS. | `bool` | `true` | no |
 | environment | Environment (e.g. `prod`, `dev`, `staging`). | `string` | `""` | no |
 | es\_hostname | The Host name of elasticserch. | `string` | `""` | no |
 | iam\_actions | List of actions to allow for the IAM roles, _e.g._ `es:ESHttpGet`, `es:ESHttpPut`, `es:ESHttpPost`. | `list(string)` | `[]` | no |
-| iam\_authorizing\_role\_arns | List of IAM role ARNs to permit to assume the Elasticsearch user role. | `list(string)` | `[]` | no |
-| iam\_role\_arns | List of IAM role ARNs to permit access to the Elasticsearch domain. | `list(string)` | `[]` | no |
 | identity\_pool\_id | ID of the Cognito Identity Pool to use. | `string` | `""` | no |
 | instance\_count | Number of data nodes in the cluster. | `number` | `4` | no |
 | instance\_type | Elasticsearch instance type for data nodes in the cluster. | `string` | `"t2.small.elasticsearch"` | no |
@@ -172,15 +348,12 @@ Note: There are some type of instances which not support encryption and EBS opti
 | kibana\_hostname | The Host name of kibana. | `string` | `""` | no |
 | kms\_key\_id | The KMS key ID to encrypt the Elasticsearch domain with. If not specified, then it defaults to using the AWS/Elasticsearch service KMS key. | `string` | `""` | no |
 | label\_order | Label order, e.g. `name`,`application`. | `list(any)` | `[]` | no |
-| log\_publishing\_application\_cloudwatch\_log\_group\_arn | ARN of the CloudWatch log group to which log for ES\_APPLICATION\_LOGS needs to be published. | `string` | `""` | no |
 | log\_publishing\_application\_enabled | Specifies whether log publishing option for ES\_APPLICATION\_LOGS is enabled or not. | `bool` | `false` | no |
-| log\_publishing\_index\_cloudwatch\_log\_group\_arn | ARN of the CloudWatch log group to which log for INDEX\_SLOW\_LOGS needs to be published. | `string` | `""` | no |
+| log\_publishing\_audit\_enabled | Specifies whether log publishing option for AUDIT\_LOGS is enabled or not. | `bool` | `false` | no |
 | log\_publishing\_index\_enabled | Specifies whether log publishing option for INDEX\_SLOW\_LOGS is enabled or not. | `bool` | `false` | no |
-| log\_publishing\_search\_cloudwatch\_log\_group\_arn | ARN of the CloudWatch log group to which log for SEARCH\_SLOW\_LOGS needs to be published. | `string` | `""` | no |
 | log\_publishing\_search\_enabled | Specifies whether log publishing option for SEARCH\_SLOW\_LOGS is enabled or not. | `bool` | `false` | no |
 | managedby | ManagedBy, eg 'CloudDrove'. | `string` | `"hello@clouddrove.com"` | no |
 | name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
-| public\_enabled | Enable Elasticsearch cluster is public or not. | `bool` | `false` | no |
 | repository | Terraform current module repo | `string` | `"https://github.com/clouddrove/terraform-aws-elasticsearch"` | no |
 | retention\_in\_days | Days of retention of cloudwatch. | `number` | `90` | no |
 | security\_group\_ids | Security Group IDs. | `list(string)` | `[]` | no |
@@ -192,6 +365,10 @@ Note: There are some type of instances which not support encryption and EBS opti
 | user\_pool\_id | ID of the Cognito User Pool to use. | `string` | `""` | no |
 | volume\_size | EBS volumes for data storage in GB. | `number` | `0` | no |
 | volume\_type | Storage type of EBS volumes. | `string` | `"gp2"` | no |
+| vpc\_enabled | Set to false if ES should be deployed outside of VPC. | `bool` | `true` | no |
+| warm\_count | Number of UltraWarm nodes | `number` | `2` | no |
+| warm\_enabled | Whether AWS UltraWarm is enabled | `bool` | `false` | no |
+| warm\_type | Type of UltraWarm nodes | `string` | `"ultrawarm1.medium.elasticsearch"` | no |
 | zone\_awareness\_enabled | Enable zone awareness for Elasticsearch cluster. | `bool` | `false` | no |
 
 ## Outputs
