@@ -14,7 +14,7 @@ func Test(t *testing.T) {
 
 	terraformOptions := &terraform.Options{
 		// Source path of Terraform directory.
-		TerraformDir: "../../_example/single-node",
+		TerraformDir: "../../_example/single_node_vpc",
 		Upgrade: true,
 	}
 
@@ -26,9 +26,7 @@ func Test(t *testing.T) {
 
 	// To get the value of an output variable, run 'terraform output'
 	Tags := terraform.OutputMap(t, terraformOptions, "tags")
-	Arn := terraform.Output(t, terraformOptions, "arn")
 
 	// Check that we get back the outputs that we expect
-	assert.Equal(t, "test-clouddrove-es", Tags["Name"])
-	assert.Contains(t, Arn, "arn:aws:es")
+	assert.Equal(t, "es-test", Tags["Name"])
 }

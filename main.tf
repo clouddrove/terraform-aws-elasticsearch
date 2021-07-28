@@ -141,7 +141,7 @@ module "cognito-role" {
 #Module      : Elasticsearch
 #Description : Terraform module to create Elasticsearch resource on AWS.
 resource "aws_elasticsearch_domain" "default" {
-  count                 = var.enabled && var.zone_awareness_enabled && var.public_enabled == false ? 1 : 0
+  count                 = var.enabled ? 1 : 0
   domain_name           = var.domain_name != "" ? var.domain_name : module.labels.id
   elasticsearch_version = var.elasticsearch_version
 
@@ -173,9 +173,15 @@ resource "aws_elasticsearch_domain" "default" {
     dedicated_master_count   = var.dedicated_master_count
     dedicated_master_type    = var.dedicated_master_type
     zone_awareness_enabled   = var.zone_awareness_enabled
+    warm_enabled             = var.warm_enabled
+    warm_count               = var.warm_enabled ? var.warm_count : null
+    warm_type                = var.warm_enabled ? var.warm_type : null
 
-    zone_awareness_config {
-      availability_zone_count = var.availability_zone_count
+    dynamic "zone_awareness_config" {
+      for_each = var.availability_zone_count > 1 ? [true] : []
+      content {
+        availability_zone_count = var.availability_zone_count
+      }
     }
   }
 
@@ -183,86 +189,15 @@ resource "aws_elasticsearch_domain" "default" {
     enabled = var.encryption_enabled
   }
 
-  vpc_options {
-    security_group_ids = var.security_group_ids
-    subnet_ids         = var.subnet_ids
-  }
+  dynamic "vpc_options" {
+    for_each = var.vpc_enabled ? [true] : []
 
-  snapshot_options {
-    automated_snapshot_start_hour = var.automated_snapshot_start_hour
-  }
-
-  log_publishing_options {
-    enabled                  = var.log_publishing_index_enabled
-    log_type                 = "INDEX_SLOW_LOGS"
-    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
-  }
-
-  log_publishing_options {
-    enabled                  = var.log_publishing_search_enabled
-    log_type                 = "SEARCH_SLOW_LOGS"
-    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
-  }
-
-  log_publishing_options {
-    enabled                  = var.log_publishing_application_enabled
-    log_type                 = "ES_APPLICATION_LOGS"
-    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
-  }
-
-  domain_endpoint_options {
-    enforce_https       = var.enforce_https
-    tls_security_policy = var.tls_security_policy
-  }
-
-  tags = module.labels.tags
-
-  depends_on = [aws_iam_service_linked_role.default]
-}
-
-resource "aws_elasticsearch_domain" "default-public" {
-  count                 = var.enabled && var.zone_awareness_enabled && var.public_enabled ? 1 : 0
-  domain_name           = var.domain_name != "" ? var.domain_name : module.labels.id
-  elasticsearch_version = var.elasticsearch_version
-
-  advanced_options = var.advanced_options
-
-  ebs_options {
-    ebs_enabled = var.volume_size > 0 ? true : false
-    volume_size = var.volume_size
-    volume_type = var.volume_type
-    iops        = var.iops
-  }
-
-  encrypt_at_rest {
-    enabled    = var.encrypt_at_rest_enabled
-    kms_key_id = var.kms_key_id
-  }
-
-  cognito_options {
-    enabled          = var.cognito_enabled
-    user_pool_id     = var.user_pool_id
-    identity_pool_id = var.identity_pool_id
-    role_arn         = module.cognito-role.arn
-  }
-
-  cluster_config {
-    instance_count           = var.instance_count
-    instance_type            = var.instance_type
-    dedicated_master_enabled = var.dedicated_master_enabled
-    dedicated_master_count   = var.dedicated_master_count
-    dedicated_master_type    = var.dedicated_master_type
-    zone_awareness_enabled   = var.zone_awareness_enabled
-
-    zone_awareness_config {
-      availability_zone_count = var.availability_zone_count
+    content {
+      security_group_ids = var.security_group_ids
+      subnet_ids         = var.subnet_ids
     }
   }
 
-  node_to_node_encryption {
-    enabled = var.encryption_enabled
-  }
-
   snapshot_options {
     automated_snapshot_start_hour = var.automated_snapshot_start_hour
   }
@@ -285,158 +220,29 @@ resource "aws_elasticsearch_domain" "default-public" {
     cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
   }
 
-  domain_endpoint_options {
-    enforce_https       = var.enforce_https
-    tls_security_policy = var.tls_security_policy
-  }
-
-  tags = module.labels.tags
-
-  depends_on = [aws_iam_service_linked_role.default]
-}
-
-#Module      : Elasticsearch
-#Description : Terraform module to create Elasticsearch resource on AWS.
-resource "aws_elasticsearch_domain" "single" {
-  count                 = var.enabled && var.zone_awareness_enabled == false && var.public_enabled == false ? 1 : 0
-  domain_name           = var.domain_name != "" ? var.domain_name : module.labels.id
-  elasticsearch_version = var.elasticsearch_version
-
-  advanced_options = var.advanced_options
-
-  ebs_options {
-    ebs_enabled = var.volume_size > 0 ? true : false
-    volume_size = var.volume_size
-    volume_type = var.volume_type
-    iops        = var.iops
-  }
-
-  encrypt_at_rest {
-    enabled    = var.encrypt_at_rest_enabled
-    kms_key_id = var.kms_key_id
-  }
-
-  cognito_options {
-    enabled          = var.cognito_enabled
-    user_pool_id     = var.user_pool_id
-    identity_pool_id = var.identity_pool_id
-    role_arn         = module.cognito-role.arn
-  }
-
-  cluster_config {
-    instance_count           = var.instance_count
-    instance_type            = var.instance_type
-    dedicated_master_enabled = var.dedicated_master_enabled
-    dedicated_master_count   = var.dedicated_master_count
-    dedicated_master_type    = var.dedicated_master_type
-  }
-
-  node_to_node_encryption {
-    enabled = var.encryption_enabled
-  }
-
-  vpc_options {
-    security_group_ids = var.security_group_ids
-    subnet_ids         = var.subnet_ids
-  }
-
-  snapshot_options {
-    automated_snapshot_start_hour = var.automated_snapshot_start_hour
-  }
-
   log_publishing_options {
-    enabled                  = var.log_publishing_index_enabled
-    log_type                 = "INDEX_SLOW_LOGS"
-    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
-  }
-
-  log_publishing_options {
-    enabled                  = var.log_publishing_search_enabled
-    log_type                 = "SEARCH_SLOW_LOGS"
-    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
-  }
-
-  log_publishing_options {
-    enabled                  = var.log_publishing_application_enabled
-    log_type                 = "ES_APPLICATION_LOGS"
+    enabled                  = var.log_publishing_audit_enabled
+    log_type                 = "AUDIT_LOGS"
     cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
   }
 
   domain_endpoint_options {
-    enforce_https       = var.enforce_https
-    tls_security_policy = var.tls_security_policy
+    enforce_https                   = var.enforce_https
+    tls_security_policy             = var.tls_security_policy
+    custom_endpoint_enabled         = var.custom_endpoint_enabled
+    custom_endpoint                 = var.custom_endpoint_enabled ? var.custom_endpoint : null
+    custom_endpoint_certificate_arn = var.custom_endpoint_enabled ? var.custom_endpoint_certificate_arn : null
   }
 
-  tags = module.labels.tags
-
-  depends_on = [aws_iam_service_linked_role.default]
-}
-
-resource "aws_elasticsearch_domain" "single-public" {
-  count                 = var.enabled && var.zone_awareness_enabled == false && var.public_enabled ? 1 : 0
-  domain_name           = var.domain_name != "" ? var.domain_name : module.labels.id
-  elasticsearch_version = var.elasticsearch_version
-
-  advanced_options = var.advanced_options
-
-  ebs_options {
-    ebs_enabled = var.volume_size > 0 ? true : false
-    volume_size = var.volume_size
-    volume_type = var.volume_type
-    iops        = var.iops
+  advanced_security_options {
+    enabled                        = var.advanced_security_options_enabled
+    internal_user_database_enabled = var.advanced_security_options_internal_user_database_enabled
+    master_user_options {
+      master_user_arn      = var.advanced_security_options_master_user_arn
+      master_user_name     = var.advanced_security_options_master_user_name
+      master_user_password = var.advanced_security_options_master_user_password
+    }
   }
-
-  encrypt_at_rest {
-    enabled    = var.encrypt_at_rest_enabled
-    kms_key_id = var.kms_key_id
-  }
-
-  cognito_options {
-    enabled          = var.cognito_enabled
-    user_pool_id     = var.user_pool_id
-    identity_pool_id = var.identity_pool_id
-    role_arn         = module.cognito-role.arn
-  }
-
-  cluster_config {
-    instance_count           = var.instance_count
-    instance_type            = var.instance_type
-    dedicated_master_enabled = var.dedicated_master_enabled
-    dedicated_master_count   = var.dedicated_master_count
-    dedicated_master_type    = var.dedicated_master_type
-  }
-
-  node_to_node_encryption {
-    enabled = var.encryption_enabled
-  }
-
-  snapshot_options {
-    automated_snapshot_start_hour = var.automated_snapshot_start_hour
-  }
-
-  log_publishing_options {
-    enabled                  = var.log_publishing_index_enabled
-    log_type                 = "INDEX_SLOW_LOGS"
-    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
-  }
-
-  log_publishing_options {
-    enabled                  = var.log_publishing_search_enabled
-    log_type                 = "SEARCH_SLOW_LOGS"
-    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
-  }
-
-  log_publishing_options {
-    enabled                  = var.log_publishing_application_enabled
-    log_type                 = "ES_APPLICATION_LOGS"
-    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
-  }
-
-  domain_endpoint_options {
-    enforce_https       = var.enforce_https
-    tls_security_policy = var.tls_security_policy
-  }
-
   tags = module.labels.tags
 
   depends_on = [aws_iam_service_linked_role.default]
@@ -447,30 +253,31 @@ resource "aws_elasticsearch_domain" "single-public" {
 data "aws_iam_policy_document" "default" {
   count = var.enabled ? 1 : 0
 
-  statement {
-    actions = distinct(compact(var.iam_actions))
-    effect  = "Allow"
+  dynamic "statement" {
+    for_each = length(var.allowed_cidr_blocks) > 0 && !var.vpc_enabled ? [true] : []
+    content {
+      effect = "Allow"
 
-    resources = [
-      var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.arn) : join("", aws_elasticsearch_domain.default.*.arn)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.arn) : join("", aws_elasticsearch_domain.single.*.arn)),
-      format("%s/*", (var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.arn) : join("", aws_elasticsearch_domain.default.*.arn)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.arn) : join("", aws_elasticsearch_domain.single.*.arn))))
-    ]
+      actions = distinct(compact(var.iam_actions))
 
-    principals {
-      type        = "AWS"
-      identifiers = ["*"]
-    }
-    condition {
-      test     = "IpAddress"
-      variable = "aws:SourceIp"
-
-      values = [
-        "*"
+      resources = [
+        join("", aws_elasticsearch_domain.default.*.arn),
+        "${join("", aws_elasticsearch_domain.default.*.arn)}/*"
       ]
+
+      principals {
+        type        = "AWS"
+        identifiers = ["*"]
+      }
+
+      condition {
+        test     = "IpAddress"
+        values   = var.allowed_cidr_blocks
+        variable = "aws:SourceIp"
+      }
     }
   }
 }
-
 data "aws_iam_policy_document" "vpc" {
   count = var.enabled ? 1 : 0
 
@@ -479,8 +286,8 @@ data "aws_iam_policy_document" "vpc" {
     effect  = "Allow"
 
     resources = [
-      var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.arn) : join("", aws_elasticsearch_domain.default.*.arn)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.arn) : join("", aws_elasticsearch_domain.single.*.arn)),
-      format("%s/*", (var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.arn) : join("", aws_elasticsearch_domain.default.*.arn)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.arn) : join("", aws_elasticsearch_domain.single.*.arn))))
+      join("", aws_elasticsearch_domain.default.*.arn),
+      format("%s/*", join("", aws_elasticsearch_domain.default.*.arn))
     ]
 
     principals {
@@ -495,7 +302,7 @@ data "aws_iam_policy_document" "vpc" {
 resource "aws_elasticsearch_domain_policy" "default" {
   count           = var.enabled ? 1 : 0
   domain_name     = var.domain_name != "" ? var.domain_name : module.labels.id
-  access_policies = var.public_enabled ? join("", data.aws_iam_policy_document.default.*.json) : join("", data.aws_iam_policy_document.vpc.*.json)
+  access_policies = var.vpc_enabled ? join("", data.aws_iam_policy_document.vpc.*.json) : join("", data.aws_iam_policy_document.default.*.json)
 }
 
 #Module      : ROUTE53
@@ -508,7 +315,7 @@ module "es_dns" {
   name           = var.es_hostname
   type           = var.type
   ttl            = var.ttl
-  values         = var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.endpoint) : join("", aws_elasticsearch_domain.default.*.endpoint)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.endpoint) : join("", aws_elasticsearch_domain.single.*.endpoint))
+  values         = join("", aws_elasticsearch_domain.default.*.endpoint)
 }
 #Module      : ROUTE53
 #Description : Provides a Route53 record resource.
@@ -520,5 +327,5 @@ module "kibana_dns" {
   name           = var.kibana_hostname
   type           = var.type
   ttl            = var.ttl
-  values         = var.zone_awareness_enabled ? (var.public_enabled ? join("", aws_elasticsearch_domain.default-public.*.endpoint) : join("", aws_elasticsearch_domain.default.*.endpoint)) : (var.public_enabled ? join("", aws_elasticsearch_domain.single-public.*.endpoint) : join("", aws_elasticsearch_domain.single.*.endpoint))
+  values         = join("", aws_elasticsearch_domain.default.*.endpoint)
 }

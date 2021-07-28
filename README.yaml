@@ -34,64 +34,233 @@ include:
 # yamllint disable rule:line-length
 usage: |-
   Here are examples of how you can use this module in your inventory structure:
-  ### Single Node
+  ### Multi Node non vpc
   ```hcl
-      module "elasticsearch" {
-      source                                         = "clouddrove/elasticsearch/aws"
-      version                                        = "0.15.0"
-      name                                           = "es"
-      environment                                    = "test"
-      label_order                                    = ["name", "environment"]
-      enable_iam_service_linked_role                 = true
-      security_group_ids                             = [module.security_group.security_group_ids]
-      subnet_ids                                     = tolist(module.public_subnets.public_subnet_id)
-      elasticsearch_version                          = "7.1"
-      instance_type                                  = "t2.small.elasticsearch"
-      instance_count                                 = 1
-      iam_actions                                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
-      volume_size                                    = 30
-      volume_type                                    = "gp2"
-      log_publishing_application_enabled             = true
-      log_publishing_search_cloudwatch_log_group_arn = true
-      log_publishing_index_cloudwatch_log_group_arn  = true
+    module "elasticsearch" {
+    source      = "clouddrove/elasticsearch/aws"
 
-      dns_enabled     = true
-      es_hostname     = "es"
-      kibana_hostname = "kibana"
-      dns_zone_id     = "Z1XJD7SSBKXLC1"
+    name        = "es"
+    environment = "test"
+    label_order = ["name", "environment"]
+    domain_name = "clouddrove"
 
-      advanced_options = {
-      "rest.action.multi.allow_explicit_index" = "true"
+    #IAM
+    enable_iam_service_linked_role = false
+    iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
+
+    #Networking
+    vpc_enabled             = false
+    availability_zone_count = 2
+    zone_awareness_enabled  = true
+    allowed_cidr_blocks     = ["51.79.69.69"]
+
+
+    #ES
+    elasticsearch_version = "7.8"
+    instance_type         = "c5.large.elasticsearch"
+    instance_count        = 2
+
+    # Volumes
+    volume_size = 30
+    volume_type = "gp2"
+
+    #DNS
+    dns_enabled     = false
+    es_hostname     = "es"
+    kibana_hostname = "kibana"
+    dns_zone_id     = false
+
+    advanced_options = {
+    "rest.action.multi.allow_explicit_index" = "true"
+    }
+
+    #Cognito
+    cognito_enabled  = false
+    user_pool_id     = ""
+    identity_pool_id = ""
+
+    #logs
+    log_publishing_index_enabled       = true
+    log_publishing_search_enabled      = true
+    log_publishing_application_enabled = true
+    log_publishing_audit_enabled       = false
       }
     }
+
   ```
-  ### Multi Node
+  ### Multi Node  vpc
   ```hcl
       module "elasticsearch" {
-       source                        = "clouddrove/elasticsearch/aws"
-      version                        = "0.15.0"
-      name                           = "es"
-      environment                    = "test"
-      label_order                    = ["name", "environment"]
-      domain_name                    = "clouddrove"
-      enable_iam_service_linked_role = true
-      security_group_ids             = [module.security_group.security_group_ids]
-      subnet_ids                     = tolist(module.public_subnets.public_subnet_id)
-      zone_awareness_enabled         = true
-      availability_zone_count        = 2
-      elasticsearch_version          = "7.1"
-      instance_type                  = "t2.small.elasticsearch"
-      instance_count                 = 2
+      source      = "clouddrove/elasticsearch/aws"
+
+      name        = "es"
+      environment = "test"
+      label_order = ["name", "environment"]
+      domain_name = "clouddrove"
+
+      #IAM
+      enable_iam_service_linked_role = false
       iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
-      volume_size                    = 30
-      volume_type                    = "gp2"
-      dns_enabled     = true
+
+      #Networking
+      vpc_enabled             = true
+      security_group_ids      = [module.security_group.security_group_ids]
+      subnet_ids              = tolist(module.public_subnets.public_subnet_id)
+      availability_zone_count = length(module.public_subnets.public_subnet_id)
+      zone_awareness_enabled  = true
+
+
+      #ES
+      elasticsearch_version = "7.8"
+      instance_type         = "c5.large.elasticsearch"
+      instance_count        = 2
+
+      # Volumes
+      volume_size = 30
+      volume_type = "gp2"
+
+      #DNS
+      dns_enabled     = false
       es_hostname     = "es"
       kibana_hostname = "kibana"
-      dns_zone_id     = "Z1XJD7SSBKXLC1"
+      dns_zone_id     = false
+
       advanced_options = {
       "rest.action.multi.allow_explicit_index" = "true"
       }
+
+      #Cognito
+      cognito_enabled  = false
+      user_pool_id     = ""
+      identity_pool_id = ""
+
+      #logs
+      log_publishing_index_enabled       = true
+      log_publishing_search_enabled      = true
+      log_publishing_application_enabled = true
+      log_publishing_audit_enabled       = false
+     }
+  ```
+
+  ### Single  Node Non vpc
+  ```hcl
+     source            = "clouddrove/elasticsearch/aws"
+
+     name        = "es"
+     environment = "test"
+    label_order = ["name", "environment"]
+
+    #IAM
+
+    enable_iam_service_linked_role = false
+    iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
+
+
+    #Networking
+
+    vpc_enabled         = false
+    allowed_cidr_blocks = ["51.79.69.69"]
+
+
+    #Es
+    elasticsearch_version = "7.8"
+    instance_type         = "c5.large.elasticsearch"
+    instance_count        = 1
+
+    #Volume
+    volume_size = 30
+    volume_type = "gp2"
+
+    #Logs
+    log_publishing_application_enabled             = true
+    log_publishing_search_cloudwatch_log_group_arn = true
+    log_publishing_index_cloudwatch_log_group_arn  = true
+
+
+
+    #Cognito
+    cognito_enabled  = false
+    user_pool_id     = ""
+    identity_pool_id = ""
+
+    #DNS
+    kibana_hostname = "kibana"
+    dns_zone_id     = "Z1XJD7SSBKXLC1"
+    dns_enabled     = false
+    es_hostname     = "es"
+
+
+    advanced_options = {
+    "rest.action.multi.allow_explicit_index" = "true"
+    }
+
+    enforce_https       = true
+    tls_security_policy = "Policy-Min-TLS-1-0-2019-07"
+    public_enabled      = false
+
     }
   ```
+
+  ### Single  Node  vpc
+
+  ```hcl
+     module "elasticsearch" {
+    source            = "clouddrove/elasticsearch/aws"
+
+    name        = "es"
+    environment = "test"
+    label_order = ["name", "environment"]
+
+    #IAM
+    enable_iam_service_linked_role = false
+    iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
+
+
+    #Networking
+
+    vpc_enabled        = true
+    security_group_ids = [module.security_group.security_group_ids]
+    subnet_ids         = tolist(module.public_subnets.public_subnet_id)
+
+
+    #Es
+
+    elasticsearch_version = "7.8"
+    instance_type         = "c5.large.elasticsearch"
+    instance_count        = 1
+
+    #Volume
+    volume_size = 30
+    volume_type = "gp2"
+
+    #Logs
+    log_publishing_application_enabled             = true
+    log_publishing_search_cloudwatch_log_group_arn = true
+    log_publishing_index_cloudwatch_log_group_arn  = true
+
+
+
+    #Cognito
+    cognito_enabled  = false
+    user_pool_id     = ""
+    identity_pool_id = ""
+
+    #DNS
+    kibana_hostname = "kibana"
+    dns_zone_id     = "Z1XJD7SSBKXLC1"
+    dns_enabled     = false
+    es_hostname     = "es"
+
+
+    advanced_options = {
+    "rest.action.multi.allow_explicit_index" = "true"
+    }
+
+    enforce_https       = true
+    tls_security_policy = "Policy-Min-TLS-1-0-2019-07"
+    public_enabled      = false
+
+    }
+  ```
+
   Note: There are some type of instances which not support encryption and EBS option, Please read about this [here](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-supported-instance-types.html). Also, there are some limitation for instance type, Please read [here](https://docs.aws.amazon.com/elasticsearch-service/latest/developerguide/aes-limits.html)
