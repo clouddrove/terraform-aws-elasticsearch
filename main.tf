@@ -25,7 +25,6 @@ resource "aws_cloudwatch_log_group" "cloudwatch" {
   tags              = module.labels.tags
   retention_in_days = var.retention_in_days
   kms_key_id        = var.cloudwatch_kms_key_id
-  name_prefix       = var.name_prefix
 
 }
 
@@ -40,7 +39,7 @@ resource "aws_cloudwatch_log_resource_policy" "cloudwatch_policy" {
 
 resource "aws_iam_service_linked_role" "default" {
   count            = var.enabled && var.enable_iam_service_linked_role ? 1 : 0
-  aws_service_name = "es.amazonaws.com"
+  aws_service_name = "OpenSearch.amazonaws.com"
   description      = "AWSServiceRoleForAmazonElasticsearchService Service-Linked Role"
   tags             = module.labels.tags
 }
@@ -49,7 +48,7 @@ resource "aws_iam_service_linked_role" "default" {
 #Description : Terraform module to create Iam Role resource on AWS.
 resource "aws_iam_role" "default" {
   count              = var.enabled ? 1 : 0
-  name               = format("%s-role", module.labels.id)
+  name               = format("%s-role", "llll")
   assume_role_policy = join("", data.aws_iam_policy_document.assume_role.*.json)
   description        = "IAM Role to assume to access the Elasticsearch cluster"
   tags               = module.labels.tags
