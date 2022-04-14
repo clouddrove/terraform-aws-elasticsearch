@@ -25,6 +25,7 @@ resource "aws_cloudwatch_log_group" "cloudwatch" {
   tags              = module.labels.tags
   retention_in_days = var.retention_in_days
   kms_key_id        = var.cloudwatch_kms_key_id
+  name_prefix       = var.name_prefix
 
 }
 
@@ -41,6 +42,7 @@ resource "aws_iam_service_linked_role" "default" {
   count            = var.enabled && var.enable_iam_service_linked_role ? 1 : 0
   aws_service_name = "es.amazonaws.com"
   description      = "AWSServiceRoleForAmazonElasticsearchService Service-Linked Role"
+  tags             = module.labels.tags
 }
 
 #Module      : Iam Role
