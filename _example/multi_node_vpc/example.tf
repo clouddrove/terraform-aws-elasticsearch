@@ -17,7 +17,7 @@ module "public_subnets" {
   version = "0.15.0"
 
   name        = "public-subnet"
-  environment = "test-a"
+  environment = "test"
   label_order = ["name", "environment"]
 
   availability_zones = ["eu-west-1b", "eu-west-1c"]
