@@ -23,7 +23,7 @@ jobs:
 
       - name: 'Terratest for multi_node_non_vpc'
         if: ${{ github.event.label.name == 'terratest' }}
-        uses: 'clouddrove/github-actions@v9.0.1'
+        uses: 'clouddrove/github-actions@v9.0.2'
         with:
           actions_subcommand: 'terratest'
           tf_actions_working_dir: '_test/multi_node_non_vpc'
@@ -32,8 +32,7 @@ jobs:
 
       - name: 'Terratest for multi_node_vpc'
         if: ${{ github.event.label.name == 'terratest' }}
-        uses: 'clouddrove/github-actions@v9.0.1'
-        with:
+        uses: 'clouddrove/github-actions@v9.0.2
           actions_subcommand: 'terratest'
           tf_actions_working_dir: '_test/multi_node_vpc'
         env:
@@ -42,7 +41,7 @@ jobs:
 
       - name: 'Terratest for single_node_non_vpc'
         if: ${{ github.event.label.name == 'terratest' }}
-        uses: 'clouddrove/github-actions@v9.0.1'
+        uses: 'clouddrove/github-actions@v9.0.2'
         with:
           actions_subcommand: 'terratest'
           tf_actions_working_dir: '_test/single_node_non_vpc'
@@ -52,7 +51,7 @@ jobs:
 
       - name: 'Terratest for single_node_vpc'
         if: ${{ github.event.label.name == 'terratest' }}
-        uses: 'clouddrove/github-actions@v9.0.1'
+        uses: 'clouddrove/github-actions@v9.0.2'
         with:
           actions_subcommand: 'terratest'
           tf_actions_working_dir: '_test/single_node_vpc'
