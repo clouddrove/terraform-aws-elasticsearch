@@ -39,8 +39,9 @@ resource "aws_cloudwatch_log_resource_policy" "cloudwatch_policy" {
 
 resource "aws_iam_service_linked_role" "default" {
   count            = var.enabled && var.enable_iam_service_linked_role ? 1 : 0
-  aws_service_name = "es.amazonaws.com"
+  aws_service_name = "OpenSearch.amazonaws.com"
   description      = "AWSServiceRoleForAmazonElasticsearchService Service-Linked Role"
+  tags             = module.labels.tags
 }
 
 #Module      : Iam Role
@@ -140,6 +141,7 @@ module "cognito-role" {
 
 #Module      : Elasticsearch
 #Description : Terraform module to create Elasticsearch resource on AWS.
+#tfsec:ignore:aws-elastic-search-use-secure-tls-policy
 resource "aws_elasticsearch_domain" "default" {
   count                 = var.enabled ? 1 : 0
   domain_name           = var.domain_name != "" ? var.domain_name : module.labels.id

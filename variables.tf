@@ -6,6 +6,12 @@ variable "name" {
   description = "Name  (e.g. `app` or `cluster`)."
 }
 
+variable "name_prefix" {
+  type        = string
+  default     = ""
+  description = "Name  (e.g. `app` or `cluster`)."
+}
+
 variable "repository" {
   type        = string
   default     = "https://github.com/clouddrove/terraform-aws-elasticsearch"
@@ -383,3 +389,10 @@ variable "allowed_cidr_blocks" {
   default     = []
   description = "List of CIDR blocks to be allowed to connect to the cluster"
 }
+
+variable "managed_policy_arns" {
+  type        = list(any)
+  default     = []
+  description = "Set of exclusive IAM managed policy ARNs to attach to the IAM role"
+}
+
