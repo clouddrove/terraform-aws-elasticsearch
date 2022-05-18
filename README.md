@@ -14,10 +14,16 @@
 <p align="center">
 
 <a href="https://www.terraform.io">
-  <img src="https://img.shields.io/badge/terraform-v0.15-green" alt="Terraform">
+  <img src="https://img.shields.io/badge/terraform-v1.1.7-green" alt="Terraform">
 </a>
 <a href="LICENSE.md">
-  <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="Licence">
+  <img src="https://img.shields.io/badge/License-APACHE-blue.svg" alt="Licence">
+</a>
+<a href="https://github.com/clouddrove/terraform-aws-elasticsearch/actions/workflows/tfsec.yml">
+  <img src="https://github.com/clouddrove/terraform-aws-elasticsearch/actions/workflows/tfsec.yml/badge.svg" alt="tfsec">
+</a>
+<a href="https://github.com/clouddrove/terraform-aws-elasticsearch/actions/workflows/terraform.yml">
+  <img src="https://github.com/clouddrove/terraform-aws-elasticsearch/actions/workflows/terraform.yml/badge.svg" alt="static-checks">
 </a>
 
 
@@ -51,7 +57,7 @@ We have [*fifty plus terraform modules*][terraform_modules]. A few of them are c
 
 This module has a few dependencies: 
 
-- [Terraform 0.13](https://learn.hashicorp.com/terraform/getting-started/install.html)
+- [Terraform 1.x.x](https://learn.hashicorp.com/terraform/getting-started/install.html)
 - [Go](https://golang.org/doc/install)
 - [github.com/stretchr/testify/assert](https://github.com/stretchr/testify)
 - [github.com/gruntwork-io/terratest/modules/terraform](https://github.com/gruntwork-io/terratest)
@@ -73,7 +79,7 @@ Here are examples of how you can use this module in your inventory structure:
 ```hcl
   module "elasticsearch" {
   source      = "clouddrove/elasticsearch/aws"
-
+  
   name        = "es"
   environment = "test"
   label_order = ["name", "environment"]
@@ -352,8 +358,10 @@ Note: There are some type of instances which not support encryption and EBS opti
 | log\_publishing\_audit\_enabled | Specifies whether log publishing option for AUDIT\_LOGS is enabled or not. | `bool` | `false` | no |
 | log\_publishing\_index\_enabled | Specifies whether log publishing option for INDEX\_SLOW\_LOGS is enabled or not. | `bool` | `false` | no |
 | log\_publishing\_search\_enabled | Specifies whether log publishing option for SEARCH\_SLOW\_LOGS is enabled or not. | `bool` | `false` | no |
+| managed\_policy\_arns | Set of exclusive IAM managed policy ARNs to attach to the IAM role | `list(any)` | `[]` | no |
 | managedby | ManagedBy, eg 'CloudDrove'. | `string` | `"hello@clouddrove.com"` | no |
 | name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
+| name\_prefix | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
 | repository | Terraform current module repo | `string` | `"https://github.com/clouddrove/terraform-aws-elasticsearch"` | no |
 | retention\_in\_days | Days of retention of cloudwatch. | `number` | `90` | no |
 | security\_group\_ids | Security Group IDs. | `list(string)` | `[]` | no |
