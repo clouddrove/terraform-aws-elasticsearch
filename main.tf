@@ -39,7 +39,7 @@ resource "aws_cloudwatch_log_resource_policy" "cloudwatch_policy" {
 
 resource "aws_iam_service_linked_role" "default" {
   count            = var.enabled && var.enable_iam_service_linked_role ? 1 : 0
-  aws_service_name = "OpenSearch.amazonaws.com"
+  aws_service_name = "opensearchservice.amazonaws.com"
   description      = "AWSServiceRoleForAmazonElasticsearchService Service-Linked Role"
   tags             = module.labels.tags
 }
