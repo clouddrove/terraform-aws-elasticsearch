@@ -156,6 +156,10 @@ resource "aws_elasticsearch_domain" "default" {
     iops        = var.iops
   }
 
+  auto_tune_options {
+    desired_state = var.auto_tune_desired_state
+  }
+
   cognito_options {
     enabled          = var.cognito_enabled
     user_pool_id     = var.user_pool_id

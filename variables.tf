@@ -396,3 +396,13 @@ variable "managed_policy_arns" {
   description = "Set of exclusive IAM managed policy ARNs to attach to the IAM role"
 }
 
+variable "auto_tune_desired_state" {
+  type        = string
+  default     = "DISABLED"
+  description = "Desired state of Auto-Tune for the domain. Valid values are ENABLED, DISABLED."
+
+  validation {
+    condition     = can(regex("^ENABLED$|^DISABLED$", var.auto_tune_desired_state))
+    error_message = "The value must be one of ENABLED, or DISABLED."
+  }
+}
