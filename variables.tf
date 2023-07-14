@@ -68,7 +68,6 @@ variable "enable_iam_service_linked_role" {
   description = "Whether to enabled service linked with role."
 }
 
-
 variable "iam_actions" {
   type        = list(string)
   default     = []
@@ -189,8 +188,6 @@ variable "log_publishing_audit_enabled" {
   default     = false
   description = "Specifies whether log publishing option for AUDIT_LOGS is enabled or not."
 }
-
-
 
 variable "automated_snapshot_start_hour" {
   type        = number
@@ -364,8 +361,6 @@ variable "custom_endpoint_certificate_arn" {
   default     = ""
 }
 
-
-
 variable "warm_enabled" {
   type        = bool
   default     = false
@@ -405,4 +400,10 @@ variable "auto_tune_desired_state" {
     condition     = can(regex("^ENABLED$|^DISABLED$", var.auto_tune_desired_state))
     error_message = "The value must be one of ENABLED, or DISABLED."
   }
+}
+
+variable "rollback_on_disable" {
+  type        = string
+  default     = "DEFAULT_ROLLBACK"
+  description = "Whether to roll back to default Auto-Tune settings when disabling Auto-Tune. Valid values: DEFAULT_ROLLBACK or NO_ROLLBACK."
 }

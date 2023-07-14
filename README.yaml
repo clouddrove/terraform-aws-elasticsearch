@@ -15,18 +15,15 @@ github_repo: clouddrove/terraform-aws-elasticsearch
 
 # Badges to display
 badges:
-  - name: "Terraform"
-    image: "https://img.shields.io/badge/terraform-v1.1.7-green"
-    url: "https://www.terraform.io"
-  - name: "Licence"
-    image: "https://img.shields.io/badge/License-APACHE-blue.svg"
-    url: "LICENSE.md"
+  - name: "Latest Release"
+    image: "https://img.shields.io/github/release/clouddrove/terraform-aws-elasticsearch.svg"
+    url: "https://github.com/clouddrove/terraform-aws-elasticsearch/releases/latest"
   - name: "tfsec"
     image: "https://github.com/clouddrove/terraform-aws-elasticsearch/actions/workflows/tfsec.yml/badge.svg"
     url: "https://github.com/clouddrove/terraform-aws-elasticsearch/actions/workflows/tfsec.yml"
-  - name: "static-checks"
-    image: "https://github.com/clouddrove/terraform-aws-elasticsearch/actions/workflows/terraform.yml/badge.svg"
-    url: "https://github.com/clouddrove/terraform-aws-elasticsearch/actions/workflows/terraform.yml"
+  - name: "Licence"
+    image: "https://img.shields.io/badge/License-APACHE-blue.svg"
+    url: "LICENSE.md"
 
 #  description of this project
 description: |-
@@ -44,7 +41,7 @@ usage: |-
   ```hcl
     module "elasticsearch" {
     source      = "clouddrove/elasticsearch/aws"
-    
+
     name        = "es"
     environment = "test"
     label_order = ["name", "environment"]
@@ -150,28 +147,27 @@ usage: |-
 
   ### Single  Node Non vpc
   ```hcl
-     source            = "clouddrove/elasticsearch/aws"
+     module "elasticsearch" {
+     source   = "clouddrove/elasticsearch/aws"
 
      name        = "es"
      environment = "test"
-    label_order = ["name", "environment"]
+     label_order = ["name", "environment"]
 
-    #IAM
+     #IAM
 
-    enable_iam_service_linked_role = false
-    iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
+     enable_iam_service_linked_role = false
+     iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
 
+     #Networking
 
-    #Networking
+     vpc_enabled         = false
+     allowed_cidr_blocks = ["51.79.69.69"]
 
-    vpc_enabled         = false
-    allowed_cidr_blocks = ["51.79.69.69"]
-
-
-    #Es
-    elasticsearch_version = "7.8"
-    instance_type         = "c5.large.elasticsearch"
-    instance_count        = 1
+     #Es
+     elasticsearch_version = "7.8"
+     instance_type         = "c5.large.elasticsearch"
+     instance_count        = 1
 
     #Volume
     volume_size = 30
@@ -181,8 +177,6 @@ usage: |-
     log_publishing_application_enabled             = true
     log_publishing_search_cloudwatch_log_group_arn = true
     log_publishing_index_cloudwatch_log_group_arn  = true
-
-
 
     #Cognito
     cognito_enabled  = false
@@ -210,8 +204,8 @@ usage: |-
   ### Single  Node  vpc
 
   ```hcl
-     module "elasticsearch" {
-    source            = "clouddrove/elasticsearch/aws"
+    module "elasticsearch" {
+    source = "clouddrove/elasticsearch/aws"
 
     name        = "es"
     environment = "test"
@@ -221,7 +215,6 @@ usage: |-
     enable_iam_service_linked_role = false
     iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
 
-
     #Networking
 
     vpc_enabled        = true
@@ -230,7 +223,6 @@ usage: |-
 
 
     #Es
-
     elasticsearch_version = "7.8"
     instance_type         = "c5.large.elasticsearch"
     instance_count        = 1
@@ -244,8 +236,6 @@ usage: |-
     log_publishing_search_cloudwatch_log_group_arn = true
     log_publishing_index_cloudwatch_log_group_arn  = true
 
-
-
     #Cognito
     cognito_enabled  = false
     user_pool_id     = ""
@@ -256,7 +246,6 @@ usage: |-
     dns_zone_id     = "Z1XJD7SSBKXLC1"
     dns_enabled     = false
     es_hostname     = "es"
-
 
     advanced_options = {
     "rest.action.multi.allow_explicit_index" = "true"

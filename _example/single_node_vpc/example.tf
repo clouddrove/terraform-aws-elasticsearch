@@ -1,7 +1,13 @@
+##------------------------------------------------------------------------------
+## Provider block added, Use the Amazon Web Services (AWS) provider to interact with the many resources supported by AWS.
+##------------------------------------------------------------------------------
 provider "aws" {
   region = "eu-west-1"
 }
 
+##------------------------------------------------------------------------------
+## A VPC is a virtual network that closely resembles a traditional network that you'd operate in your own data center.
+##------------------------------------------------------------------------------
 module "vpc" {
   source  = "clouddrove/vpc/aws"
   version = "1.3.1"
@@ -14,6 +20,9 @@ module "vpc" {
   cidr_block = "172.16.0.0/16"
 }
 
+##------------------------------------------------------------------------------
+## A subnet is a range of IP addresses in your VPC.
+##------------------------------------------------------------------------------
 module "public_subnets" {
   source  = "clouddrove/subnet/aws"
   version = "1.3.0"
@@ -30,6 +39,9 @@ module "public_subnets" {
   igw_id             = module.vpc.igw_id
 }
 
+##------------------------------------------------------------------------------
+## Below module will create SECURITY-GROUP and its components.
+##------------------------------------------------------------------------------
 module "security_group" {
   source  = "clouddrove/security-group/aws"
   version = "1.3.0"
@@ -43,9 +55,10 @@ module "security_group" {
   allowed_ports = [80, 443, 9200]
 }
 
-
+##------------------------------------------------------------------------------
+## elasticsearch module call.
+##------------------------------------------------------------------------------
 module "elasticsearch" {
-
   source      = "../../"
   name        = "es"
   environment = "test"
@@ -55,16 +68,12 @@ module "elasticsearch" {
   enable_iam_service_linked_role = false
   iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
 
-
   #Networking
-
   vpc_enabled        = true
   security_group_ids = [module.security_group.security_group_ids]
   subnet_ids         = tolist(module.public_subnets.public_subnet_id)
 
-
   #Es
-
   elasticsearch_version = "7.8"
   instance_type         = "c5.large.elasticsearch"
   instance_count        = 1
@@ -76,8 +85,6 @@ module "elasticsearch" {
   #Logs
   log_publishing_application_enabled = true
 
-
-
   #Cognito
   cognito_enabled  = false
   user_pool_id     = ""
@@ -88,8 +95,6 @@ module "elasticsearch" {
   dns_zone_id     = "Z1XJD7SSBKXLC1"
   dns_enabled     = false
   es_hostname     = "es"
-
-
   advanced_options = {
     "rest.action.multi.allow_explicit_index" = "true"
   }
