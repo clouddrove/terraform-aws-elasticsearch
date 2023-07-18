@@ -185,7 +185,7 @@ variable "log_publishing_application_enabled" {
 
 variable "log_publishing_audit_enabled" {
   type        = bool
-  default     = false
+  default     = true
   description = "Specifies whether log publishing option for AUDIT_LOGS is enabled or not."
 }
 

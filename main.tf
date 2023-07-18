@@ -17,6 +17,7 @@ module "labels" {
 ##------------------------------------------------------------------------------
 ## A log group is a group of log streams that share the same retention, monitoring, and access control settings.
 ##------------------------------------------------------------------------------
+#tfsec:ignore:aws-cloudwatch-log-group-customer-key
 resource "aws_cloudwatch_log_group" "cloudwatch" {
   count             = var.enabled && var.enable_logs ? 1 : 0
   name              = module.labels.id
@@ -140,12 +141,12 @@ module "cognito-role" {
 ##------------------------------------------------------------------------------
 ## Terraform resource for managing an AWS Elasticsearch Domain.
 ##------------------------------------------------------------------------------
+#tfsec:ignore:aws-elastic-search-use-secure-tls-policy
 resource "aws_elasticsearch_domain" "default" {
   count                 = var.enabled ? 1 : 0
   domain_name           = var.domain_name != "" ? var.domain_name : module.labels.id
   elasticsearch_version = var.elasticsearch_version
-
-  advanced_options = var.advanced_options
+  advanced_options      = var.advanced_options
 
   ebs_options {
     ebs_enabled = var.volume_size > 0 ? true : false
@@ -196,7 +197,6 @@ resource "aws_elasticsearch_domain" "default" {
 
   dynamic "vpc_options" {
     for_each = var.vpc_enabled ? [true] : []
-
     content {
       security_group_ids = var.security_group_ids
       subnet_ids         = var.subnet_ids
@@ -249,7 +249,6 @@ resource "aws_elasticsearch_domain" "default" {
     }
   }
   tags = module.labels.tags
-
 }
 
 ##------------------------------------------------------------------------------

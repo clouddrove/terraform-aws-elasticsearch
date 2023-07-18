@@ -18,7 +18,7 @@ module "elasticsearch" {
   #IAM
   enable_iam_service_linked_role = false
   iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
-
+  tls_security_policy            = "Policy-Min-TLS-1-0-2019-07"
   #Networking
   vpc_enabled             = false
   availability_zone_count = 2
