@@ -13,17 +13,14 @@
 
 <p align="center">
 
-<a href="https://www.terraform.io">
-  <img src="https://img.shields.io/badge/terraform-v1.1.7-green" alt="Terraform">
-</a>
-<a href="LICENSE.md">
-  <img src="https://img.shields.io/badge/License-APACHE-blue.svg" alt="Licence">
+<a href="https://github.com/clouddrove/terraform-aws-elasticsearch/releases/latest">
+  <img src="https://img.shields.io/github/release/clouddrove/terraform-aws-elasticsearch.svg" alt="Latest Release">
 </a>
 <a href="https://github.com/clouddrove/terraform-aws-elasticsearch/actions/workflows/tfsec.yml">
   <img src="https://github.com/clouddrove/terraform-aws-elasticsearch/actions/workflows/tfsec.yml/badge.svg" alt="tfsec">
 </a>
-<a href="https://github.com/clouddrove/terraform-aws-elasticsearch/actions/workflows/terraform.yml">
-  <img src="https://github.com/clouddrove/terraform-aws-elasticsearch/actions/workflows/terraform.yml/badge.svg" alt="static-checks">
+<a href="LICENSE.md">
+  <img src="https://img.shields.io/badge/License-APACHE-blue.svg" alt="Licence">
 </a>
 
 
@@ -79,7 +76,7 @@ Here are examples of how you can use this module in your inventory structure:
 ```hcl
   module "elasticsearch" {
   source      = "clouddrove/elasticsearch/aws"
-  
+
   name        = "es"
   environment = "test"
   label_order = ["name", "environment"]
@@ -185,28 +182,27 @@ Here are examples of how you can use this module in your inventory structure:
 
 ### Single  Node Non vpc
 ```hcl
-   source            = "clouddrove/elasticsearch/aws"
+   module "elasticsearch" {
+   source   = "clouddrove/elasticsearch/aws"
 
    name        = "es"
    environment = "test"
-  label_order = ["name", "environment"]
+   label_order = ["name", "environment"]
 
-  #IAM
+   #IAM
 
-  enable_iam_service_linked_role = false
-  iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
+   enable_iam_service_linked_role = false
+   iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
 
+   #Networking
 
-  #Networking
+   vpc_enabled         = false
+   allowed_cidr_blocks = ["51.79.69.69"]
 
-  vpc_enabled         = false
-  allowed_cidr_blocks = ["51.79.69.69"]
-
-
-  #Es
-  elasticsearch_version = "7.8"
-  instance_type         = "c5.large.elasticsearch"
-  instance_count        = 1
+   #Es
+   elasticsearch_version = "7.8"
+   instance_type         = "c5.large.elasticsearch"
+   instance_count        = 1
 
   #Volume
   volume_size = 30
@@ -216,8 +212,6 @@ Here are examples of how you can use this module in your inventory structure:
   log_publishing_application_enabled             = true
   log_publishing_search_cloudwatch_log_group_arn = true
   log_publishing_index_cloudwatch_log_group_arn  = true
-
-
 
   #Cognito
   cognito_enabled  = false
@@ -245,8 +239,8 @@ Here are examples of how you can use this module in your inventory structure:
 ### Single  Node  vpc
 
 ```hcl
-   module "elasticsearch" {
-  source            = "clouddrove/elasticsearch/aws"
+  module "elasticsearch" {
+  source = "clouddrove/elasticsearch/aws"
 
   name        = "es"
   environment = "test"
@@ -256,7 +250,6 @@ Here are examples of how you can use this module in your inventory structure:
   enable_iam_service_linked_role = false
   iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
 
-
   #Networking
 
   vpc_enabled        = true
@@ -265,7 +258,6 @@ Here are examples of how you can use this module in your inventory structure:
 
 
   #Es
-
   elasticsearch_version = "7.8"
   instance_type         = "c5.large.elasticsearch"
   instance_count        = 1
@@ -279,8 +271,6 @@ Here are examples of how you can use this module in your inventory structure:
   log_publishing_search_cloudwatch_log_group_arn = true
   log_publishing_index_cloudwatch_log_group_arn  = true
 
-
-
   #Cognito
   cognito_enabled  = false
   user_pool_id     = ""
@@ -291,7 +281,6 @@ Here are examples of how you can use this module in your inventory structure:
   dns_zone_id     = "Z1XJD7SSBKXLC1"
   dns_enabled     = false
   es_hostname     = "es"
-
 
   advanced_options = {
   "rest.action.multi.allow_explicit_index" = "true"
@@ -356,7 +345,7 @@ Note: There are some type of instances which not support encryption and EBS opti
 | kms\_key\_id | The KMS key ID to encrypt the Elasticsearch domain with. If not specified, then it defaults to using the AWS/Elasticsearch service KMS key. | `string` | `""` | no |
 | label\_order | Label order, e.g. `name`,`application`. | `list(any)` | `[]` | no |
 | log\_publishing\_application\_enabled | Specifies whether log publishing option for ES\_APPLICATION\_LOGS is enabled or not. | `bool` | `false` | no |
-| log\_publishing\_audit\_enabled | Specifies whether log publishing option for AUDIT\_LOGS is enabled or not. | `bool` | `false` | no |
+| log\_publishing\_audit\_enabled | Specifies whether log publishing option for AUDIT\_LOGS is enabled or not. | `bool` | `true` | no |
 | log\_publishing\_index\_enabled | Specifies whether log publishing option for INDEX\_SLOW\_LOGS is enabled or not. | `bool` | `false` | no |
 | log\_publishing\_search\_enabled | Specifies whether log publishing option for SEARCH\_SLOW\_LOGS is enabled or not. | `bool` | `false` | no |
 | managed\_policy\_arns | Set of exclusive IAM managed policy ARNs to attach to the IAM role | `list(any)` | `[]` | no |
@@ -365,6 +354,7 @@ Note: There are some type of instances which not support encryption and EBS opti
 | name\_prefix | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
 | repository | Terraform current module repo | `string` | `"https://github.com/clouddrove/terraform-aws-elasticsearch"` | no |
 | retention\_in\_days | Days of retention of cloudwatch. | `number` | `90` | no |
+| rollback\_on\_disable | Whether to roll back to default Auto-Tune settings when disabling Auto-Tune. Valid values: DEFAULT\_ROLLBACK or NO\_ROLLBACK. | `string` | `"DEFAULT_ROLLBACK"` | no |
 | security\_group\_ids | Security Group IDs. | `list(string)` | `[]` | no |
 | subnet\_ids | Subnet IDs. | `list(string)` | `[]` | no |
 | tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | `map(any)` | `{}` | no |
