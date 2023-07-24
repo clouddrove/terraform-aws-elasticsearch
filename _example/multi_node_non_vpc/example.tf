@@ -1,25 +1,29 @@
+##------------------------------------------------------------------------------
+## Provider block added, Use the Amazon Web Services (AWS) provider to interact with the many resources supported by AWS.
+##------------------------------------------------------------------------------
 provider "aws" {
   region = "eu-west-1"
 }
 
+##------------------------------------------------------------------------------
+## elasticsearch module call.
+##------------------------------------------------------------------------------
 module "elasticsearch" {
-  source = "../../"
-
+  source      = "../../"
   name        = "es"
   environment = "test"
   label_order = ["name", "environment"]
   domain_name = "clouddrove"
 
   #IAM
-  enable_iam_service_linked_role = true
+  enable_iam_service_linked_role = false
   iam_actions                    = ["es:ESHttpGet", "es:ESHttpPut", "es:ESHttpPost"]
-
+  tls_security_policy            = "Policy-Min-TLS-1-0-2019-07"
   #Networking
   vpc_enabled             = false
   availability_zone_count = 2
   zone_awareness_enabled  = true
   allowed_cidr_blocks     = ["51.79.69.69"]
-
 
   #ES
   elasticsearch_version = "7.8"

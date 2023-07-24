@@ -1,11 +1,6 @@
-# Managed By : CloudDrove
-# Description : This Script is used to create Elasticsearch.
-# Copyright @ CloudDrove. All Right Reserved.
-
-#Module      : Label
-#Description : This terraform module is designed to generate consistent label names and
-#              tags for resources. You can use terraform-labels to implement a strict
-#              naming convention.
+##------------------------------------------------------------------------------
+## Labels module callled that will be used for naming and tags.
+##------------------------------------------------------------------------------
 module "labels" {
   source  = "clouddrove/labels/aws"
   version = "1.3.0"
@@ -19,6 +14,10 @@ module "labels" {
   label_order = var.label_order
 }
 
+##------------------------------------------------------------------------------
+## A log group is a group of log streams that share the same retention, monitoring, and access control settings.
+##------------------------------------------------------------------------------
+#tfsec:ignore:aws-cloudwatch-log-group-customer-key
 resource "aws_cloudwatch_log_group" "cloudwatch" {
   count             = var.enabled && var.enable_logs ? 1 : 0
   name              = module.labels.id
@@ -34,18 +33,20 @@ resource "aws_cloudwatch_log_resource_policy" "cloudwatch_policy" {
   policy_document = data.aws_iam_policy_document.elasticsearch-log-publishing-policy.json
 }
 
-#Module      : Iam Service Linked Role
-#Description : Terraform module to create Iam Service Linked Role resource on AWS.
-
+##------------------------------------------------------------------------------
+## Iam Service Linked Role.
+## Terraform module to create Iam Service Linked Role resource on AWS.
+##------------------------------------------------------------------------------
 resource "aws_iam_service_linked_role" "default" {
   count            = var.enabled && var.enable_iam_service_linked_role ? 1 : 0
-  aws_service_name = "opensearchservice.amazonaws.com"
-  description      = "AWSServiceRoleForAmazonElasticsearchService Service-Linked Role"
+  aws_service_name = "es.amazonaws.com"
+  description      = "The description of the role."
   tags             = module.labels.tags
 }
 
-#Module      : Iam Role
-#Description : Terraform module to create Iam Role resource on AWS.
+##------------------------------------------------------------------------------
+## Terraform module to create Iam Role resource on AWS.
+##------------------------------------------------------------------------------
 resource "aws_iam_role" "default" {
   count              = var.enabled ? 1 : 0
   name               = format("%s-role", module.labels.id)
@@ -54,8 +55,6 @@ resource "aws_iam_role" "default" {
   tags               = module.labels.tags
 }
 
-#Module      : Iam Policy
-#Description : Terraform module to create Iam Role Policy resource on AWS.
 data "aws_iam_policy_document" "assume_role" {
   count = var.enabled ? 1 : 0
 
@@ -139,15 +138,15 @@ module "cognito-role" {
   policy         = data.aws_iam_policy_document.cognito_es_policy.json
 }
 
-#Module      : Elasticsearch
-#Description : Terraform module to create Elasticsearch resource on AWS.
+##------------------------------------------------------------------------------
+## Terraform resource for managing an AWS Elasticsearch Domain.
+##------------------------------------------------------------------------------
 #tfsec:ignore:aws-elastic-search-use-secure-tls-policy
 resource "aws_elasticsearch_domain" "default" {
   count                 = var.enabled ? 1 : 0
   domain_name           = var.domain_name != "" ? var.domain_name : module.labels.id
   elasticsearch_version = var.elasticsearch_version
-
-  advanced_options = var.advanced_options
+  advanced_options      = var.advanced_options
 
   ebs_options {
     ebs_enabled = var.volume_size > 0 ? true : false
@@ -157,7 +156,8 @@ resource "aws_elasticsearch_domain" "default" {
   }
 
   auto_tune_options {
-    desired_state = var.auto_tune_desired_state
+    desired_state       = var.auto_tune_desired_state
+    rollback_on_disable = var.rollback_on_disable
   }
 
   cognito_options {
@@ -197,7 +197,6 @@ resource "aws_elasticsearch_domain" "default" {
 
   dynamic "vpc_options" {
     for_each = var.vpc_enabled ? [true] : []
-
     content {
       security_group_ids = var.security_group_ids
       subnet_ids         = var.subnet_ids
@@ -250,12 +249,11 @@ resource "aws_elasticsearch_domain" "default" {
     }
   }
   tags = module.labels.tags
-
-  depends_on = [aws_iam_service_linked_role.default]
 }
 
-#Module      : Elasticsearch Role Policy
-#Description : Terraform module to create Elasticsearch resource on AWS.
+##------------------------------------------------------------------------------
+## Terraform module to create Elasticsearch Role Policy on AWS.
+##------------------------------------------------------------------------------
 data "aws_iam_policy_document" "default" {
   count = var.enabled ? 1 : 0
 
@@ -284,6 +282,7 @@ data "aws_iam_policy_document" "default" {
     }
   }
 }
+
 data "aws_iam_policy_document" "vpc" {
   count = var.enabled ? 1 : 0
 
@@ -304,7 +303,6 @@ data "aws_iam_policy_document" "vpc" {
 }
 
 #Module      : Elasticsearch Policy
-#Description : Terraform module to create Elasticsearch policy resource on AWS.
 resource "aws_elasticsearch_domain_policy" "default" {
   count           = var.enabled ? 1 : 0
   domain_name     = var.domain_name != "" ? var.domain_name : module.labels.id
@@ -323,6 +321,7 @@ module "es_dns" {
   ttl            = var.ttl
   values         = join("", aws_elasticsearch_domain.default.*.endpoint)
 }
+
 #Module      : ROUTE53
 #Description : Provides a Route53 record resource.
 module "kibana_dns" {
