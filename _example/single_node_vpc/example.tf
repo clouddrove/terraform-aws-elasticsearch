@@ -10,7 +10,7 @@ provider "aws" {
 ##------------------------------------------------------------------------------
 module "vpc" {
   source  = "clouddrove/vpc/aws"
-  version = "1.3.1"
+  version = "2.0.0"
 
 
   name        = "vpc"
@@ -44,7 +44,7 @@ module "public_subnets" {
 ##------------------------------------------------------------------------------
 module "security_group" {
   source  = "clouddrove/security-group/aws"
-  version = "1.3.0"
+  version = "2.0.0"
 
   name        = "ingress_security_groups"
   environment = "test"
