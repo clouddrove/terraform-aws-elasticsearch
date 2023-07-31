@@ -6,12 +6,6 @@ variable "name" {
   description = "Name  (e.g. `app` or `cluster`)."
 }
 
-variable "name_prefix" {
-  type        = string
-  default     = ""
-  description = "Name  (e.g. `app` or `cluster`)."
-}
-
 variable "repository" {
   type        = string
   default     = "https://github.com/clouddrove/terraform-aws-elasticsearch"
@@ -40,18 +34,6 @@ variable "attributes" {
   type        = list(any)
   default     = []
   description = "Additional attributes (e.g. `1`)."
-}
-
-variable "delimiter" {
-  type        = string
-  default     = "-"
-  description = "Delimiter to be used between `organization`, `environment`, `name` and `attributes`."
-}
-
-variable "tags" {
-  type        = map(any)
-  default     = {}
-  description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)."
 }
 
 variable "managedby" {
@@ -303,6 +285,7 @@ variable "enforce_https" {
 }
 
 variable "tls_security_policy" {
+  type        = string
   default     = "Policy-Min-TLS-1-0-2019-07"
   description = "The name of the TLS security policy that needs to be applied to the HTTPS endpoint."
 }
@@ -383,12 +366,6 @@ variable "allowed_cidr_blocks" {
   type        = list(string)
   default     = []
   description = "List of CIDR blocks to be allowed to connect to the cluster"
-}
-
-variable "managed_policy_arns" {
-  type        = list(any)
-  default     = []
-  description = "Set of exclusive IAM managed policy ARNs to attach to the IAM role"
 }
 
 variable "auto_tune_desired_state" {
