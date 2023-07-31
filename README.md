@@ -317,7 +317,6 @@ Note: There are some type of instances which not support encryption and EBS opti
 | dedicated\_master\_count | Number of dedicated master nodes in the cluster. | `number` | `0` | no |
 | dedicated\_master\_enabled | Indicates whether dedicated master nodes are enabled for the cluster. | `bool` | `false` | no |
 | dedicated\_master\_type | Instance type of the dedicated master nodes in the cluster. | `string` | `"t2.small.elasticsearch"` | no |
-| delimiter | Delimiter to be used between `organization`, `environment`, `name` and `attributes`. | `string` | `"-"` | no |
 | dns\_enabled | Flag to control the dns\_enable. | `bool` | `false` | no |
 | dns\_zone\_id | Route53 DNS Zone ID to add hostname records for Elasticsearch domain and Kibana. | `string` | `""` | no |
 | domain\_name | Domain name. | `string` | `""` | no |
@@ -342,16 +341,13 @@ Note: There are some type of instances which not support encryption and EBS opti
 | log\_publishing\_audit\_enabled | Specifies whether log publishing option for AUDIT\_LOGS is enabled or not. | `bool` | `true` | no |
 | log\_publishing\_index\_enabled | Specifies whether log publishing option for INDEX\_SLOW\_LOGS is enabled or not. | `bool` | `false` | no |
 | log\_publishing\_search\_enabled | Specifies whether log publishing option for SEARCH\_SLOW\_LOGS is enabled or not. | `bool` | `false` | no |
-| managed\_policy\_arns | Set of exclusive IAM managed policy ARNs to attach to the IAM role | `list(any)` | `[]` | no |
 | managedby | ManagedBy, eg 'CloudDrove'. | `string` | `"hello@clouddrove.com"` | no |
 | name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
-| name\_prefix | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
 | repository | Terraform current module repo | `string` | `"https://github.com/clouddrove/terraform-aws-elasticsearch"` | no |
 | retention\_in\_days | Days of retention of cloudwatch. | `number` | `90` | no |
 | rollback\_on\_disable | Whether to roll back to default Auto-Tune settings when disabling Auto-Tune. Valid values: DEFAULT\_ROLLBACK or NO\_ROLLBACK. | `string` | `"DEFAULT_ROLLBACK"` | no |
 | security\_group\_ids | Security Group IDs. | `list(string)` | `[]` | no |
 | subnet\_ids | Subnet IDs. | `list(string)` | `[]` | no |
-| tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | `map(any)` | `{}` | no |
 | tls\_security\_policy | The name of the TLS security policy that needs to be applied to the HTTPS endpoint. | `string` | `"Policy-Min-TLS-1-0-2019-07"` | no |
 | ttl | The TTL of the record to add to the DNS zone to complete certificate validation. | `string` | `"300"` | no |
 | type | Type of DNS records to create. | `string` | `"CNAME"` | no |
