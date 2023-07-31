@@ -1,7 +1,7 @@
 # Module      : Elasticsearch
 # Description : Terraform module to create Elasticsearch cluster.
 output "domain_arn" {
-  value       = join("", aws_elasticsearch_domain.default.*.arn)
+  value       = join("", aws_elasticsearch_domain.default[*].arn)
   description = "ARN of the Elasticsearch domain."
 }
 

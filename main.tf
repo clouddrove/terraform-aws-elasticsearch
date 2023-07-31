@@ -50,7 +50,7 @@ resource "aws_iam_service_linked_role" "default" {
 resource "aws_iam_role" "default" {
   count              = var.enabled ? 1 : 0
   name               = format("%s-role", module.labels.id)
-  assume_role_policy = join("", data.aws_iam_policy_document.assume_role.*.json)
+  assume_role_policy = join("", data.aws_iam_policy_document.assume_role[*].json)
   description        = "IAM Role to assume to access the Elasticsearch cluster"
   tags               = module.labels.tags
 }
@@ -210,25 +210,25 @@ resource "aws_elasticsearch_domain" "default" {
   log_publishing_options {
     enabled                  = var.log_publishing_index_enabled
     log_type                 = "INDEX_SLOW_LOGS"
-    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
+    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch[*].arn))
   }
 
   log_publishing_options {
     enabled                  = var.log_publishing_search_enabled
     log_type                 = "SEARCH_SLOW_LOGS"
-    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
+    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch[*].arn))
   }
 
   log_publishing_options {
     enabled                  = var.log_publishing_application_enabled
     log_type                 = "ES_APPLICATION_LOGS"
-    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
+    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch[*].arn))
   }
 
   log_publishing_options {
     enabled                  = var.log_publishing_audit_enabled
     log_type                 = "AUDIT_LOGS"
-    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch.*.arn))
+    cloudwatch_log_group_arn = format("%s:*", join("", aws_cloudwatch_log_group.cloudwatch[*].arn))
   }
 
   domain_endpoint_options {
@@ -265,8 +265,8 @@ data "aws_iam_policy_document" "default" {
       actions = distinct(compact(var.iam_actions))
 
       resources = [
-        join("", aws_elasticsearch_domain.default.*.arn),
-        "${join("", aws_elasticsearch_domain.default.*.arn)}/*"
+        join("", aws_elasticsearch_domain.default[*].arn),
+        "${join("", aws_elasticsearch_domain.default[*].arn)}/*"
       ]
 
       principals {
@@ -291,8 +291,8 @@ data "aws_iam_policy_document" "vpc" {
     effect  = "Allow"
 
     resources = [
-      join("", aws_elasticsearch_domain.default.*.arn),
-      format("%s/*", join("", aws_elasticsearch_domain.default.*.arn))
+      join("", aws_elasticsearch_domain.default[*].arn),
+      format("%s/*", join("", aws_elasticsearch_domain.default[*].arn))
     ]
 
     principals {
@@ -306,7 +306,7 @@ data "aws_iam_policy_document" "vpc" {
 resource "aws_elasticsearch_domain_policy" "default" {
   count           = var.enabled ? 1 : 0
   domain_name     = var.domain_name != "" ? var.domain_name : module.labels.id
-  access_policies = var.vpc_enabled ? join("", data.aws_iam_policy_document.vpc.*.json) : join("", data.aws_iam_policy_document.default.*.json)
+  access_policies = var.vpc_enabled ? join("", data.aws_iam_policy_document.vpc[*].json) : join("", data.aws_iam_policy_document.default[*].json)
 }
 
 #Module      : ROUTE53
@@ -319,7 +319,7 @@ module "es_dns" {
   name           = var.es_hostname
   type           = var.type
   ttl            = var.ttl
-  values         = join("", aws_elasticsearch_domain.default.*.endpoint)
+  values         = join("", aws_elasticsearch_domain.default[*].endpoint)
 }
 
 #Module      : ROUTE53
@@ -332,5 +332,5 @@ module "kibana_dns" {
   name           = var.kibana_hostname
   type           = var.type
   ttl            = var.ttl
-  values         = join("", aws_elasticsearch_domain.default.*.endpoint)
+  values         = join("", aws_elasticsearch_domain.default[*].endpoint)
 }
