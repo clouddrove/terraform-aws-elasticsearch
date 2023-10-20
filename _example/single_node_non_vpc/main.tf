@@ -2,17 +2,20 @@
 ## Provider block added, Use the Amazon Web Services (AWS) provider to interact with the many resources supported by AWS.
 ##------------------------------------------------------------------------------
 provider "aws" {
-  region = "eu-west-1"
+  region = local.region
 }
-
+locals {
+  region      = "eu-west-1"
+  name        = "es"
+  environment = "test"
+}
 ##------------------------------------------------------------------------------
 ## elasticsearch module call.
 ##------------------------------------------------------------------------------
 module "elasticsearch" {
   source      = "../../"
-  name        = "es"
-  environment = "test"
-  label_order = ["name", "environment"]
+  name        = local.name
+  environment = local.environment
 
   #IAM
   enable_iam_service_linked_role = false
