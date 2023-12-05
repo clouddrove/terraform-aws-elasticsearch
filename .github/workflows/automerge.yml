@@ -29,7 +29,8 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB}}
 
   automerge:
-    runs-on: ubuntu-latest   
+    runs-on: ubuntu-latest 
+    needs: autoapprove
     steps:
       - id: automerge
         name: automerge
