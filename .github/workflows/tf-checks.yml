@@ -6,18 +6,18 @@ on:
   workflow_dispatch:
 jobs:
   tf-checks-multi_node_non_vpc-example:
-    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.0.6
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.0.8
     with:
       working_directory: './_example/multi_node_non_vpc/'
   tf-checks-multi_node_vpc-example:
-    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.0.6
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.0.8
     with:
       working_directory: './_example/multi_node_vpc/'
   tf-checks-single_node_non_vpc-example:
-    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.0.6
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.0.8
     with:
       working_directory: './_example/single_node_non_vpc/'
   tf-checks-single_node_vpc-example:
-    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.0.6
+    uses: clouddrove/github-shared-workflows/.github/workflows/tf-checks.yml@1.0.8
     with:
       working_directory: './_example/single_node_vpc/'
