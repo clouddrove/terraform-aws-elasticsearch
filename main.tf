@@ -125,7 +125,7 @@ data "aws_iam_policy_document" "es_assume_policy" {
 
 module "cognito-role" {
   source  = "clouddrove/iam-role/aws"
-  version = "1.3.1"
+  version = "1.3.2"
 
   name        = format("%s-cognito-role", module.labels.id)
   environment = var.environment
