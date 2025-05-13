@@ -1,52 +1,25 @@
-# Module      : Elasticsearch
-# Description : Terraform module to create Elasticsearch cluster.
-output "domain_arn" {
-  value       = join("", aws_elasticsearch_domain.default[*].arn)
-  description = "ARN of the Elasticsearch domain."
-}
-
-output "tags" {
-  value       = module.labels.tags
-  description = "A mapping of tags to assign to the resource."
-}
-
 ################################################################################
 # Domain
 ################################################################################
 
 output "domain_arn" {
   description = "The Amazon Resource Name (ARN) of the domain"
-  value       = try(aws_opensearch_domain.this[0].arn, null)
+  value       = module.opensearch.domain_arn
 }
 
 output "domain_id" {
   description = "The unique identifier for the domain"
-  value       = try(aws_opensearch_domain.this[0].domain_id, null)
+  value       = module.opensearch.domain_id
 }
 
 output "domain_endpoint" {
   description = "Domain-specific endpoint used to submit index, search, and data upload requests"
-  value       = try(aws_opensearch_domain.this[0].endpoint, null)
-}
-
-output "domain_endpoint_v2" {
-  description = "V2 domain endpoint that works with both IPv4 and IPv6 addresses, used to submit index, search, and data upload requests"
-  value       = try(aws_opensearch_domain.this[0].endpoint_v2, null)
+  value       = module.opensearch.domain_endpoint
 }
 
 output "domain_dashboard_endpoint" {
   description = "Domain-specific endpoint for Dashboard without https scheme"
-  value       = try(aws_opensearch_domain.this[0].dashboard_endpoint, null)
-}
-
-output "domain_dashboard_endpoint_v2" {
-  description = "V2 domain endpoint for Dashboard that works with both IPv4 and IPv6 addresses, without https scheme"
-  value       = try(aws_opensearch_domain.this[0].dashboard_endpoint_v2, null)
-}
-
-output "domain_endpoint_v2_hosted_zone_id" {
-  description = "Dual stack hosted zone ID for the domain."
-  value       = try(aws_opensearch_domain.this[0].domain_endpoint_v2_hosted_zone_id, null)
+  value       = module.opensearch.domain_dashboard_endpoint
 }
 
 ################################################################################
@@ -55,7 +28,7 @@ output "domain_endpoint_v2_hosted_zone_id" {
 
 output "package_associations" {
   description = "Map of package associations created and their attributes"
-  value       = aws_opensearch_package_association.this
+  value       = module.opensearch.package_associations
 }
 
 ################################################################################
@@ -64,7 +37,7 @@ output "package_associations" {
 
 output "vpc_endpoints" {
   description = "Map of VPC endpoints created and their attributes"
-  value       = aws_opensearch_vpc_endpoint.this
+  value       = module.opensearch.vpc_endpoints
 }
 
 ################################################################################
@@ -73,7 +46,7 @@ output "vpc_endpoints" {
 
 output "outbound_connections" {
   description = "Map of outbound connections created and their attributes"
-  value       = aws_opensearch_outbound_connection.this
+  value       = module.opensearch.outbound_connections
 }
 
 ################################################################################
@@ -82,7 +55,7 @@ output "outbound_connections" {
 
 output "cloudwatch_logs" {
   description = "Map of CloudWatch log groups created and their attributes"
-  value       = aws_cloudwatch_log_group.this
+  value       = module.opensearch.cloudwatch_logs
 }
 
 ################################################################################
@@ -91,10 +64,10 @@ output "cloudwatch_logs" {
 
 output "security_group_arn" {
   description = "Amazon Resource Name (ARN) of the security group"
-  value       = try(aws_security_group.this[0].arn, null)
+  value       = module.opensearch.security_group_arn
 }
 
 output "security_group_id" {
   description = "ID of the security group"
-  value       = try(aws_security_group.this[0].id, null)
+  value       = module.opensearch.security_group_id
 }

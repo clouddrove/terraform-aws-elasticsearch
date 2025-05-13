@@ -384,3 +384,281 @@ variable "rollback_on_disable" {
   default     = "DEFAULT_ROLLBACK"
   description = "Whether to roll back to default Auto-Tune settings when disabling Auto-Tune. Valid values: DEFAULT_ROLLBACK or NO_ROLLBACK."
 }
+
+variable "elasticsearch_enabled" {
+  description = "Set to true to enable Elasticsearch resources"
+  type        = bool
+  default     = true
+}
+
+variable "tags" {
+  description = "A map of tags to add to all resources"
+  type        = map(string)
+  default     = {}
+}
+
+variable "advanced_security_options" {
+  description = "Configuration block for fine-grained access control"
+  type        = any
+  default = {
+    enabled                = true
+    anonymous_auth_enabled = false
+  }
+}
+
+variable "auto_tune_options" {
+  description = "Configuration block for the Auto-Tune options of the domain"
+  type        = any
+  default = {
+    desired_state       = "DISABLED"
+    rollback_on_disable = "DEFAULT_ROLLBACK"
+  }
+}
+
+variable "ip_address_type" {
+  description = "The IP address type for the endpoint. Valid values are ipv4 and dualstack"
+  type        = string
+  default     = "ipv4"
+}
+
+# variable "tags" {
+#   description = "A map of tags to add to all resources"
+#   type        = map(string)
+#   default     = {}
+# }
+
+# OpenSearch specific variables
+
+variable "opensearch_enabled" {
+  description = "Set to true to enable OpenSearch resources"
+  type        = bool
+  default     = false
+}
+
+variable "engine_version" {
+  description = "Version of the OpenSearch engine to use"
+  type        = string
+  default     = "OpenSearch_1.0"
+}
+
+# variable "domain_name" {
+#   description = "Domain name for OpenSearch"
+#   type        = string
+#   default     = ""
+# }
+
+# variable "advanced_options" {
+#   description = "Key-value string pairs to specify advanced configuration options for OpenSearch"
+#   type        = map(string)
+#   default     = {}
+# }
+
+variable "cluster_config" {
+  description = "Configuration block for the OpenSearch cluster"
+  type        = any
+  default     = {}
+}
+
+variable "cognito_options" {
+  description = "Configuration block for authenticating OpenSearch with Cognito"
+  type        = any
+  default     = {}
+}
+
+variable "domain_endpoint_options" {
+  description = "Configuration block for OpenSearch domain endpoint HTTP(S) related options"
+  type        = any
+  default     = {}
+}
+
+variable "ebs_options" {
+  description = "Configuration block for EBS related options for OpenSearch"
+  type        = any
+  default     = {}
+}
+
+variable "encrypt_at_rest" {
+  description = "Configuration block for encrypting OpenSearch at rest"
+  type        = any
+  default     = {}
+}
+
+variable "log_publishing_options" {
+  description = "Configuration block for publishing logs to CloudWatch for OpenSearch"
+  type        = any
+  default     = []
+}
+
+variable "node_to_node_encryption" {
+  description = "Configuration block for node-to-node encryption options for OpenSearch"
+  type        = any
+  default     = {}
+}
+
+variable "off_peak_window_options" {
+  description = "Configuration to add Off Peak update options for OpenSearch"
+  type        = any
+  default     = {}
+}
+
+variable "software_update_options" {
+  description = "Software update options for OpenSearch domain"
+  type        = any
+  default     = {}
+}
+
+variable "vpc_options" {
+  description = "Configuration block for VPC related options for OpenSearch"
+  type        = any
+  default     = {}
+}
+
+variable "package_associations" {
+  description = "Map of package association IDs to associate with the OpenSearch domain"
+  type        = map(string)
+  default     = {}
+}
+
+variable "vpc_endpoints" {
+  description = "Map of VPC endpoints to create for the OpenSearch domain"
+  type        = any
+  default     = {}
+}
+
+variable "enable_access_policy" {
+  description = "Determines whether an access policy will be applied to the OpenSearch domain"
+  type        = bool
+  default     = true
+}
+
+variable "create_access_policy" {
+  description = "Determines whether an access policy will be created for OpenSearch"
+  type        = bool
+  default     = true
+}
+
+variable "access_policies" {
+  description = "IAM policy document specifying the access policies for the OpenSearch domain"
+  type        = string
+  default     = null
+}
+
+variable "access_policy_statements" {
+  description = "A map of IAM policy statements for custom permission usage in OpenSearch"
+  type        = any
+  default     = {}
+}
+
+variable "access_policy_source_policy_documents" {
+  description = "List of IAM policy documents merged into the OpenSearch access policy"
+  type        = list(string)
+  default     = []
+}
+
+variable "access_policy_override_policy_documents" {
+  description = "List of IAM policy documents that override statements in the OpenSearch access policy"
+  type        = list(string)
+  default     = []
+}
+
+variable "cloudwatch_log_resource_policy_name" {
+  description = "Name of the resource policy for OpenSearch to log to CloudWatch"
+  type        = string
+  default     = null
+}
+variable "create_saml_options" {
+  description = "Determines whether SAML options will be created for OpenSearch"
+  type        = bool
+  default     = false
+}
+
+variable "saml_options" {
+  description = "SAML authentication options for an AWS OpenSearch Domain"
+  type        = any
+  default     = {}
+}
+
+variable "outbound_connections" {
+  description = "Map of AWS OpenSearch outbound connections to create"
+  type        = any
+  default     = {}
+}
+
+variable "create_cloudwatch_log_groups" {
+  description = "Determines whether log groups are created for OpenSearch"
+  type        = bool
+  default     = true
+}
+
+variable "create_cloudwatch_log_resource_policy" {
+  description = "Determines whether a resource policy will be created for OpenSearch to log to CloudWatch"
+  type        = bool
+  default     = true
+}
+
+variable "cloudwatch_log_group_retention_in_days" {
+  description = "Number of days to retain log events for OpenSearch CloudWatch logs"
+  type        = number
+  default     = 60
+}
+
+variable "cloudwatch_log_group_kms_key_id" {
+  description = "KMS Key ID to encrypt the OpenSearch CloudWatch log group"
+  type        = string
+  default     = null
+}
+
+variable "cloudwatch_log_group_skip_destroy" {
+  description = "Set to true to prevent deletion of OpenSearch CloudWatch log group on destroy"
+  type        = bool
+  default     = null
+}
+
+variable "cloudwatch_log_group_class" {
+  description = "Log class of the OpenSearch CloudWatch log group (STANDARD or INFREQUENT_ACCESS)"
+  type        = string
+  default     = null
+}
+
+variable "create_security_group" {
+  description = "Determines if a security group is created for OpenSearch"
+  type        = bool
+  default     = true
+}
+
+variable "security_group_name" {
+  description = "Name to use on security group created for OpenSearch"
+  type        = string
+  default     = null
+}
+
+variable "security_group_use_name_prefix" {
+  description = "Determines whether the security group name is used as a prefix for OpenSearch"
+  type        = bool
+  default     = true
+}
+
+variable "security_group_description" {
+  description = "Description of the security group created for OpenSearch"
+  type        = string
+  default     = null
+}
+
+variable "security_group_rules" {
+  description = "Security group ingress and egress rules to add to the security group created for OpenSearch"
+  type        = any
+  default     = {}
+}
+
+variable "security_group_tags" {
+  description = "A map of additional tags to add to the security group created for OpenSearch"
+  type        = map(string)
+  default     = {}
+}
+
+variable "timeouts" {
+  description = "Create and delete timeout configurations for OpenSearch domain"
+  type        = map(string)
+  default     = {}
+}
+
