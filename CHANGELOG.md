@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [`fb55b79`](https://github.com/clouddrove/terraform-aws-elasticsearch/commit/fb55b79c3c7c7501a057dcca694824835b57c2ba) - fix tfsec error
 - [`3435c61`](https://github.com/clouddrove/terraform-aws-elasticsearch/commit/3435c6106eab896b67724092b866279a32ce04b8) - update github-action
 
-## [0.15.0] - 2021-07-22    
+## [0.15.0] - 2021-07-22
 ### :sparkles: New Features
 - [`38aa50f`](https://github.com/clouddrove/terraform-aws-elasticsearch/commit/38aa50f8ce2071d24536d517d4f8332eb891b140) - fix variables
 - [`cc72724`](https://github.com/clouddrove/terraform-aws-elasticsearch/commit/cc72724bb00149bff6aac5bfc0987ba0b6313d6b) - add new example and fix terratest

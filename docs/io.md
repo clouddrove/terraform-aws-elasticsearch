@@ -70,4 +70,3 @@
 |------|-------------|
 | domain\_arn | ARN of the Elasticsearch domain. |
 | tags | A mapping of tags to assign to the resource. |
-
