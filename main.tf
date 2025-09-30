@@ -160,11 +160,14 @@ resource "aws_elasticsearch_domain" "default" {
     rollback_on_disable = var.rollback_on_disable
   }
 
-  cognito_options {
-    enabled          = var.cognito_enabled
-    user_pool_id     = var.user_pool_id
-    identity_pool_id = var.identity_pool_id
-    role_arn         = module.cognito-role.arn
+  dynamic "cognito_options" {
+    for_each = var.cognito_enabled ? [1] : []
+    content {
+
+      user_pool_id     = var.user_pool_id
+      identity_pool_id = var.identity_pool_id
+      role_arn         = module.cognito-role.arn
+    }
   }
 
   encrypt_at_rest {
