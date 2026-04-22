@@ -29,7 +29,7 @@ module "vpc" {
 ##------------------------------------------------------------------------------
 module "public_subnets" {
   source  = "clouddrove/subnet/aws"
-  version = "2.0.1"
+  version = "2.0.2"
 
   name               = "${local.name}-public-subnet"
   environment        = local.environment
