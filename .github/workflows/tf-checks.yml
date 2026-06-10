@@ -1,3 +1,4 @@
+---
 name: tf-checks
 permissions:
   id-token: write
@@ -48,3 +49,4 @@ jobs:
       show_plan: false
     secrets:
       BUILD_ROLE: ${{ secrets.BUILD_ROLE }}
+...
