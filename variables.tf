@@ -8,14 +8,8 @@ variable "name" {
 
 variable "repository" {
   type        = string
-  default     = "https://github.com/clouddrove/terraform-aws-elasticsearch"
+  default     = "https://github.com/clouddrove/terraform-aws-ec2"
   description = "Terraform current module repo"
-
-  validation {
-    # regex(...) fails if it cannot find a match
-    condition     = can(regex("^https://", var.repository))
-    error_message = "The module-repo value must be a valid Git repo link."
-  }
 }
 
 variable "environment" {
@@ -38,8 +32,8 @@ variable "attributes" {
 
 variable "managedby" {
   type        = string
-  default     = "hello@clouddrove.com"
-  description = "ManagedBy, eg 'CloudDrove'."
+  default     = "AnmolNagpal"
+  description = "ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'."
 }
 
 # Module      : Elasticsearch Module
