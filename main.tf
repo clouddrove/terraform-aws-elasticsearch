@@ -3,7 +3,7 @@
 ##------------------------------------------------------------------------------
 module "labels" {
   source  = "clouddrove/labels/aws"
-  version = "1.3.0"
+  version = "1.3.1"
 
   enabled     = var.enabled
   name        = var.name
@@ -125,7 +125,7 @@ data "aws_iam_policy_document" "es_assume_policy" {
 
 module "cognito-role" {
   source  = "clouddrove/iam-role/aws"
-  version = "1.3.3"
+  version = "1.4.0"
 
   name        = format("%s-cognito-role", module.labels.id)
   environment = var.environment
@@ -316,7 +316,7 @@ resource "aws_elasticsearch_domain_policy" "default" {
 #Description : Provides a Route53 record resource.
 module "es_dns" {
   source         = "clouddrove/route53-record/aws"
-  version        = "1.0.1"
+  version        = "1.0.2"
   record_enabled = var.dns_enabled
   zone_id        = var.dns_zone_id
   name           = var.es_hostname
@@ -329,7 +329,7 @@ module "es_dns" {
 #Description : Provides a Route53 record resource.
 module "kibana_dns" {
   source         = "clouddrove/route53-record/aws"
-  version        = "1.0.1"
+  version        = "1.0.2"
   record_enabled = var.dns_enabled
   zone_id        = var.dns_zone_id
   name           = var.kibana_hostname
