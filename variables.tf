@@ -118,13 +118,13 @@ variable "volume_type" {
 
 variable "iops" {
   type        = number
-  default     = 0
+  default     = 3000
   description = "The baseline input/output (I/O) performance of EBS volumes attached to data nodes. Applicable only for the Provisioned IOPS EBS volume type."
 }
 
 variable "throughput" {
   type        = number
-  default     = 0
+  default     = 125
   description = "EBS gp3 throughput in MiB/s"
 }
 
