@@ -58,7 +58,7 @@ variable "enabled" {
 
 variable "cognito_enabled" {
   type        = bool
-  default     = true
+  default     = false
   description = "Set to false to prevent enable cognito."
 }
 
@@ -122,6 +122,12 @@ variable "iops" {
   description = "The baseline input/output (I/O) performance of EBS volumes attached to data nodes. Applicable only for the Provisioned IOPS EBS volume type."
 }
 
+variable "throughput" {
+  type        = number
+  default     = 0
+  description = "EBS gp3 throughput in MiB/s"
+}
+
 variable "encrypt_at_rest_enabled" {
   type        = bool
   default     = true
@@ -161,7 +167,7 @@ variable "log_publishing_application_enabled" {
 
 variable "log_publishing_audit_enabled" {
   type        = bool
-  default     = true
+  default     = false
   description = "Specifies whether log publishing option for AUDIT_LOGS is enabled or not."
 }
 
