@@ -152,7 +152,8 @@ resource "aws_elasticsearch_domain" "default" {
     ebs_enabled = var.volume_size > 0 ? true : false
     volume_size = var.volume_size
     volume_type = var.volume_type
-    iops        = var.iops
+    iops        = var.volume_type == "gp3" ? var.iops : null
+    throughput  = var.volume_type == "gp3" ? var.throughput : null
   }
 
   auto_tune_options {

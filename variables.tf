@@ -10,12 +10,6 @@ variable "repository" {
   type        = string
   default     = "https://github.com/clouddrove/terraform-aws-elasticsearch"
   description = "Terraform current module repo"
-
-  validation {
-    # regex(...) fails if it cannot find a match
-    condition     = can(regex("^https://", var.repository))
-    error_message = "The module-repo value must be a valid Git repo link."
-  }
 }
 
 variable "environment" {
@@ -38,8 +32,8 @@ variable "attributes" {
 
 variable "managedby" {
   type        = string
-  default     = "hello@clouddrove.com"
-  description = "ManagedBy, eg 'CloudDrove'."
+  default     = "AnmolNagpal"
+  description = "ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'."
 }
 
 # Module      : Elasticsearch Module
@@ -64,7 +58,7 @@ variable "enabled" {
 
 variable "cognito_enabled" {
   type        = bool
-  default     = true
+  default     = false
   description = "Set to false to prevent enable cognito."
 }
 
@@ -124,8 +118,14 @@ variable "volume_type" {
 
 variable "iops" {
   type        = number
-  default     = 0
+  default     = 3000
   description = "The baseline input/output (I/O) performance of EBS volumes attached to data nodes. Applicable only for the Provisioned IOPS EBS volume type."
+}
+
+variable "throughput" {
+  type        = number
+  default     = 125
+  description = "EBS gp3 throughput in MiB/s"
 }
 
 variable "encrypt_at_rest_enabled" {
@@ -167,7 +167,7 @@ variable "log_publishing_application_enabled" {
 
 variable "log_publishing_audit_enabled" {
   type        = bool
-  default     = true
+  default     = false
   description = "Specifies whether log publishing option for AUDIT_LOGS is enabled or not."
 }
 
