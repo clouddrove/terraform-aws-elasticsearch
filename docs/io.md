@@ -14,7 +14,7 @@
 | automated\_snapshot\_start\_hour | Hour at which automated snapshots are taken, in UTC. | `number` | `0` | no |
 | availability\_zone\_count | Number of Availability Zones for the domain to use. | `number` | `2` | no |
 | cloudwatch\_kms\_key\_id | The KMS key ID to encrypt the Cloudwatch logs. | `string` | `""` | no |
-| cognito\_enabled | Set to false to prevent enable cognito. | `bool` | `true` | no |
+| cognito\_enabled | Set to false to prevent enable cognito. | `bool` | `false` | no |
 | custom\_endpoint | Fully qualified domain for custom endpoint. | `string` | `""` | no |
 | custom\_endpoint\_certificate\_arn | ACM certificate ARN for custom endpoint. | `string` | `""` | no |
 | custom\_endpoint\_enabled | Whether to enable custom endpoint for the Elasticsearch domain. | `bool` | `false` | no |
@@ -37,21 +37,22 @@
 | identity\_pool\_id | ID of the Cognito Identity Pool to use. | `string` | `""` | no |
 | instance\_count | Number of data nodes in the cluster. | `number` | `4` | no |
 | instance\_type | Elasticsearch instance type for data nodes in the cluster. | `string` | `"t2.small.elasticsearch"` | no |
-| iops | The baseline input/output (I/O) performance of EBS volumes attached to data nodes. Applicable only for the Provisioned IOPS EBS volume type. | `number` | `0` | no |
+| iops | The baseline input/output (I/O) performance of EBS volumes attached to data nodes. Applicable only for the Provisioned IOPS EBS volume type. | `number` | `3000` | no |
 | kibana\_hostname | The Host name of kibana. | `string` | `""` | no |
 | kms\_key\_id | The KMS key ID to encrypt the Elasticsearch domain with. If not specified, then it defaults to using the AWS/Elasticsearch service KMS key. | `string` | `""` | no |
 | label\_order | Label order, e.g. `name`,`application`. | `list(any)` | <pre>[<br>  "name",<br>  "environment"<br>]</pre> | no |
 | log\_publishing\_application\_enabled | Specifies whether log publishing option for ES\_APPLICATION\_LOGS is enabled or not. | `bool` | `false` | no |
-| log\_publishing\_audit\_enabled | Specifies whether log publishing option for AUDIT\_LOGS is enabled or not. | `bool` | `true` | no |
+| log\_publishing\_audit\_enabled | Specifies whether log publishing option for AUDIT\_LOGS is enabled or not. | `bool` | `false` | no |
 | log\_publishing\_index\_enabled | Specifies whether log publishing option for INDEX\_SLOW\_LOGS is enabled or not. | `bool` | `false` | no |
 | log\_publishing\_search\_enabled | Specifies whether log publishing option for SEARCH\_SLOW\_LOGS is enabled or not. | `bool` | `false` | no |
-| managedby | ManagedBy, eg 'CloudDrove'. | `string` | `"hello@clouddrove.com"` | no |
+| managedby | ManagedBy, eg 'CloudDrove' or 'AnmolNagpal'. | `string` | `"AnmolNagpal"` | no |
 | name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
 | repository | Terraform current module repo | `string` | `"https://github.com/clouddrove/terraform-aws-elasticsearch"` | no |
 | retention\_in\_days | Days of retention of cloudwatch. | `number` | `90` | no |
 | rollback\_on\_disable | Whether to roll back to default Auto-Tune settings when disabling Auto-Tune. Valid values: DEFAULT\_ROLLBACK or NO\_ROLLBACK. | `string` | `"DEFAULT_ROLLBACK"` | no |
 | security\_group\_ids | Security Group IDs. | `list(string)` | `[]` | no |
 | subnet\_ids | Subnet IDs. | `list(string)` | `[]` | no |
+| throughput | EBS gp3 throughput in MiB/s | `number` | `125` | no |
 | tls\_security\_policy | The name of the TLS security policy that needs to be applied to the HTTPS endpoint. | `string` | `"Policy-Min-TLS-1-0-2019-07"` | no |
 | ttl | The TTL of the record to add to the DNS zone to complete certificate validation. | `string` | `"300"` | no |
 | type | Type of DNS records to create. | `string` | `"CNAME"` | no |
