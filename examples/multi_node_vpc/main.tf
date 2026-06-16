@@ -45,97 +45,80 @@ module "public_subnets" {
 # Security Groups module call
 ################################################################################
 
-module "ssh" {
+module "sg_rules" {
   source  = "clouddrove/security-group/aws"
-  version = "2.0.2"
+  version = "2.0.3"
 
-  name        = "${local.name}-ssh"
+  name        = "${local.name}-sg"
   environment = local.environment
   vpc_id      = module.vpc.vpc_id
-  new_sg_ingress_rules_with_cidr_blocks = [{
-    rule_count  = 1
-    from_port   = 22
-    protocol    = "tcp"
-    to_port     = 22
-    cidr_blocks = [local.vpc_cidr_block, local.additional_cidr_block]
-    description = "Allow ssh traffic."
+  new_sg_ingress_rules = [{
+      key         = "ssh-vpc"
+      ip_protocol = "tcp"
+      from_port   = 22
+      to_port     = 22
+      cidr_ipv4   = local.vpc_cidr_block
+      description = "Allow ssh traffic from VPC."
     },
     {
-      rule_count  = 2
+      key         = "ssh-additional"
+      ip_protocol = "tcp"
+      from_port   = 22
+      to_port     = 22
+      cidr_ipv4   = local.additional_cidr_block
+      description = "Allow ssh traffic from additional CIDR."
+    },
+    {
+      key         = "es-api"
+      ip_protocol = "tcp" 
       from_port   = 9200
-      protocol    = "tcp"
       to_port     = 9200
-      cidr_blocks = [local.additional_cidr_block]
-      description = "Allow Mongodb traffic."
-    }
-  ]
-
-  ## EGRESS Rules
-  new_sg_egress_rules_with_cidr_blocks = [{
-    rule_count  = 1
-    from_port   = 22
-    protocol    = "tcp"
-    to_port     = 22
-    cidr_blocks = [local.vpc_cidr_block, local.additional_cidr_block]
-    description = "Allow ssh outbound traffic."
+      cidr_ipv4 = local.additional_cidr_block
+      description = "Allow ES API traffic."
+    },
+      {
+      key         = "es-api-multi-node"
+      ip_protocol = "tcp" 
+      from_port   = 9300
+      to_port     = 9300
+      referenced_security_group_id = module.sg_rules.security_group_id
+      description = "Allow ES API traffic."
     },
     {
-      rule_count  = 2
-      from_port   = 9200
-      protocol    = "tcp"
-      to_port     = 9200
-      cidr_blocks = [local.additional_cidr_block]
-      description = "Allow Mongodb outbound traffic."
-  }]
-}
-
-#tfsec:ignore:aws-ec2-no-public-egress-sgr
-module "http_https" {
-  source  = "clouddrove/security-group/aws"
-  version = "2.0.2"
-
-  name        = "${local.name}-http-https"
-  environment = local.environment
-
-  vpc_id = module.vpc.vpc_id
-  ## INGRESS Rules
-  new_sg_ingress_rules_with_cidr_blocks = [{
-    rule_count  = 1
-    from_port   = 22
-    protocol    = "tcp"
-    to_port     = 22
-    cidr_blocks = [local.vpc_cidr_block]
-    description = "Allow ssh traffic."
-    },
-    {
-      rule_count  = 2
+      key         = "http"
+      ip_protocol = "tcp" 
       from_port   = 80
-      protocol    = "tcp"
       to_port     = 80
-      cidr_blocks = [local.vpc_cidr_block]
+      cidr_ipv4   = local.vpc_cidr_block
       description = "Allow http traffic."
     },
     {
-      rule_count  = 3
+      key         = "https"
+      ip_protocol = "tcp" 
       from_port   = 443
-      protocol    = "tcp"
       to_port     = 443
-      cidr_blocks = [local.vpc_cidr_block]
+      cidr_ipv4   = local.vpc_cidr_block
       description = "Allow https traffic."
-    }
-  ]
+    }]
 
   ## EGRESS Rules
-  new_sg_egress_rules_with_cidr_blocks = [{
-    rule_count       = 1
+  new_sg_egress_rules = [{
+    key              = "egress-ipv4"
+    ip_protocol      = "-1" 
     from_port        = 0
-    protocol         = "-1"
     to_port          = 0
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-    description      = "Allow all traffic."
+    cidr_ipv4        = "0.0.0.0/0"
+    description      = "Allow all IPV4 traffic."
+    },
+    {
+    key              = "egress-ipv6"
+    ip_protocol      = "-1" 
+    from_port        = 0
+    to_port          = 0
+    cidr_ipv6        = "::/0"
+    description      = "Allow all IPV6 traffic."
     }
-  ]
+    ]
 }
 
 ##------------------------------------------------------------------------------
@@ -154,7 +137,7 @@ module "elasticsearch" {
 
   #Networking
   vpc_enabled             = true
-  security_group_ids      = [module.ssh.security_group_id, module.http_https.security_group_id]
+  security_group_ids      = [module.sg_rules.security_group_id]
   subnet_ids              = tolist(module.public_subnets.public_subnet_id)
   availability_zone_count = length(module.public_subnets.public_subnet_id)
   zone_awareness_enabled  = true
