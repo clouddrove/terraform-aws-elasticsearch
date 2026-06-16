@@ -53,12 +53,12 @@ module "sg_rules" {
   environment = local.environment
   vpc_id      = module.vpc.vpc_id
   new_sg_ingress_rules = [{
-      key         = "ssh-vpc"
-      ip_protocol = "tcp"
-      from_port   = 22
-      to_port     = 22
-      cidr_ipv4   = local.vpc_cidr_block
-      description = "Allow ssh traffic from VPC."
+    key         = "ssh-vpc"
+    ip_protocol = "tcp"
+    from_port   = 22
+    to_port     = 22
+    cidr_ipv4   = local.vpc_cidr_block
+    description = "Allow ssh traffic from VPC."
     },
     {
       key         = "ssh-additional"
@@ -70,23 +70,23 @@ module "sg_rules" {
     },
     {
       key         = "es-api"
-      ip_protocol = "tcp" 
+      ip_protocol = "tcp"
       from_port   = 9200
       to_port     = 9200
-      cidr_ipv4 = local.additional_cidr_block
-      description = "Allow ES API traffic."
-    },
-      {
-      key         = "es-api-multi-node"
-      ip_protocol = "tcp" 
-      from_port   = 9300
-      to_port     = 9300
-      referenced_security_group_id = module.sg_rules.security_group_id
+      cidr_ipv4   = local.additional_cidr_block
       description = "Allow ES API traffic."
     },
     {
+      key                          = "es-api-multi-node"
+      ip_protocol                  = "tcp"
+      from_port                    = 9300
+      to_port                      = 9300
+      referenced_security_group_id = module.sg_rules.security_group_id
+      description                  = "Allow ES API traffic."
+    },
+    {
       key         = "http"
-      ip_protocol = "tcp" 
+      ip_protocol = "tcp"
       from_port   = 80
       to_port     = 80
       cidr_ipv4   = local.vpc_cidr_block
@@ -94,31 +94,31 @@ module "sg_rules" {
     },
     {
       key         = "https"
-      ip_protocol = "tcp" 
+      ip_protocol = "tcp"
       from_port   = 443
       to_port     = 443
       cidr_ipv4   = local.vpc_cidr_block
       description = "Allow https traffic."
-    }]
+  }]
 
   ## EGRESS Rules
   new_sg_egress_rules = [{
-    key              = "egress-ipv4"
-    ip_protocol      = "-1" 
-    from_port        = 0
-    to_port          = 0
-    cidr_ipv4        = "0.0.0.0/0"
-    description      = "Allow all IPV4 traffic."
+    key         = "egress-ipv4"
+    ip_protocol = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_ipv4   = "0.0.0.0/0"
+    description = "Allow all IPV4 traffic."
     },
     {
-    key              = "egress-ipv6"
-    ip_protocol      = "-1" 
-    from_port        = 0
-    to_port          = 0
-    cidr_ipv6        = "::/0"
-    description      = "Allow all IPV6 traffic."
+      key         = "egress-ipv6"
+      ip_protocol = "-1"
+      from_port   = 0
+      to_port     = 0
+      cidr_ipv6   = "::/0"
+      description = "Allow all IPV6 traffic."
     }
-    ]
+  ]
 }
 
 ##------------------------------------------------------------------------------
